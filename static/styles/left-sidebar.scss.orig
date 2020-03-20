@@ -67,16 +67,11 @@ li.show-more-topics {
     font-size: 13px;
     margin-top: 3px;
     margin-left: 10px;
-}
 
-#streams_inline_cog:hover,
-#streams_filter_icon:hover {
-    opacity: 1;
-    cursor: pointer;
-}
-
-#streams_header {
-    margin-top: 3px;
+    &:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
 }
 
 #streams_inline_cog {
@@ -176,42 +171,37 @@ ul.filters hr {
     margin-bottom: 10px;
 }
 
+ul.filters li.muted_topic,
+ul.filters li.out_of_home_view {
+    opacity: 0.25;
+}
+
+ul.filters li.out_of_home_view:hover {
+    opacity: 0.6;
+}
+
+ul.filters li.out_of_home_view li.muted_topic {
+    /* If stream is muted, this resets opacity of muted topics in muted
+       stream to 1; since opacity is multiplied down through child
+       elements, this avoids an unreadable opacity of 0.25^2. */
+    opacity: 1;
+}
+
 li.active-filter,
 li.active-sub-filter {
     font-weight: 600 !important;
     background-color: hsl(202, 56%, 91%);
     position: relative;
     border-radius: 4px;
-<<<<<<< HEAD
 	color: #000;
 }
-=======
+
+#global_filters .filter-icon {
+    display: inline-block;
+    min-width: $left_col_size;
+    text-align: center;
 }
 
-#global_filters {
-    margin-bottom: 16px;
->>>>>>> css: Use SCSS nesting for '#global_filters'.
-
-    .filter-icon {
-        display: inline-block;
-        min-width: $left_col_size;
-        text-align: center;
-    }
-
-<<<<<<< HEAD
-=======
-    .count {
-        margin-right: 20px;
-        margin-top: 2px;
-        display: none;
-    }
-
-    i {
-        opacity: 0.7;
-    }
-}
-
->>>>>>> css: Use SCSS nesting for '#global_filters'.
 li.top_left_all_messages,
 .private_messages_header,
 li.top_left_mentions,
@@ -327,15 +317,6 @@ li.top_left_starred_messages {
     line-height: 1.1;
 }
 
-.all-messages-sidebar-menu-icon i,
-.stream-sidebar-menu-icon i,
-.starred-messages-sidebar-menu-icon i,
-.topic-sidebar-menu-icon i {
-    padding-right: 0.25em;
-    display: inline-block;
-    width: 13px;
-}
-
 /*
     All of our left sidebar handlers use absolute
     positioning.  We should fix that.
@@ -346,6 +327,22 @@ li.top_left_starred_messages {
 .topic-sidebar-menu-icon {
     position: absolute;
     display: none;
+    right: 10px;
+
+    i {
+        padding-right: 0.25em;
+        display: inline-block;
+        width: 13px;
+    }
+
+    /*
+        If you hover directly over the chevron itself,
+        show it in black.
+    */
+
+    &:hover {
+        color: hsl(0, 0%, 0%) !important;
+    }
 }
 
 /*
@@ -356,7 +353,6 @@ li.top_left_starred_messages {
 .starred-messages-sidebar-menu-icon,
 .stream-sidebar-menu-icon {
     top: 3px;
-    right: 10px;
     font-size: 0.8em;
 }
 
@@ -367,7 +363,6 @@ li.top_left_starred_messages {
 */
 .topic-sidebar-menu-icon {
     top: 1px;
-    right: 10px;
     font-size: 0.7em;
 }
 
@@ -384,17 +379,7 @@ li.topic-list-item:hover .topic-sidebar-menu-icon {
     color: hsl(0, 0%, 53%);
 }
 
-/*
-    If you hover directly over the chevron itself,
-    show it in black.
-*/
-.starred-messages-sidebar-menu-icon:hover,
-.all-messages-sidebar-menu-icon:hover,
-.stream-sidebar-menu-icon:hover,
-.topic-sidebar-menu-icon:hover {
-    color: hsl(0, 0%, 0%) !important;
-}
-
+<<<<<<< HEAD
 ul.filters li.muted_topic,
 ul.filters li.out_of_home_view {
     opacity: 0.25;
@@ -442,6 +427,8 @@ ul.filters li.out_of_home_view li.muted_topic {
     margin-right: 15px;
 }
 
+=======
+>>>>>>> css: Reorder "ul.filters" in left-sidebar.scss.
 ul.topic-list {
     list-style-type: none;
     font-weight: normal;
@@ -466,14 +453,20 @@ li.expanded_private_message {
     position: relative;
     padding-top: 1px;
     padding-bottom: 1px;
+
+    a {
+        margin: 1px 0px;
+    }
 }
 
-li.expanded_private_message a {
-    margin: 1px 0px;
-}
+.show-all-streams {
+    a {
+        color: hsl(0, 0%, 20%);
+    }
 
-.show-all-streams a {
-    color: hsl(0, 0%, 20%);
+    .fa-chevron-left {
+        text-decoration: none;
+    }
 }
 
 .pm-box,
@@ -487,16 +480,16 @@ li.expanded_private_message a {
 .pm-box {
     margin-right: 20px;
     align-items: center;
-}
 
-.pm-box .user_circle {
-    min-width: 8px;
-    height: 8px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 2px;
-    position: relative;
-    top: 0px;
+    .user_circle {
+        min-width: 8px;
+        height: 8px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 2px;
+        position: relative;
+        top: 0px;
+    }
 }
 
 .zero-pm-unreads .pm-box,
@@ -538,6 +531,7 @@ li.expanded_private_message a {
     margin-right: 0px;
     padding-left: $far_left_gutter_size;
     cursor: pointer;
+    margin-top: 3px;
 }
 
 #stream_filters .inactive_stream {
@@ -560,10 +554,6 @@ li.expanded_private_message a {
     .zoom-in-hide {
         display: none;
     }
-}
-
-.show-all-streams .fa-chevron-left {
-    text-decoration: none;
 }
 
 li.top_left_all_messages a,
