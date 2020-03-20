@@ -182,29 +182,36 @@ li.active-sub-filter {
     background-color: hsl(202, 56%, 91%);
     position: relative;
     border-radius: 4px;
+<<<<<<< HEAD
 	color: #000;
+}
+=======
 }
 
 #global_filters {
     margin-bottom: 16px;
+>>>>>>> css: Use SCSS nesting for '#global_filters'.
+
+    .filter-icon {
+        display: inline-block;
+        min-width: $left_col_size;
+        text-align: center;
+    }
+
+<<<<<<< HEAD
+=======
+    .count {
+        margin-right: 20px;
+        margin-top: 2px;
+        display: none;
+    }
+
+    i {
+        opacity: 0.7;
+    }
 }
 
-#global_filters .filter-icon {
-    display: inline-block;
-    min-width: $left_col_size;
-    text-align: center;
-}
-
-#global_filters .count {
-    margin-right: 20px;
-    margin-top: 2px;
-    display: none;
-}
-
-#global_filters i {
-    opacity: 0.7;
-}
-
+>>>>>>> css: Use SCSS nesting for '#global_filters'.
 li.top_left_all_messages,
 .private_messages_header,
 li.top_left_mentions,
@@ -290,7 +297,6 @@ li.top_left_starred_messages {
 	border: 1px solid red;
 }
 
-<<<<<<< HEAD
 #global_filters .count {
     margin-right: 20px;
     margin-top: 2px;
@@ -301,8 +307,6 @@ li.top_left_starred_messages {
     margin-right: 15px;
 }
 
-=======
->>>>>>> css: Reorder "#global_filters".
 .topic-box {
     padding-left: 5px;
     margin-right: 30px;
@@ -505,6 +509,14 @@ li.expanded_private_message a {
     #topics_header {
         display: none;
     }
+}
+
+#global_filters {
+    margin-bottom: 16px;
+}
+
+#global_filters i {
+    opacity: 0.7;
 }
 
 #topics_header {
