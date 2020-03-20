@@ -8,12 +8,25 @@ $left_col_size: 19px;
    the above (and another 5px of padding not measured here) */
 $topic_indent: calc($far_left_gutter_size + $left_col_size + 4px);
 
+<<<<<<< HEAD
 div#add-stream-link a {
     color: #fff;
 }
 
 #left-sidebar #group-pm-list {
     display: none;
+}
+=======
+#left-sidebar {
+    #group-pm-list {
+        display: none;
+    }
+>>>>>>> css: Use SCSS nesting for "#left-sidebar".
+
+    #user-list,
+    #group-pm-list {
+        padding-left: 10px;
+    }
 }
 
 .hashtag {
@@ -55,11 +68,6 @@ li.show-more-topics {
     }
 }
 
-#left-sidebar #user-list,
-#left-sidebar #group-pm-list {
-    padding-left: 10px;
-}
-
 #streams_inline_cog,
 #streams_filter_icon {
     float: right;
@@ -94,8 +102,8 @@ li.show-more-topics {
     margin-bottom: 10px;
     padding: 0;
     font-weight: normal;
+}
 
-<<<<<<< HEAD
 .narrows_panel {
     margin-bottom: 4px;
 	margin-top: 8px;
@@ -110,82 +118,18 @@ li.show-more-topics {
 #stream_filters li a {
     padding: 1px 0px;
 }
-=======
-    li {
-        a {
-            padding: 1px 0px;
-        }
->>>>>>> css: Use SCSS nesting for "#stream_filters".
 
-        ul {
-            margin-left: 0px;
-
-            &.topic-list li {
-                padding-top: 2px;
-                padding-right: 0px;
-                padding-bottom: 2px;
-                padding-left: $topic_indent;
-            }
-        }
-    }
-
-<<<<<<< HEAD
-=======
-    li.active-sub-filter:hover {
-        background-color: hsl(120, 11%, 82%);
-    }
-
-    .count {
-        margin-right: 15px;
-    }
-
-    .subscription_block {
-        padding: 0px;
-        margin-right: 25px;
-        margin-left: $far_left_gutter_size;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-
-        &::after {
-            content: "";
-            display: block;
-            clear: both;
-        }
-
-        .stream-name {
-            display: inline-block;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            position: relative;
-            width: 100%;
-            padding-right: 2px;
-        }
-
-        &.stream-with-count {
-            margin-right: 15px;
-        }
-    }
-
-    .inactive_stream {
-        opacity: .5;
-    }
+#stream_filters li ul {
+    margin-left: 0px;
 }
 
-.narrows_panel {
-    margin-bottom: 4px;
-    li a {
-        margin-top: 1px;
-        &:hover {
-            text-decoration: none;
-        }
-    }
+#stream_filters li ul.topic-list li {
+    padding-top: 2px;
+    padding-right: 0px;
+    padding-bottom: 2px;
+    padding-left: $topic_indent;
 }
 
->>>>>>> css: Use SCSS nesting for "#stream_filters".
 #private-container,
 #stream-filters-container {
     overflow-x: hidden;
