@@ -94,7 +94,6 @@ li.show-more-topics {
     margin-bottom: 10px;
     padding: 0;
     font-weight: normal;
-}
 
 <<<<<<< HEAD
 .narrows_panel {
@@ -108,64 +107,72 @@ li.show-more-topics {
     }
 }
 
-=======
->>>>>>> css: Reorder "#stream_filters".
 #stream_filters li a {
     padding: 1px 0px;
 }
+=======
+    li {
+        a {
+            padding: 1px 0px;
+        }
+>>>>>>> css: Use SCSS nesting for "#stream_filters".
 
-#stream_filters li ul {
-    margin-left: 0px;
-}
+        ul {
+            margin-left: 0px;
 
-#stream_filters li ul.topic-list li {
-    padding-top: 2px;
-    padding-right: 0px;
-    padding-bottom: 2px;
-    padding-left: $topic_indent;
-}
+            &.topic-list li {
+                padding-top: 2px;
+                padding-right: 0px;
+                padding-bottom: 2px;
+                padding-left: $topic_indent;
+            }
+        }
+    }
 
-#stream_filters li.active-sub-filter:hover {
-    background-color: hsl(120, 11%, 82%);
-}
+<<<<<<< HEAD
+=======
+    li.active-sub-filter:hover {
+        background-color: hsl(120, 11%, 82%);
+    }
 
-#stream_filters .count {
-    margin-right: 15px;
-}
+    .count {
+        margin-right: 15px;
+    }
 
-#stream_filters .subscription_block {
-    padding: 0px;
-    margin-right: 25px;
-    margin-left: $far_left_gutter_size;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
+    .subscription_block {
+        padding: 0px;
+        margin-right: 25px;
+        margin-left: $far_left_gutter_size;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
 
-#stream_filters .subscription_block::after {
-    content: "";
-    display: block;
-    clear: both;
-}
+        &::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
 
-#stream_filters .subscription_block .stream-name {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: relative;
-    width: 100%;
-    padding-right: 2px;
-}
+        .stream-name {
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            width: 100%;
+            padding-right: 2px;
+        }
 
-#stream_filters .subscription_block.stream-with-count {
-    margin-right: 15px;
-}
+        &.stream-with-count {
+            margin-right: 15px;
+        }
+    }
 
-#stream_filters .inactive_stream {
-    opacity: .5;
+    .inactive_stream {
+        opacity: .5;
+    }
 }
 
 .narrows_panel {
@@ -178,6 +185,7 @@ li.show-more-topics {
     }
 }
 
+>>>>>>> css: Use SCSS nesting for "#stream_filters".
 #private-container,
 #stream-filters-container {
     overflow-x: hidden;
@@ -200,14 +208,11 @@ li.show-more-topics {
     border-radius: 4px;
 }
 
-<<<<<<< HEAD
 #stream_filters li.active-sub-filter:hover {
     background-color: hsl(120, 11%, 82%);
 	color: #000;
 }
 
-=======
->>>>>>> css: Reorder "#stream_filters".
 #add-stream-link {
     text-decoration: none;
     margin-left: 10px;
@@ -341,6 +346,10 @@ li.top_left_starred_messages {
     display: none;
 }
 
+#stream_filters .count {
+    margin-right: 15px;
+}
+
 .topic-box {
     padding-left: 5px;
     margin-right: 30px;
@@ -445,6 +454,37 @@ ul.filters li.out_of_home_view li.muted_topic {
     opacity: 1;
 }
 
+#stream_filters .subscription_block {
+    padding: 0px;
+    margin-right: 25px;
+    margin-left: $far_left_gutter_size;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#stream_filters .subscription_block::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+#stream_filters .subscription_block .stream-name {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    width: 100%;
+    padding-right: 2px;
+}
+
+#stream_filters .subscription_block.stream-with-count {
+    margin-right: 15px;
+}
+
 ul.topic-list {
     list-style-type: none;
     font-weight: normal;
@@ -541,6 +581,10 @@ li.expanded_private_message a {
     margin-right: 0px;
     padding-left: $far_left_gutter_size;
     cursor: pointer;
+}
+
+#stream_filters .inactive_stream {
+    opacity: .5;
 }
 
 .zero_count {
