@@ -8,7 +8,6 @@ $left_col_size: 19px;
    the above (and another 5px of padding not measured here) */
 $topic_indent: calc($far_left_gutter_size + $left_col_size + 4px);
 
-<<<<<<< HEAD
 div#add-stream-link a {
     color: #fff;
 }
@@ -16,17 +15,10 @@ div#add-stream-link a {
 #left-sidebar #group-pm-list {
     display: none;
 }
-=======
-#left-sidebar {
-    #group-pm-list {
-        display: none;
-    }
->>>>>>> css: Use SCSS nesting for "#left-sidebar".
 
-    #user-list,
-    #group-pm-list {
-        padding-left: 10px;
-    }
+#left-sidebar #user-list,
+#left-sidebar #group-pm-list {
+    padding-left: 10px;
 }
 
 .hashtag {
@@ -193,10 +185,24 @@ li.active-sub-filter {
 	color: #000;
 }
 
+#global_filters {
+    margin-bottom: 16px;
+}
+
 #global_filters .filter-icon {
     display: inline-block;
     min-width: $left_col_size;
     text-align: center;
+}
+
+#global_filters .count {
+    margin-right: 20px;
+    margin-top: 2px;
+    display: none;
+}
+
+#global_filters i {
+    opacity: 0.7;
 }
 
 li.top_left_all_messages,
@@ -284,6 +290,7 @@ li.top_left_starred_messages {
 	border: 1px solid red;
 }
 
+<<<<<<< HEAD
 #global_filters .count {
     margin-right: 20px;
     margin-top: 2px;
@@ -294,6 +301,8 @@ li.top_left_starred_messages {
     margin-right: 15px;
 }
 
+=======
+>>>>>>> css: Reorder "#global_filters".
 .topic-box {
     padding-left: 5px;
     margin-right: 30px;
@@ -496,14 +505,6 @@ li.expanded_private_message a {
     #topics_header {
         display: none;
     }
-}
-
-#global_filters {
-    margin-bottom: 16px;
-}
-
-#global_filters i {
-    opacity: 0.7;
 }
 
 #topics_header {
