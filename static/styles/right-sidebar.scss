@@ -128,9 +128,10 @@
 
 .user-presence-link {
     width: calc(100% - 24px);
-    .my_user_status {
-        opacity: 0.5;
-    }
+}
+
+.my_user_status {
+    opacity: 0.5;
 }
 
 .group-pm-link {
