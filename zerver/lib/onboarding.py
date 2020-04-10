@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import Count
+from django.utils.translation import ugettext as _
 
 from zerver.lib.actions import \
     internal_prep_stream_message_by_name, internal_send_private_message, \
@@ -49,9 +50,12 @@ def create_if_missing_realm_internal_bots() -> None:
 def send_initial_pms(user: UserProfile) -> None:
     organization_setup_text = ""
     if user.is_realm_admin:
-        help_url = user.realm.uri + "/help/getting-your-organization-started-with-axxess"
-        organization_setup_text = ("* [Read the guide](%s) for getting your organization "
+        help_url = user.realm.uri + "/help/getting-your-organization-started-with-zulip"
+        organization_setup_text = (
                                    "started with Axxess\n" % (help_url,))
+            _("[Read the guide]({help_url}) for getting your organization started with Zulip") +
+            "\n"
+        ).format(help_url=help_url)
 
     content = (
         "Hello, and welcome to Axxess!\n\nYour Privacy and Data are now Protected.\n"
@@ -62,9 +66,32 @@ def send_initial_pms(user: UserProfile) -> None:
         "* Type `?` to check out the Axxess keyboard shortcuts\n"
         "%s"
         "\n"
-        "The most important shortcut is `r` to reply.\n\n"
+        "\n" +
         "Sign Up for our support\n") \
-        % (organization_setup_text,)
+        _("Here are some tips to get you started:") +
+        "\n"
+        "* " +
+        _("Download our [Desktop and mobile apps]({apps_url})") +
+        "\n"
+        "* " +
+        _("Customize your account and notifications on your [Settings page]({settings_url})") +
+        "\n"
+        "* " +
+        _("Type `?` to check out Zulip's keyboard shortcuts") +
+        "\n"
+        "{organization_setup_text}"
+        "\n" +
+        _("The most important shortcut is `r` to reply.") +
+        "\n"
+        "\n" +
+        _("Practice sending a few messages by replying to this conversation.") +
+        " " +
+        _("If you're not into keyboards, that's okay too; "
+          "clicking anywhere on this message will also do the trick!")
+    )
+
+    content = content.format(apps_url="/apps", settings_url="#settings",
+                             organization_setup_text=organization_setup_text)
 
     internal_send_private_message(user.realm, get_system_bot(settings.WELCOME_BOT),
                                   user, content)
@@ -92,8 +119,7 @@ def send_initial_realm_messages(realm: Realm) -> None:
         {'stream': realm.DEFAULT_NOTIFICATION_STREAM_NAME,
          'topic': "swimming turtles",
          'content': "This is a message on stream #**%(default_notification_stream_name)s** with the "
-         "topic `swimming turtles`.  Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles. \n\n"
-         #'content': "Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles."
+         "topic `swimming turtles`. "
          "\n\n[](/static/images/cute/turtle.png)"
          "\n\n[Start a new topic](/help/start-a-new-topic) any time you're not replying to a "
          "previous message."},
