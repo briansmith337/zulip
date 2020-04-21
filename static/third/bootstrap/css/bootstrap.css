@@ -319,7 +319,8 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: #333333;
-  background-color: #ffffff;
+  /*background-color: #ffffff;*/
+  background-color: #f5f5f5;
 }
 
 a {
@@ -2564,17 +2565,21 @@ table [class*=span],
   font-size: 20px;
   font-weight: bold;
   line-height: 20px;
-  color: #000000;
+  /*color: #000000;*/
+  color: #ffffff;
   text-shadow: 0 1px 0 #ffffff;
-  opacity: 0.2;
+  /*opacity: 0.2;*/
+  opacity: 1;
   filter: alpha(opacity=20);
 }
 
 .close:hover {
-  color: #000000;
+  /*color: #000000;*/
+  color: red;
   text-decoration: none;
   cursor: pointer;
-  opacity: 0.4;
+  /*opacity: 0.4;*/
+  opacity: 1;
   filter: alpha(opacity=40);
 }
 

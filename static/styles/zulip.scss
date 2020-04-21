@@ -19,7 +19,8 @@ body {
 /* Common background color */
 body,
 #tab_bar_underpadding {
-    background-color: hsl(0, 0%, 100%);
+    /*background-color: hsl(0, 0%, 100%);*/
+	background-color: #f5f5f5;
     transition: background-color 200ms linear;
 }
 
@@ -224,8 +225,11 @@ p.n-margin {
     color: hsl(0, 0%, 100%);
 }
 
-#panels .alert.alert-info {
+/*#panels .alert.alert-info {
     background-color: hsl(170, 46%, 54%);
+}*/
+#panels .alert.alert-info {
+    background-color: #145CB5;
 }
 
 #panels .alert.alert-info.red {
@@ -1938,7 +1942,8 @@ div.floating_recipient {
 }
 
 .message-header-contents {
-    background-color: hsl(0, 0%, 88%);
+    /*background-color: hsl(0, 0%, 88%);*/
+	background-color: #145cb545;	
 }
 
 #bottom_whitespace {
