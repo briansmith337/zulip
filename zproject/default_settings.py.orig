@@ -339,8 +339,13 @@ SEND_DIGEST_EMAILS = True
 #CUSTOM_LOGO_URL = '/static/images/logo/zulip-org-logo.png'
 CUSTOM_LOGO_URL = '/static/images/logo/axxess-org-logo.png'
 =======
+<<<<<<< HEAD
 CUSTOM_LOGO_URL: Optional[str] = None
->>>>>>> python: Convert assignment type annotations to Python 3.6 style.
+=======
+#CUSTOM_LOGO_URL = None  # type: Optional[str]
+CUSTOM_LOGO_URL = '/static/images/logo/zulip-org-logo.png'
+>>>>>>> Initial Test of committing minor aesthetic changes
+>>>>>>> Initial Test of committing minor aesthetic changes
 
 # Random salt used when deterministically generating passwords in
 # development.
