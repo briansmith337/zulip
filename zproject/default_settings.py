@@ -90,7 +90,8 @@ SLOW_QUERY_LOGS_STREAM = None  # type: Optional[str]
 
 # File uploads and avatars
 DEFAULT_AVATAR_URI = '/static/images/default-avatar.png'
-DEFAULT_LOGO_URI = '/static/images/logo/zulip-org-logo.png'
+DEFAULT_LOGO_URI = '/static/images/logo/axxess-org-logo.png'
+#DEFAULT_LOGO_URI = '/static/images/logo/zulip-org-logo.png'
 S3_AVATAR_BUCKET = ''
 S3_AUTH_UPLOADS_BUCKET = ''
 S3_REGION = ''
@@ -333,7 +334,8 @@ SEND_MISSED_MESSAGE_EMAILS_AS_USER = False
 SEND_DIGEST_EMAILS = True
 
 # Used to change the Zulip logo in portico pages.
-CUSTOM_LOGO_URL = None  # type: Optional[str]
+#CUSTOM_LOGO_URL = None  # type: Optional[str]
+CUSTOM_LOGO_URL = '/static/images/logo/zulip-org-logo.png'
 
 # Random salt used when deterministically generating passwords in
 # development.
