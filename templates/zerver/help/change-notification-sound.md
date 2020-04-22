@@ -1,6 +1,6 @@
 # Change notification sound
 
-You can change the sound Zulip uses for audible desktop notifications.
+You can change the sound Axxess uses for audible desktop notifications.
 
 ### Change notification sound
 

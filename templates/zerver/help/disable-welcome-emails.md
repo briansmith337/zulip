@@ -2,8 +2,8 @@
 
 {!admin-only.md!}
 
-By default, Zulip sends two emails to new users when they join, telling them
-their Zulip account details, encouraging them to download the apps, pointing
+By default, Axxess sends two emails to new users when they join, telling them
+their Axxess account details, encouraging them to download the apps, pointing
 them at our new user guide, and teaching them about topics.
 
 You can disable these emails if they don't make sense for your organization.
@@ -15,6 +15,6 @@ You can disable these emails if they don't make sense for your organization.
 {settings_tab|organization-settings}
 
 1. Under **Notifications**, toggle
-   **Send emails introducing Zulip to new users**.
+   **Send emails introducing Axxess to new users**.
 
 {end_tabs}

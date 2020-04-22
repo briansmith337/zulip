@@ -2,8 +2,8 @@
 
 {!admin-only.md!}
 
-For security or compliance reasons, you may want to prevent Zulip message
-content from being sent through your email system. The only place Zulip
+For security or compliance reasons, you may want to prevent Axxess message
+content from being sent through your email system. The only place Axxess
 currently sends message content is in missed message email notifications.
 
 This setting also blocks message topics, stream names, and user names from

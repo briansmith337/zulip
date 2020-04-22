@@ -7,8 +7,8 @@ A **status** is a customizable message visible to all team members. A
 typical status might be "in a meeting", "on vacation", or "visiting SF next week".
 
 Your **availability** is a colored dot (like <span class="indicator green solid"></span>)
-that indicates if you're currently active on Zulip, idle,
-offline, or unavailable. If you're not current active, Zulip also lets your
+that indicates if you're currently active on Axxess, idle,
+offline, or unavailable. If you're not current active, Axxess also lets your
 teammates know when you were last active.
 
 ## Set a status
@@ -33,13 +33,13 @@ they haven't set a status, no status will appear.
 
 There are four possible availabilities:
 
-* **Active** (<span class="indicator green solid"></span>): Zulip is open and in
+* **Active** (<span class="indicator green solid"></span>): Axxess is open and in
   focus on web, desktop or mobile, or was in the last 140 seconds.
 
-* **Idle** (<span class="indicator orange"></span>): Zulip is open on your
+* **Idle** (<span class="indicator orange"></span>): Axxess is open on your
   computer (either desktop or web), but you are not active.
 
-* **Offline** (<span class="indicator grey"></span>): Zulip is not open on
+* **Offline** (<span class="indicator grey"></span>): Axxess is not open on
   your computer.
 
 * **Unavailable** (<span class="indicator grey-line"></span>): You can always

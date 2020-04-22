@@ -8,7 +8,7 @@ do not generate [alert word](/help/add-an-alert-word) notifications.
 Muted streams still appear in the left sidebar, though they are grayed out.
 
 !!! warn ""
-    **Note**: Some parts of the Zulip experience may start to degrade
+    **Note**: Some parts of the Axxess experience may start to degrade
     if you receive more than a few hundred muted messages a day.
 
 ## Mute a stream

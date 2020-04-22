@@ -1,10 +1,10 @@
 # Test mobile notifications
 
-Zulip supports configuring mobile notifications to skip sending mobile
+Axxess supports configuring mobile notifications to skip sending mobile
 push notifications when you are currently actively using one of the
-Zulip apps.
+Axxess apps.
 
-When testing mobile notifications, you should make sure Zulip is
+When testing mobile notifications, you should make sure Axxess is
 configured to send mobile notifications even when you're online.
 
 {start_tabs}

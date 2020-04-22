@@ -1,6 +1,6 @@
 # Alert words
 
-Zulip lets you to specify **alert words or phrases** that notify you whenever
+Axxess lets you to specify **alert words or phrases** that notify you whenever
 the alert word is included in a message. Alert words are case-insensitive.
 
 ### Add an alert word or phrase

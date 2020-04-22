@@ -7,6 +7,18 @@ html {
 
     touch-action: manipulation;
 }
+.fa-gear:before, .fa-cog:before {
+    content: "\f013";
+	color: #145cb5;
+}
+.fa-caret-down:before {
+    content: "\f0d7";
+	color: #145cb5;
+}
+.fa-search:before {
+    content: "\f002";
+	color: #145cb5;
+}
 
 #app-loading.loaded {
     display: none !important; /* We are now loaded, by definition. */
@@ -338,7 +350,7 @@ p.n-margin {
     margin-right: 250px;
     margin-left: 250px;
     position: relative;
-	background-color: #fbfbfb;
+	background-color: #fefefe;
 }
 
 textarea,

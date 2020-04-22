@@ -20,7 +20,7 @@ trying to send a group of people a message, you'll want to either
 
 1. Click **Save**.
 
-1. Find the group in the list below, and add members. Zulip will notify
+1. Find the group in the list below, and add members. Axxess will notify
    everyone who is added.
 
 {end_tabs}
@@ -39,7 +39,7 @@ any user group they are a part of. Guests cannot modify user groups.
 1. Click on the group name or description to edit.
 
 1. Add or remove users (including yourself). Click outside the box
-   to save.  Zulip will notify everyone who is added or removed.
+   to save.  Axxess will notify everyone who is added or removed.
 
 {end_tabs}
 

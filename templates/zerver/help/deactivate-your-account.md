@@ -18,7 +18,7 @@
   you've shared. If permitted in your organization, delete content you'd
   like to remove before deactivating your account.
 
-* You cannot register a Zulip account using the email
+* You cannot register a Axxess account using the email
   address of a deactivated account. If you change your mind about deactivating
   an account, an organization administrator can
   [reactivate](/help/deactivate-or-reactivate-a-user#reactivate-a-user)

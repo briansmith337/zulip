@@ -31,5 +31,5 @@ left sidebar, or by [searching](/help/search-for-messages) for `is:starred`.
 
 {end_tabs}
 
-Zulip will add a number to the right of **Starred messages** in the left
+Axxess will add a number to the right of **Starred messages** in the left
 sidebar.

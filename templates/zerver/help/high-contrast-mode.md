@@ -1,6 +1,6 @@
 # High contrast mode
 
-By default, some visual elements in Zulip (such as date/time stamps, certain
+By default, some visual elements in Axxess (such as date/time stamps, certain
 buttons, links and unread counts) are intentionally light. **High contrast mode**
 increases the contrast of these elements to meet the AA level of the
 W3C's Web Content Accessibility Guidelines.

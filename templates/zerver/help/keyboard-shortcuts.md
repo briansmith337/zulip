@@ -1,6 +1,6 @@
 # Keyboard shortcuts
 
-Everything in Zulip can be done with the mouse, but mastering a few keyboard
+Everything in Axxess can be done with the mouse, but mastering a few keyboard
 shortcuts will change your experience of the app. Start with the basics
 below, and add more to your repertoire as needed.
 

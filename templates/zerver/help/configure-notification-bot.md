@@ -2,7 +2,7 @@
 
 {!admin-only.md!}
 
-The Zulip notification bot sends a message whenever:
+The Axxess notification bot sends a message whenever:
 
 * A user joins the organization
 * A new public stream is [announced](/help/create-a-stream#stream-options)

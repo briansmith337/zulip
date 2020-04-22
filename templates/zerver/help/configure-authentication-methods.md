@@ -2,14 +2,14 @@
 
 {!admin-only.md!}
 
-By default, Zulip allows logging in via email/password as well as
+By default, Axxess allows logging in via email/password as well as
 various social authentication providers like Google, GitHub, and
 GitLab. You can restrict users to logging in via only a subset of
 these methods.
 
 LDAP and various custom SSO login methods are currently restricted to
-self-hosted Zulips only.  SAML authentication is supported by Zulip
-Cloud but requires contacting support@zulipchat.com to configure it.
+self-hosted Axxesss only.  SAML authentication is supported by Axxess
+Cloud but requires contacting support@axxess.one to configure it.
 
 **Note:** If you are running your own server,
 [read this](https://zulip.readthedocs.io/en/latest/production/authentication-methods.html)

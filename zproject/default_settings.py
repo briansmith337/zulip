@@ -335,7 +335,8 @@ SEND_DIGEST_EMAILS = True
 
 # Used to change the Zulip logo in portico pages.
 #CUSTOM_LOGO_URL = None  # type: Optional[str]
-CUSTOM_LOGO_URL = '/static/images/logo/zulip-org-logo.png'
+#CUSTOM_LOGO_URL = '/static/images/logo/zulip-org-logo.png'
+CUSTOM_LOGO_URL = '/static/images/logo/axxess-org-logo.png'
 
 # Random salt used when deterministically generating passwords in
 # development.

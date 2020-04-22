@@ -53,7 +53,7 @@ The list of supported emoticons is available
 ### Paste from another site
 
 Copying and pasting emoji from other sites generally works. Email us at
-support@zulipchat.com if you find a site where it doesn't!
+support@axxess.one if you find a site where it doesn't!
 
 ## Change your emoji set
 

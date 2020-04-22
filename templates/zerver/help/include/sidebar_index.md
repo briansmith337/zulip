@@ -1,10 +1,10 @@
 ## Guides
-* [Getting started with Zulip](/help/getting-started-with-zulip)
+* [Getting started with Axxess](/help/getting-started-with-zulip)
 * [Setting up your organization](/help/getting-your-organization-started-with-zulip)
 * [Streams and topics](/help/about-streams-and-topics)
 * [Moderating open organizations](/help/moderating-open-organizations)
 
-# Using Zulip
+# Using Axxess
 
 ## Account basics
 * [Change your name](/help/change-your-name)
@@ -93,15 +93,15 @@
 * [Change your timezone](/help/change-your-timezone)
 * [Display the buddy list on narrow screens](/help/move-the-users-list-to-the-left-sidebar)
 * [View organization statistics](/help/analytics)
-* [Linking to Zulip](/help/linking-to-zulip)
+* [Linking to Axxess](/help/linking-to-zulip)
 * [Connect through a proxy](/help/connect-through-a-proxy)
 * [Add a custom certificate](/help/custom-certificates)
 
 ## Apps
 * [Desktop installation guides](/help/desktop-app-install-guide)
-* [Zulip in a Terminal](/help/zulip-in-a-terminal)
+* [Axxess in a Terminal](/help/zulip-in-a-terminal)
 
-# Zulip administration
+# Axxess administration
 
 ## Organization basics
 * [Review your organization's settings](/help/review-your-organization-settings)

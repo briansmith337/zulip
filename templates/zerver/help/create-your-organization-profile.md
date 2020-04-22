@@ -4,7 +4,7 @@
 
 The information in your organization profile is displayed on your
 registration and login pages, and in the desktop and mobile apps. As
-an example, here is what the registration page for the Zulip community
+an example, here is what the registration page for the Axxess community
 server looked like at one point:
 
 ![settings](/static/images/help/organization-profile-example.png)
@@ -26,7 +26,7 @@ including bold/italic, links, lists, and
 
 ## Add a wide logo
 
-Zulip also allows you to customize the logo your users see in the upper left
+Axxess also allows you to customize the logo your users see in the upper left
 of the main, logged-in view. For best results make sure the logo has a
 transparent background, and trim the logo of any bordering whitespace.
 

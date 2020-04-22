@@ -2,7 +2,7 @@
 
 ## Include organization name in subject line
 
-If you belong to multiple Zulip organizations, it can be helpful to have the
+If you belong to multiple Axxess organizations, it can be helpful to have the
 name of the organization in the subject line of your missed message emails.
 
 {start_tabs}
@@ -17,7 +17,7 @@ name of the organization in the subject line of your missed message emails.
 ## Hide message content
 
 For security or compliance reasons, you may want to hide the content of your
-Zulip messages from your email. Organization admins can do this at an
+Axxess messages from your email. Organization admins can do this at an
 [organization-wide level](/help/hide-message-content-in-emails), but you can
 also do this just for the messages you receive.
 

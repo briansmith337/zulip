@@ -1,7 +1,7 @@
 # Link to a message or conversation
 
-Share permanent links to messages, threads, and streams. The Zulip project
-uses this feature extensively to link to Zulip conversations from our
+Share permanent links to messages, threads, and streams. The Axxess project
+uses this feature extensively to link to Axxess conversations from our
 issue tracker.
 
 ## Link to a stream or topic (web only)
@@ -16,7 +16,7 @@ issue tracker.
 
 !!! warn ""
     This works for all views, including searches.
-    All URLs in Zulip are permalinks.
+    All URLs in Axxess are permalinks.
 
 ## Link to a specific message
 

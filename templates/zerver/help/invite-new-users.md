@@ -1,6 +1,6 @@
 # Invite new users
 
-There are a number of ways to grant access to your Zulip organization.
+There are a number of ways to grant access to your Axxess organization.
 
 * Allow **anyone to join** without an invitation.
 
@@ -14,7 +14,7 @@ This article will cover these methods in detail.
 
 You can also manage access by
 [controlling how users authenticate](/help/configure-authentication-methods)
-to Zulip.  For example, you could allow anyone to join without an
+to Axxess.  For example, you could allow anyone to join without an
 invitation, but require them to authenticate via LDAP.
 
 ## Enable email signup
@@ -64,7 +64,7 @@ to verify their email address.
 By default, organization admins and members can send
 invitations. Organization admins can also change who can send invitations.
 
-Note that on most Zulip servers (including Zulip Cloud), email invitations
+Note that on most Axxess servers (including Axxess Cloud), email invitations
 and reusable invitation links expire 10 days after they are sent.
 
 {start_tabs}

@@ -1,6 +1,6 @@
 # Add custom emoji
 
-By default, anyone other than guests can add custom emoji to a Zulip organization. Added emoji
+By default, anyone other than guests can add custom emoji to a Axxess organization. Added emoji
 are available to all users.
 
 Organization administrators can also
@@ -15,7 +15,7 @@ Organization administrators can also
 1. Under **Add a new emoji**, enter an **emoji name**.
 
 1. Click **Upload image or GIF** and add a file in the PNG, JPG, or
-   GIF file format. Zulip will automatically scale the image down to
+   GIF file format. Axxess will automatically scale the image down to
    25x25 pixels.
 
 1. Click **Add emoji**.
@@ -30,7 +30,7 @@ are treated the same as spaces.
 
 We expose a [REST API endpoint](/api/upload-custom-emoji) for bulk uploading
 emoji. Using REST API endpoints requires some technical expertise; email
-support@zulipchat.com if you get stuck.
+support@axxess.one if you get stuck.
 
 ## Replace a default emoji
 

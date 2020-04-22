@@ -20,7 +20,7 @@ compose box.
 
 ## Change your video chat provider
 
-By default, Zulip integrates with
+By default, Axxess integrates with
 [Jitsi Meet](https://jitsi.org/jitsi-meet/), a fully-encrypted, 100% open
 source video conferencing solution. Organization administrators can also
 change the organization's video chat provider.
@@ -53,12 +53,12 @@ accounts with their respective providers.
 1. Click **Save changes**.
 
 !!! warn ""
-    **Note**: Zoom support is experimental. In particular, Zulip currently
+    **Note**: Zoom support is experimental. In particular, Axxess currently
     supports having only one active Zoom meeting at a time.
 
 {tab|jitsi-on-premise}
 
-If you're running both Zulip and Jitsi Meet on-premise, just set
+If you're running both Axxess and Jitsi Meet on-premise, just set
 `JITSI_SERVER_URL` in `/etc/zulip/settings.py`.
 
 You can also disable the video call button for your community by

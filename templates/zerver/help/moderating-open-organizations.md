@@ -6,7 +6,7 @@ Moderation is a big part of making an open community work.
 
 ## Prevention
 
-Zulip has many features designed to simplify moderation:
+Axxess has many features designed to simplify moderation:
 
 * [Disallow disposable email addresses](/help/allow-anyone-to-join-without-an-invitation)
   or [require users to log in via GitHub or GitLab](/help/configure-authentication-methods).
@@ -42,7 +42,7 @@ Zulip has many features designed to simplify moderation:
 
 ## In the works
 
-* **Delete spammer**. This will wipe the user from your Zulip, by deleting
+* **Delete spammer**. This will wipe the user from your Axxess, by deleting
   all their messages and reactions, banning them, etc.
 * **Mute user**. This will allow an individual user to hide the messages of
   another individual user.

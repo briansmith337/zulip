@@ -1,11 +1,11 @@
 # Disable new login emails
 
-By default, Zulip sends an email whenever you log in to Zulip. These emails
+By default, Axxess sends an email whenever you log in to Axxess. These emails
 help you protect your account; if you see a login email at a time or from a
 device you don't recognize, you should
 [change your password](/help/change-your-password) right away.
 
-In typical usage, these emails are sent infrequently, since all Zulip apps
+In typical usage, these emails are sent infrequently, since all Axxess apps
 (web, mobile, desktop, and terminal) keep you logged in to any organization
 you've interacted with in the last 1-2 weeks.
 

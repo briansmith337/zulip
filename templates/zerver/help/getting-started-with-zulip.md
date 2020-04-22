@@ -1,15 +1,15 @@
-# Getting started with Zulip
+# Getting started with Axxess
 
-Welcome to Zulip! Like any new tool, mastering Zulip will take some time,
+Welcome to Axxess! Like any new tool, mastering Axxess will take some time,
 but once you get the hang of it, you'll never want to use another chat
 service again.
 
 ## Understand
 
 Read our [guide to streams and topics](/help/about-streams-and-topics) to familiarize
-yourself with Zulip's conversation model.
+yourself with Axxess's conversation model.
 
-If this is your first time using Zulip, we recommend starting with the web
+If this is your first time using Axxess, we recommend starting with the web
 or desktop experience.
 
 ## Set up your account
@@ -39,7 +39,7 @@ A few basic workflows are useful when getting oriented.
 - When starting a new conversation, remember to start a new topic. Don't
   overthink it; the first 2-3 words that come to your mind are probably
   fine. Using topics may take some attention at the beginning, but after a
-  few days of using Zulip it will feel like second nature.
+  few days of using Axxess it will feel like second nature.
 - It is totally normal to have 5 conversations happening in a stream at the
   same time; each on its own topic. So don't worry about interrupting; each
   conversation has its own space.

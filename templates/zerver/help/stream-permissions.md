@@ -1,7 +1,7 @@
 # Stream privacy settings
 
 Streams are similar to chatrooms, IRC channels, or email lists in that they
-determine who receives a message. There are three types of streams in Zulip.
+determine who receives a message. There are three types of streams in Axxess.
 
 * **Public**: Anyone other than guests can join, and anyone (other
   than guests) can view the complete message history without joining.

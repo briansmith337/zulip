@@ -1,6 +1,6 @@
 # Roles and permissions
 
-There are several roles in a Zulip organization.
+There are several roles in a Axxess organization.
 
 * **Organization Administrator**: Can manage users, public streams,
   organization settings, and billing.
@@ -13,7 +13,7 @@ There are several roles in a Zulip organization.
 
 ## Billing and guests
 
-Guests are only available on Zulip on-premise and on paid plans for Zulip
+Guests are only available on Axxess on-premise and on paid plans for Axxess
 Cloud. There are two kinds of guest for billing purposes:
 
 * **Multi-stream guest**: Has been added to multiple streams. These guests

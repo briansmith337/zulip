@@ -44,7 +44,7 @@
 
 .compose-content {
     /*border-top: 1px solid hsla(0, 0%, 0%, 0.07);*/
-	border-top: 1px solid #145cb5;
+	border-top: 1px solid #BCD0E8;
     transition: background-color 200ms linear;
 }
 
@@ -168,7 +168,8 @@
     z-index: 2;
     width: 100%;
 
-    background-color: hsl(0, 0%, 100%);
+    /*background-color: hsl(0, 0%, 100%);*/
+	background-color: #fafafa;
 }
 
 #compose-container {
@@ -188,8 +189,8 @@
     border-left: 1px solid hsl(0, 0%, 93%);
     border-right: 1px solid hsl(0, 0%, 93%);*/
 	background-color: #ffffff;
-    border-left: 1px solid #145cb5;
-    border-right: 1px solid #145cb5;
+    border-left: 1px solid #BCD0E8;
+    border-right: 1px solid #BCD0E8;
 }
 
 #compose_close {

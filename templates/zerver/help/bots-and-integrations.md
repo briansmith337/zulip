@@ -2,7 +2,7 @@
 
 Bots allow you to
 
-* Send content into and out of Zulip.
+* Send content into and out of Axxess.
 * Send content to and from another product.
 * Automate tasks a human user could do.
 
@@ -11,7 +11,7 @@ A bot that sends content to or from another product is often called an
 
 ### Pre-made bots
 
-Zulip natively supports integrations with over one hundred products, and with
+Axxess natively supports integrations with over one hundred products, and with
 almost a thousand more through Zapier and IFTTT. If you're looking to add an
 integration with an existing product, see our
 [list of integrations](/integrations), along with those of
@@ -26,11 +26,11 @@ Each bot has a **name**, **profile picture**, **email**, **bot type** and **API 
 are the most visible attributes of a bot.
 
 * The **email** is not used for anything, and will likely be removed in a
-future version of Zulip.
+future version of Axxess.
 
 * The **bot type** determines what the bot can and can't do (see below).
 
-* The **API key** is how the bot identifies itself to Zulip. Anyone with the
+* The **API key** is how the bot identifies itself to Axxess. Anyone with the
   bot's API key can impersonate the bot.
 
 ## Bot type
@@ -39,8 +39,8 @@ The **bot type** determines what the bot can do.
 
 Bot type | Permissions | Common uses
 ---|---|---
-Incoming webhook | Send messages into Zulip | Third party integrations
-Outgoing webhook | Send messages into Zulip, read messages where the bot is addressed | Third party integrations, most custom bots <!-- # ignorelongline -->
+Incoming webhook | Send messages into Axxess | Third party integrations
+Outgoing webhook | Send messages into Axxess, read messages where the bot is addressed | Third party integrations, most custom bots <!-- # ignorelongline -->
 Generic | Anything the bot creator can do | Automating tasks, bots that listen to all messages on a stream
 API super bot (self-hosted only) | Anything any user can do | Mirroring
 
@@ -53,10 +53,10 @@ A few more details:
 * **Outgoing webhook**: The bot can read private messages where the bot is a
   participant, and stream messages where the bot is [mentioned](/help/mention-a-user-or-group). When the
   bot is PM'd or mentioned, it POSTs the message content to a URL of your
-  choice. The POST request format can be in a Zulip format or a
+  choice. The POST request format can be in a Axxess format or a
   Slack-compatible format.
 
-    This is the preferred bot type for interactive bots built on top of Zulip
+    This is the preferred bot type for interactive bots built on top of Axxess
     botserver.
 
 * **Generic**: Note that if you truly want to impersonate yourself
@@ -64,11 +64,11 @@ A few more details:
   you'll need to use your **personal API key**.
 
 * **API super bot**: You cannot create this from the web interface. Contact
-  `support@zulipchat.com` if you'd like information on how to set this up.
+  `support@axxess.one` if you'd like information on how to set this up.
 
 ## Adding bots
 
 By default, anyone other than guests can [add a bot](/help/add-a-bot-or-integration) to a
-Zulip organization, but administrators can
+Axxess organization, but administrators can
 [restrict bot creation](/help/restrict-bot-creation). Any bot that is added
 is visible and available for anyone to use.

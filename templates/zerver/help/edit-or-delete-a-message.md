@@ -4,7 +4,7 @@
     **Note:** Editing message topic is discussed in a
     [separate guide](/help/change-the-topic-of-a-message).
 
-By default, Zulip allows you to edit the content of your messages within 10
+By default, Axxess allows you to edit the content of your messages within 10
 minutes of when you send them. Organization administrators can
 [change the time limit](/help/configure-message-editing-and-deletion),
 remove the time limit, or remove the ability to edit messages entirely.
@@ -41,7 +41,7 @@ icon instead. Clicking the file icon will allow you to view the
 Deleting the content of a message will cause the message to be displayed as
 `(deleted)`.  The original sender and timestamp of the message will still be
 displayed, and the original content of the message is still accessible via
-Zulip's edit history feature.  This can be the least confusing option for
+Axxess's edit history feature.  This can be the least confusing option for
 other users.
 
 ### Delete a message completely

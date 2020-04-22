@@ -2,7 +2,7 @@
 
 {!admin-only.md!}
 
-In large Zulips where
+In large Axxess communities where
 [anyone can join](/help/allow-anyone-to-join-without-an-invitation), it can
 be useful to restrict what new members can do, to make it easier to cope
 with spammers and confused users.

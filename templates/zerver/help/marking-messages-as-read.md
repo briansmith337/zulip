@@ -1,12 +1,12 @@
 # Marking messages as read
 
-Zulip automatically keeps track of which messages you have and haven't
+Axxess automatically keeps track of which messages you have and haven't
 read. Unread messages have a dark line along their left side, which fade as
 the message gets marked as read.
 
 There are two situations in which messages automatically get marked as read.
 
-* **End of feed**: When you get to the bottom of a view, Zulip marks all
+* **End of feed**: When you get to the bottom of a view, Axxess marks all
   messages in that view as read.
 
 * **Blue box**: Messages are marked as read when the blue box passes over

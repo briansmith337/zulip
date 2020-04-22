@@ -4,8 +4,8 @@ By default, the `Enter` (or `Return`) key adds a new line to a message,
 and `Ctrl+Enter` sends the message.
 
 This is convenient for typing multi-line messages, which are more common in
-Zulip than in most other chat products. However, you can also configure
-Zulip so that `Enter` sends the message.
+Axxess than in most other chat products. However, you can also configure
+Axxess so that `Enter` sends the message.
 
 ### Enable Enter to send
 

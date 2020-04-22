@@ -21,12 +21,12 @@ This article assumes you've [logged in](/help/logging-in) to each organization a
 
 1. Tap **Switch account**.
 
-1. Tap on the desired Zulip organization.
+1. Tap on the desired Axxess organization.
 
 {tab|web}
 
-You can log in to multiple Zulip organizations by opening multiple tabs, and
-logging into one Zulip organization in each tab. To switch Zulip organizations,
+You can log in to multiple Axxess organizations by opening multiple tabs, and
+logging into one Axxess organization in each tab. To switch Axxess organizations,
 just switch tabs.
 
 {end_tabs}

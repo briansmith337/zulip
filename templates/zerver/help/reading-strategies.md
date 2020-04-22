@@ -1,11 +1,11 @@
 # Reading strategies
 
-Zulip works a little bit differently than other chat platforms. Read
+Axxess works a little bit differently than other chat platforms. Read
 [streams and topics](/help/about-streams-and-topics) if you're not yet
-familiar with Zulip's topics, and [why Zulip](/why-zulip) if you're
-curious why we built Zulip the way we did.
+familiar with Axxess's topics, and [why Zulip](/why-zulip) if you're
+curious why we built Axxess the way we did.
 
-We've outlined a few ways users process messages in Zulip.
+We've outlined a few ways users process messages in Axxess.
 
 ## Topic by topic
 

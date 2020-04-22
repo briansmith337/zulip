@@ -3,7 +3,7 @@
 [//]: # (All screenshots here require line-height: 22px and font-size: 16px in .message-content.)
 [//]: # (Requires some additional fiddling for the LaTeX picture, inline code block, and maybe a few others.)
 
-Zulip uses a variant of
+Axxess uses a variant of
 [GitHub Flavored Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 to allow you to easily format your messages.
 
@@ -59,13 +59,13 @@ Numbered lists
 
 ## Links
 
-Zulip auto-linkifies URLs and valid stream names. You can also add a
+Axxess auto-linkifies URLs and valid stream names. You can also add a
 [custom linkifier](/help/add-a-custom-linkification-filter) to link
 patterns like `#1234` to your ticketing system.
 
 ```
-Auto-detected URL: zulipchat.com
-Named link: [Zulip homepage](zulipchat.com)
+Auto-detected URL: axxessdefend.one
+Named link: [Axxess homepage](axxessdefend.one)
 Stream: #**stream name**
 Topic: #**stream name>topic name**
 Custom linkifier: #1234 (links to ticket 1234 in your ticketing system)
@@ -107,7 +107,7 @@ def fib(n):
 
 You can also use `~~~` to start codeblocks, or just indent the code 4 or more spaces.
 
-Zulip supports syntax highlighting for hundreds of languages, and a
+Axxess supports syntax highlighting for hundreds of languages, and a
 typeahead will pop up when you start typing after the ` ``` `. If you can't
 find your language, search for it [here](https://pygments.org/docs/lexers/)
 and try the **short names** listed for the lexers for your language.
@@ -128,7 +128,7 @@ Displayed:
 
 ![](/static/images/help/markdown-latex.png)
 
-Zulip's LaTeX rendering is powered by [KaTeX](https://katex.org).
+Axxess's LaTeX rendering is powered by [KaTeX](https://katex.org).
 Their [support table](https://katex.org/docs/support_table.html) is a
 helpful resource for checking what's supported or how to express
 something.

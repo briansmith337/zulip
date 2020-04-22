@@ -1,6 +1,6 @@
 # Logging in
 
-By default, Zulip allows logging in via email/password as well as
+By default, Axxess allows logging in via email/password as well as
 various social authentication providers like Google, GitHub, and
 GitLab.
 
@@ -14,7 +14,7 @@ account, you can later log in using GitHub, as long as your Google account
 and GitHub account use the same email address.
 
 
-### Log in to a Zulip organization for the first time
+### Log in to a Axxess organization for the first time
 
 {start_tabs}
 
@@ -27,7 +27,7 @@ and GitHub account use the same email address.
 
 1. Click the **plus** (+) icon.
 
-1. Enter your Zulip URL, and click **Connect**.
+1. Enter your Axxess URL, and click **Connect**.
 
 1. Follow the on-screen instructions.
 
@@ -39,13 +39,13 @@ and GitHub account use the same email address.
 
 1. Tap **Add new account**.
 
-1. Enter your Zulip URL, and tap **Enter**.
+1. Enter your Axxess URL, and tap **Enter**.
 
 1. Follow the on-screen instructions.
 
 {tab|web}
 
-1. Go to your organization's **Zulip URL**.
+1. Go to your organization's **Axxess URL**.
 
 1. Follow the on-screen instructions.
 
@@ -55,7 +55,7 @@ For subsequent logins, see [switching between organizations](/help/switching-bet
 
 ## Troubleshooting
 
-### I don't know my Zulip URL
+### I don't know my Axxess URL
 
 Some ideas:
 
@@ -64,11 +64,11 @@ Some ideas:
   [find my account](https://zulipchat.com/accounts/find/) and enter the email
   address that you signed up with.
 
-* Try guessing the URL. Zulip URLs often look like `<name>.zulipchat.com`,
- `zulip.<name>.com`, or `chat.<name>.com` (replace `<name>` with the name of your
+* Try guessing the URL. Axxess URLs often look like `<name>.Axxesschat.com`,
+ `Axxess.<name>.com`, or `chat.<name>.com` (replace `<name>` with the name of your
   organization).
 
-* Ask your organization administrators for your Zulip URL.
+* Ask your organization administrators for your Axxess URL.
 
 ### I signed up with Google/GitHub auth and never set a password
 

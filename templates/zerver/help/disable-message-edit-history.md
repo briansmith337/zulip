@@ -2,7 +2,7 @@
 
 {!admin-only.md!}
 
-By default, Zulip displays messages that have been edited with an EDITED tag, and users
+By default, Axxess displays messages that have been edited with an EDITED tag, and users
 can [view the edit history of a message](/help/view-a-messages-edit-history).
 
 To remove the edit history of a single message, it is usually best to

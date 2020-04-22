@@ -1,7 +1,7 @@
 # Change your language
 
-Zulip has been translated or partially translated into a number of different
-languages. You can see which languages Zulip supports, and help add support
+Axxess has been translated or partially translated into a number of different
+languages. You can see which languages Axxess supports, and help add support
 for new languages on **[Transifex](https://www.transifex.com/zulip/zulip/)**.
 
 If your entire organization speaks a language other than English, an administrator can

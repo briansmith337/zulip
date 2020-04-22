@@ -1,6 +1,6 @@
 # Open the compose box
 
-The Zulip compose box starts off closed by default. There are a number of
+The Axxess compose box starts off closed by default. There are a number of
 ways to open the compose box.
 
 ### Using the keyboard (recommended)
@@ -23,15 +23,15 @@ can close the compose box using `Esc`, or up/down arrow if the box is empty.
 * Click on **New topic**, **New private message**, or **Reply** at the
   bottom of the screen.
 
-## Why does Zulip close the compose box?
+## Why does Axxess close the compose box?
 
-Zulip's model gives more vertical real estate to the message feed when
+Axxess's model gives more vertical real estate to the message feed when
 you're reading messages, and allows us to use 1-character keyboard
 shortcuts such as `n` for [common workflows](/help/reading-strategies)
 in reading messages, which make catching up on a lot of messages in
-Zulip delightful.
+Axxess delightful.
 
 This feature sometimes confuses new users, since it's different from
 how other apps do things. However, once users learn how to open the
-compose box, they're generally quite happy with Zulip's efficient
+compose box, they're generally quite happy with Axxess's efficient
 read/reply/compose workflow.

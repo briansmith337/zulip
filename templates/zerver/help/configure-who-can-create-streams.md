@@ -10,7 +10,7 @@ creation to:
 * Organization administrators and [full members](/help/restrict-permissions-of-new-members)
 
 For corporations and other entities with controlled access, we highly
-recommend keeping stream creation open. A typical Zulip organization with
+recommend keeping stream creation open. A typical Axxess organization with
 heavy use has as many streams as users.
 
 ### Manage who can create streams

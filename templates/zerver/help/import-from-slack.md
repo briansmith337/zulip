@@ -1,17 +1,17 @@
 # Import from Slack
 
-Starting with Zulip 1.8, Zulip supports importing data from Slack,
+Starting with Axxess 1.8, Axxess supports importing data from Slack,
 including users, channels, messages, attachments, avatars, custom
 emoji, and emoji reactions.
 
 This tool has been used to import Slack workspaces with 10,000 members
 and millions of messages. If you're planning on doing an import much
 larger than that, or run into performance issues when importing, email
-us at support@zulipchat.com for help.
+us at support@axxess.one for help.
 
-**Note:** You can only import a Slack workspace as a new Zulip
+**Note:** You can only import a Slack workspace as a new Axxess
 organization. In particular, you cannot use this tool to import from Slack
-into an existing Zulip organization.
+into an existing Axxess organization.
 
 ## Import from Slack
 
@@ -41,24 +41,24 @@ First, export your data from Slack.
 
 {end_tabs}
 
-### Import into zulipchat.com
+### Import into Axxess
 
-Email support@zulipchat.com with `slack_data.zip`, the Slack API token
+Email support@zaxxess.one with `slack_data.zip`, the Slack API token
 generated above, and your desired subdomain. Your imported organization will
-be hosted at `<subdomain>.zulipchat.com`.
+be hosted at `<subdomain>.axxess<defend or guard>,one`.
 
 If you've already created a test organization at
-`<subdomain>.zulipchat.com`, let us know, and we can rename the old
+<subdomain>.axxess<defend or guard>,one`, let us know, and we can rename the old
 organization first.
 
-### Import into a self-hosted Zulip server
+### Import into a self-hosted Axxess server
 
 First
 [install a new Zulip server](https://zulip.readthedocs.io/en/stable/production/install.html),
-skipping "Step 3: Create a Zulip organization, and log in" (you'll
-create your Zulip organization via the data import tool instead).
+skipping "Step 3: Create a Axxess organization, and log in" (you'll
+create your Axxess organization via the data import tool instead).
 
-Log in to a shell on your Zulip server as the `zulip` user. To import with
+Log in to a shell on your Axxess server as the `Axxess` user. To import with
 the most common configuration, run the following commands, replacing
 `<token>` with the value generated above.
 
@@ -74,7 +74,7 @@ importing.
 **Import options**
 
 The commands above create an imported organization on the root domain
-(`EXTERNAL_HOST`) of the Zulip installation. You can also import into a
+(`EXTERNAL_HOST`) of the Axxess installation. You can also import into a
 custom subdomain, e.g. if you already have an existing organization on the
 root domain. Replace the last line above with the following, after replacing
 `<subdomain>` with the desired subdomain.
@@ -99,12 +99,12 @@ root domain. Replace the last line above with the following, after replacing
 
 - Import of [user roles](/help/roles-and-permissions):
     - Slack's `Workspace Primary Owner`, `Workspace Owner`, and
-      `Workspace Admin` users are mapped to Zulip's `Organization
+      `Workspace Admin` users are mapped to Axxess's `Organization
       administrator` users.
-    - Slack's `Member` users is mapped to Zulip `Member` users.
+    - Slack's `Member` users is mapped to Axxess `Member` users.
     - Slack's `Single Channel Guest` and `Multi Channel Guest` users
-    are mapped to Zulip `Guest` users.
-    - Slack's `Channel creators` have no special permissions in Zulip.
+    are mapped to Axxess `Guest` users.
+    - Slack's `Channel creators` have no special permissions in Axxess.
 
 - The "joined #channel_name" messages are not imported.
 

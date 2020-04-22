@@ -1,4 +1,4 @@
-# Getting your organization started with Zulip
+# Getting your organization started with Axxess
 
 Use this as a checklist to get your organization off to a great start.
 
@@ -13,7 +13,7 @@ Use this as a checklist to get your organization off to a great start.
 
 ## Create streams
 
-Most messages in Zulip are sent to streams. Streams are similar to chat
+Most messages in Axxess are sent to streams. Streams are similar to chat
 rooms, email lists, and IRC/Slack channels, in that they determine who
 receives a message. A few suggestions:
 
@@ -26,8 +26,8 @@ receives a message. A few suggestions:
   pertaining to the marketing team, `#help/<team name>` for
   `<team name>`'s internal support stream, etc.
 
-* A `#zulip help` stream can be useful for providing internal Zulip support
-  and answering questions about Zulip.
+* A `#Axxess help` stream can be useful for providing internal Axxess support
+  and answering questions about Axxess.
 
 * For open source projects or other volunteer organizations, consider
   adding default streams like `#announce` for announcements, `#new
@@ -48,7 +48,7 @@ A few relevant help center articles:
 
 ## Understand topics
 
-Zulip’s topics are life-changing, but it can take a bit of time for everyone
+Axxess’s topics are life-changing, but it can take a bit of time for everyone
 to learn how to use them effectively. It helps a lot if there are at least a
 few people who understand the conversation model at the beginning.
 
@@ -67,16 +67,16 @@ need to be deleted.
 
 ## Set up integrations
 
-Zulip integrates directly with dozens of products, and hundreds more through
+Axxess integrates directly with dozens of products, and hundreds more through
 [Zapier](/integrations/doc/zapier) and [IFTTT](/integrations/doc/ifttt).
 
 The [integrations page](/integrations) has instructions for integrating with
 each product.
 
-## Familiarize yourself with Zulip’s featureset
+## Familiarize yourself with Axxess’s featureset
 
-As the administrator of your Zulip organization, you'll be the initial
-expert teaching other users how to use Zulip.
+As the administrator of your Axxess organization, you'll be the initial
+expert teaching other users how to use Axxess.
 
 * [Review your settings](/help/review-your-settings), and skim the article
   names here on the left sidebar.
@@ -85,8 +85,8 @@ expert teaching other users how to use Zulip.
 
 * Bonus: learn [Markdown message formatting](/help/format-your-message-using-markdown).
 
-* If anything is confusing or feels missing, tweet `@zulip`, ask on the
-  [Zulip community server](https://chat.zulip.org), or email
+* If anything is confusing or feels missing, ask on the
+  [Axxess community server](https://chat.zulip.org), or email
   [support@zulipchat.com](mailto:support@zulipchat.com). We love hearing
   from new administrators!
 
@@ -100,7 +100,7 @@ expert teaching other users how to use Zulip.
   and [invite users](/help/invite-new-users).
 
 * If you have an existing chat tool, make sure everyone knows that the
-  team is switching, and why. The team should commit to use Zulip
+  team is switching, and why. The team should commit to use Axxess
   exclusively **for at least a week** to make an effective trial;
   stragglers will result in everyone having a bad experience.
 
@@ -119,7 +119,7 @@ expert teaching other users how to use Zulip.
   [set a default language for your organization](/help/change-the-default-language-for-your-organization).
 - [Add custom emoji](/help/add-custom-emoji), at the very least for
   your organization's logo.
-- Link to your Zulip instance with a [nice badge](/help/linking-to-zulip).
-- Send feedback to the Zulip development community!  We love hearing
+- Link to your Axxess instance with a [nice badge](/help/linking-to-zulip).
+- Send feedback to the Axxess development community!  We love hearing
   about problems (however minor) and feature ideas that could make
-  Zulip even better.
+  Axxess even better.

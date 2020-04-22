@@ -2,7 +2,7 @@
 
 {!admin-only.md!}
 
-By default, users need an invitation to join. You can open your Zulip
+By default, users need an invitation to join. You can open your Axxess
 up so that anyone can join without an invitation.
 
 {start_tabs}
