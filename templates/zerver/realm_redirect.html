@@ -15,7 +15,7 @@
                     {{ csrf_input }}
                     <div class="input-box moving-label horizontal">
                         <div class="inline-block relative">
-                            <p id="realm_redirect_description">{{ _("Enter your organization's Zulip URL:") }}</p>
+                            <p id="realm_redirect_description">{{ _("Enter your organization's Axxess URL:") }}</p>
                             <input
                               type="text" value="{% if form.subdomain.value() %}{{ form.subdomain.value() }}{% endif %}"
                               placeholder="{{ _('your-organization-url') }}" autofocus id="realm_redirect_subdomain" name="subdomain"
@@ -40,7 +40,7 @@
         </div>
 
         <div class="bottom-text">
-            {{ _("Need to get your group started on Zulip?") }} <a target="_blank" href="/new/">{{ _("Create a new organization.") }}</a>
+            {{ _("Need to get your group started on Axxess?") }} <a target="_blank" href="/new/">{{ _("Create a new organization.") }}</a>
         </div>
     </div>
 
