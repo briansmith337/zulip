@@ -38,6 +38,11 @@ html {
 	color: #145cb5;
 	opacity: .8;
 }
+.fa-smile-o:before {
+    content: "\f118";
+	color: #145cb5;
+	opacity: .8;
+}
 
 #app-loading.loaded {
     display: none !important; /* We are now loaded, by definition. */
