@@ -12,3 +12,5 @@
 /generated/pygments_data.json
 # Legacy emoji data directory
 /third/emoji-data
+#Original Favicon
+favicon.ico.orig

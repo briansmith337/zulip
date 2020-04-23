@@ -19,6 +19,10 @@ html {
     content: "\f002";
 	color: #145cb5;
 }
+.fa-keyboard-o::before {
+    content: "\f11c";
+    color: #145cb5;
+}
 
 #app-loading.loaded {
     display: none !important; /* We are now loaded, by definition. */
@@ -131,8 +135,10 @@ p.n-margin {
 }
 
 .top-messages-logo svg circle {
-    fill: hsl(0, 0%, 27%);
-    stroke: hsl(0, 0%, 27%);
+    /*fill: hsl(0, 0%, 27%);
+    stroke: hsl(0, 0%, 27%);*/
+	fill: #145cb5;
+    stroke: #145cb5;
 }
 
 .top-messages-logo svg path {

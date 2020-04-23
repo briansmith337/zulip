@@ -226,14 +226,16 @@
     font-size: 1.15em;
     font-weight: 600;
     color: hsl(0, 0%, 100%);
-    background-color: hsl(164, 44%, 47%);
+    /*background-color: hsl(164, 44%, 47%);*/
+	background-color: #145cb5;
     border-radius: 4px;
     white-space: normal;
     padding: 7px 20px;
     outline: none;
 
     &:hover {
-        background-color: hsl(164, 44%, 56%);
+        /*background-color: hsl(164, 44%, 56%);*/
+		background-color: #145cb5b0;
     }
 }
 
@@ -247,7 +249,8 @@
 .hotspot-inline {
     width: 350px;
     max-width: 95%;
-    box-shadow: 0 5px 10px hsla(220, 4%, 54%, 0.1);
+    /*box-shadow: 0 5px 10px hsla(220, 4%, 54%, 0.1);*/
+	box-shadow: 0 5px 10px hsla(0, 0%, 0%, 0.1);
     border-radius: 4px;
     background-color: hsl(0, 0%, 98%);
     margin: 0 auto;
@@ -262,7 +265,8 @@
     }
 
     .hotspot-inline-top .hotspot-title {
-        background-color: hsl(168, 100%, 35%);
+        /*background-color: hsl(168, 100%, 35%);*/
+		background-color: #145cb5;
         margin: 0;
         color: hsl(0, 0%, 100%);
         font-weight: 600;
