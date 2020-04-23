@@ -13,10 +13,16 @@
             <br />
             {% trans %}There is no Axxess organization hosted at this subdomain.{% endtrans %}
 =======
+<<<<<<< HEAD
             {{ _('Hi there! Thank you for your interest in Zulip.') }}
             <br>
             {% trans %}There is no Zulip organization hosted at this subdomain.{% endtrans %}
->>>>>>> templates: Use `<hr>` and `<br>` consistently.
+=======
+            {{ _('Hi there! Thank you for your interest in Axxess.') }}
+            <br />
+            {% trans %}There is no Axxess organization hosted at this subdomain.{% endtrans %}
+>>>>>>> a bunch of html files.  Not sure if the email modifications made it in to this
+>>>>>>> a bunch of html files.  Not sure if the email modifications made it in to this
         </div>
     </div>
 </div>
