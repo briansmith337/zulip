@@ -54,7 +54,7 @@ class FromAddress:
             language = user_profile.default_language
 
         with override_language(language):
-            return _("Zulip Account Security")
+            return _("Axxess Account Security")
 
 def build_email(template_prefix: str, to_user_ids: Optional[List[int]]=None,
                 to_emails: Optional[List[str]]=None, from_name: Optional[str]=None,
@@ -103,7 +103,7 @@ def build_email(template_prefix: str, to_user_ids: Optional[List[int]]=None,
         logger.warning("Missing language for email template '{}'".format(template_prefix))
 
     if from_name is None:
-        from_name = "Zulip"
+        from_name = "Axxess"
     if from_address is None:
         from_address = FromAddress.NOREPLY
     if from_address == FromAddress.tokenized_no_reply_placeholder:

@@ -4918,7 +4918,7 @@ def do_send_confirmation_email(invitee: PreregistrationUser,
     activation_url = create_confirmation_link(invitee, referrer.realm.host, Confirmation.INVITATION)
     context = {'referrer_full_name': referrer.full_name, 'referrer_email': referrer.delivery_email,
                'activate_url': activation_url, 'referrer_realm_name': referrer.realm.name}
-    from_name = "%s (via Zulip)" % (referrer.full_name,)
+    from_name = "%s (via Axxess)" % (referrer.full_name,)
     send_email('zerver/emails/invitation', to_emails=[invitee.email], from_name=from_name,
                from_address=FromAddress.tokenized_no_reply_address(),
                language=referrer.realm.default_language, context=context)
