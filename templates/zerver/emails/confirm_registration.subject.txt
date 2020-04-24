@@ -1,1 +1,1 @@
-{{ _("Activate your Zulip account") }}
+{{ _("Activate your Axxess account") }}

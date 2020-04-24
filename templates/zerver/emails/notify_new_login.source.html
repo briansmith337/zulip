@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<p>{{ _("We noticed a recent login for the following Zulip account.") }}</p>
+<p>{{ _("We noticed a recent login for the following Axxess account.") }}</p>
 <p>
     <ul>
         <li>
@@ -33,12 +33,12 @@
 <p>{{ _("If this was you, great! There's nothing else you need to do.") }}</p>
 
 <p>
-    {% trans %}If you do not recognize this login, or think your account may have been compromised, please <a href="{{ realm_uri }}/accounts/password/reset/" target="_blank">reset your password</a> or contact us immediately at <a href="mailto:{{ support_email }}">{{ support_email }}</a>.{% endtrans %}
+    {% trans %}If you do not recognize this login, or think your account may have been compromised, please <a href="{{ realm_uri }}/accounts/password/reset/" target="_blank">reset your password</a>{% endtrans %}
 </p>
 
 <p>
     {{ _("Thanks,") }}<br />
-    {{ _("Zulip Security") }}
+    {{ _("Axxess Security") }}
 </p>
 {% endblock %}
 

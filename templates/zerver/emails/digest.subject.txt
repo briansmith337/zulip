@@ -1,1 +1,1 @@
-Zulip digest for {{ realm_name }}
+Axxess digest for {{ realm_name }}

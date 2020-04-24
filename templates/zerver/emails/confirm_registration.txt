@@ -1,4 +1,4 @@
-{{ _('You recently signed up for Zulip. Awesome!') }}
+{{ _('You recently signed up for Axxess. Awesome!') }}
 
 {{ _('Click the link below to complete registration.') }}
     <{{ activate_url }}>

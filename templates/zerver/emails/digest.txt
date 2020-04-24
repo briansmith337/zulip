@@ -9,7 +9,7 @@
     {{ new_streams.plain|display_list(1000) }}.
 {% endif %}
 
-Click here to log in to Zulip and catch up: {{ realm_uri }}.
+Click here to log in to Axxess and catch up: {{ realm_uri }}.
 
 --
 Manage email preferences:

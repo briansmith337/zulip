@@ -24,16 +24,16 @@ You are receiving this because you have email notifications enabled for this str
 {% endif %}
 
 {% if reply_to_zulip  %}
-Reply to this email directly, or view it in Zulip:
+Reply to this email directly, or view it in Axxess:
 {{ narrow_url }}
 {% elif not show_message_content %}
-View or reply in Zulip:
+View or reply in Axxess:
 {{ narrow_url }}
 {% else %}
-Reply in Zulip:
+Reply in Axxess:
 {{ narrow_url }}
 
-Do not reply to this email. This Zulip server is not configured to accept
+Do not reply to this email. This Axxess server is not configured to accept
 incoming emails. Help:
 https://zulip.readthedocs.io/en/latest/production/email-gateway.html
 {% endif %}

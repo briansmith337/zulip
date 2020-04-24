@@ -4,7 +4,7 @@ Hi {{ user_name }},
 
 
 {% trans -%}
-You can log in to your Zulip organization, {{ realm_name }}, at the following link:
+You can log in to your Axxess organization, {{ realm_name }}, at the following link:
 {%- endtrans %}
 
     {{ realm_uri }}
@@ -12,7 +12,7 @@ You can log in to your Zulip organization, {{ realm_name }}, at the following li
 {% trans %}The email address associated with your account is {{ email }}.{% endtrans %}
 
 
-{% trans %}If you have trouble logging in, please contact Zulip support by replying to this email.{% endtrans %}
+{% trans %}If you have trouble logging in, please contact Axxess support by replying to this email.{% endtrans %}
 
 
-{{ _("Thanks for using Zulip!") }}
+{{ _("Thanks for using Axxess!") }}
