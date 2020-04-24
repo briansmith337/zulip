@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+Reactivate your Axxess organization
+=======
+{% trans %}Reactivate your Zulip organization{% endtrans %}
+>>>>>>> i18n: Add translation tags to missed-message emails.
