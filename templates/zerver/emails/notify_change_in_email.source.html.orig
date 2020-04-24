@@ -14,8 +14,13 @@
     {{ _("Best,") }}<br />
     {{ _("Team Axxess") }}
 =======
+<<<<<<< HEAD
     {{ _("Best,") }}<br>
     {{ _("Team Zulip") }}
->>>>>>> templates: Use `<hr>` and `<br>` consistently.
+=======
+    {{ _("Best,") }}<br />
+    {{ _("Team Axxess") }}
+>>>>>>> Mainly email message formatting
+>>>>>>> Mainly email message formatting
 </p>
 {% endblock %}

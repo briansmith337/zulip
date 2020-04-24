@@ -1,0 +1,12 @@
+{{ _("Hi there,") }}
+
+<<<<<<< HEAD
+{% trans %}{{ referrer_full_name }} ({{ referrer_email }}) wants you to join them on Axxess -- the World's Largest Defender of Free Speech and Data Privacy.{% endtrans %}
+=======
+{% trans %}{{ referrer_full_name }} ({{ referrer_email }}) wants you to join them on Axxess -- the team communication tool designed for productivity.{% endtrans %}
+>>>>>>> Mainly email message formatting
+
+{{ _("To get started, click the link below.") }}
+    <{{ activate_url }}>
+
+{% trans %}Contact us any time at {{ support_email }} if you run into trouble,have any feedback, or just want to chat!{% endtrans %}

@@ -41,9 +41,14 @@
     {{ _("Thanks,") }}<br />
     {{ _("Axxess Security") }}
 =======
+<<<<<<< HEAD
     {{ _("Thanks,") }}<br>
     {{ _("Zulip Security") }}
->>>>>>> templates: Use `<hr>` and `<br>` consistently.
+=======
+    {{ _("Thanks,") }}<br />
+    {{ _("Axxess Security") }}
+>>>>>>> Mainly email message formatting
+>>>>>>> Mainly email message formatting
 </p>
 {% endblock %}
 

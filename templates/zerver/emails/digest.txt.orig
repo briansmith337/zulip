@@ -12,14 +12,18 @@
 <<<<<<< HEAD
 Click here to log in to Axxess and catch up: {{ realm_uri }}.
 =======
+<<<<<<< HEAD
 {% trans organization_uri=realm_uri %}Click here to log in to Zulip and catch up: {{ organization_uri }}.{% endtrans %}
->>>>>>> i18n: Add translation tags to digest emails.
+=======
+Click here to log in to Axxess and catch up: {{ realm_uri }}.
+>>>>>>> Mainly email message formatting
+>>>>>>> Mainly email message formatting
 
 --
-{% trans %}Manage email preferences:{% endtrans %}
+Manage email preferences:
 
 {{ realm_uri }}/#settings/notifications
 
-{% trans %}Unsubscribe from digest emails:{% endtrans %}
+Unsubscribe from digest emails:
 
 {{ unsubscribe_link }}

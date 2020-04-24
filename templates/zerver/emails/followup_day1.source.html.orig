@@ -17,15 +17,15 @@
 
 <p>
     {{ _('Your account details:') }}
-    <li>{{ _('Organization URL:') }} {{ realm_uri }}<br></li>
+    <li>{{ _('Organization URL:') }} {{ realm_uri }}<br/></li>
     {% if ldap %}
         {% if ldap_username %}
-        <li>{{ _('Username:') }} {{ ldap_username }}<br></li>
+        <li>{{ _('Username:') }} {{ ldap_username }}<br/></li>
         {% else %}
-        <li>{{ _('Use your LDAP account to login') }}<br></li>
+        <li>{{ _('Use your LDAP account to login') }}<br/></li>
         {% endif %}
     {% else %}
-        <li>{{ _('Email:') }} {{ email }}<br></li>
+        <li>{{ _('Email:') }} {{ email }}<br/></li>
     {% endif %}
 </p>
 
@@ -42,9 +42,14 @@
     {{ _("Cheers,") }}<br />
     {{ _("Team Axxess") }}
 =======
+<<<<<<< HEAD
     {{ _("Cheers,") }}<br>
     {{ _("Team Zulip") }}
->>>>>>> templates: Use `<hr>` and `<br>` consistently.
+=======
+    {{ _("Cheers,") }}<br />
+    {{ _("Team Axxess") }}
+>>>>>>> Mainly email message formatting
+>>>>>>> Mainly email message formatting
 </p>
 
 {% endblock %}

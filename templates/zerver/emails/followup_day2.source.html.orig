@@ -27,8 +27,12 @@
 <<<<<<< HEAD
 <p>{{ _("Thanks,") }}<br />{{ _("Axxess") }}</p>
 =======
+<<<<<<< HEAD
 <p>{{ _("Thanks,") }}<br>{{ _("Zulip") }}</p>
->>>>>>> templates: Use `<hr>` and `<br>` consistently.
+=======
+<p>{{ _("Thanks,") }}<br />{{ _("Axxess") }}</p>
+>>>>>>> Mainly email message formatting
+>>>>>>> Mainly email message formatting
 {% endblock %}
 
 {% block manage_preferences %}
