@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+Axxess digest for {{ realm_name }}
+=======
+{% trans %}Zulip digest for {{ realm_name }}{% endtrans %}
+>>>>>>> i18n: Add translation tags to digest emails.
