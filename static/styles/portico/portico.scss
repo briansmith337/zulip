@@ -246,7 +246,9 @@ html {
 }
 
 .help .sidebar a.highlighted {
-    background-color: hsl(152, 40%, 42%);
+    /*background-color: hsl(152, 40%, 42%);*/
+	background-color: hsl(213, 49%, 82%);
+	color: #000;
 
     /* Extend highlight to entire width of sidebar, not just link area */
     /* This has been changed from "+" to "- -" because of issue #8403.

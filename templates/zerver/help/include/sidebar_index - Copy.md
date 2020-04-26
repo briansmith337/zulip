@@ -85,6 +85,7 @@
 * [Bots and integrations](/help/bots-and-integrations)
 * [Add a bot or integration](/help/add-a-bot-or-integration)
 * [Create a poll](/help/create-a-poll)
+* [Night mode](/help/night-mode)
 * [Enable emoticon translations](/help/enable-emoticon-translations)
 * [Manage your uploaded files](/help/manage-your-uploaded-files)
 * [View emoji as text](/help/view-emoji-as-text)
@@ -92,16 +93,28 @@
 * [Change your timezone](/help/change-your-timezone)
 * [Display the buddy list on narrow screens](/help/move-the-users-list-to-the-left-sidebar)
 * [View organization statistics](/help/analytics)
+* [Linking to Axxess](/help/linking-to-zulip)
 * [Connect through a proxy](/help/connect-through-a-proxy)
+* [Add a custom certificate](/help/custom-certificates)
+
+## Apps
+* [Desktop installation guides](/help/desktop-app-install-guide)
+* [Axxess in a Terminal](/help/zulip-in-a-terminal)
 
 # Axxess administration
 
 ## Organization basics
 * [Review your organization's settings](/help/review-your-organization-settings)
 * [Create your organization profile](/help/create-your-organization-profile)
+* [Import from HipChat/Stride](/help/import-from-hipchat)
+* [Import from Mattermost](/help/import-from-mattermost)
+* [Import from Slack](/help/import-from-slack)
+* [Import from Gitter](/help/import-from-gitter)
 * [Roles and permissions](/help/roles-and-permissions)
 * [Set the default language for new users](/help/change-the-default-language-for-your-organization)
+* [Export your organization](/help/export-your-organization)
 * [Deactivate your organization](/help/deactivate-your-organization)
+* [GDPR Compliance](/help/gdpr-compliance)
 
 ## Organization settings
 * [Restrict stream creation](/help/configure-who-can-create-streams)
@@ -121,6 +134,8 @@
 * [Configure notification bot](/help/configure-notification-bot)
 * [Require topics in stream messages](/help/require-topics)
 * [Add custom emoji](/help/add-custom-emoji)
+* [Configure authentication methods](/help/configure-authentication-methods)
+* [Add a custom linkification filter](/help/add-a-custom-linkification-filter)
 
 ## Users & bots
 * [Invite new users](/help/invite-new-users)

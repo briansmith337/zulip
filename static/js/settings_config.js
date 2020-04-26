@@ -41,9 +41,9 @@ exports.twenty_four_hour_time_values = {
 exports.get_all_display_settings = () => ({
     settings: {
         user_display_settings: [
-            "dense_mode",
+            /*"dense_mode",
             "night_mode",
-            "high_contrast_mode",
+            "high_contrast_mode",*/
             "left_side_userlist",
             "starred_message_counts",
             "fluid_layout_width",
