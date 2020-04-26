@@ -10,8 +10,9 @@ creation to:
 * Organization administrators and [full members](/help/restrict-permissions-of-new-members)
 
 For corporations and other entities with controlled access, we highly
-recommend keeping stream creation open. A typical Axxess organization with
-heavy use has as many streams as users.
+recommend keeping stream creation open. However, if you are privacy minded, we recommend
+closing stream creation, allowing Admins only to create streams.  A typical Axxess 
+organization with heavy use has as many streams as users.
 
 ### Manage who can create streams
 

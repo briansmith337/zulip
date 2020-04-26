@@ -13,7 +13,7 @@ organizations that have enabled it.
 
 You can view a sample digest email for your account in HTML and
 plain-text formats by visiting `https://axxessdefend.one/digest/`,
-if `https://axxessdefend.one` is your Zulip server URL.
+if `https://axxessdefend.one` is your Axxess server URL.
 
 ## Enable digest emails for an organization
 

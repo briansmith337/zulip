@@ -15,7 +15,7 @@ or desktop experience.
 ## Set up your account
 
 - [Set a profile picture](/help/change-your-profile-picture)
-- Get the [mobile and desktop apps](/apps)
+- Get the [mobile and desktop apps](https://axxess.one/apps/)
 - [Browse and subscribe to streams](/help/browse-and-subscribe-to-streams)
 - [Configure your notifications](/#settings/notifications) to work the way
   you do. If you're joining a low traffic organization and aren't using the

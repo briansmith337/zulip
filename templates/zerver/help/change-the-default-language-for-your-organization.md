@@ -3,8 +3,7 @@
 {!admin-only.md!}
 
 Axxess has been translated or partially translated into a number of different
-languages. You can see which languages Axxess supports, and help add support
-for new languages on **[Transifex](https://www.transifex.com/zulip/zulip/)**.
+languages. 
 
 If your organization usually uses a language other than English, you can set
 a default language for new users. This setting will not affect existing

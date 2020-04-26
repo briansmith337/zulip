@@ -26,12 +26,6 @@ Organization administrators can also
 Upper and lower case letters are treated the same, and underscores (`_`)
 are treated the same as spaces.
 
-### Bulk add emoji
-
-We expose a [REST API endpoint](/api/upload-custom-emoji) for bulk uploading
-emoji. Using REST API endpoints requires some technical expertise; email
-support@axxess.one if you get stuck.
-
 ## Replace a default emoji
 
 You can replace a default emoji by adding a custom emoji of the same

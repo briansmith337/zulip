@@ -79,7 +79,7 @@ See [Share and upload files](/help/share-and-upload-files) to learn more
 about dropping, pasting, and attaching images.
 
 ```
-[A whale of a good time](https://your.zulip.domain/user_uploads/1/46/IPvysqXEtiTG1ZdNBrwAZODi/whale-time.png)
+[A whale of a good time](https://your.Axxess.domain/user_uploads/1/46/IPvysqXEtiTG1ZdNBrwAZODi/whale-time.png)
 ```
 
 ![](/static/images/help/markdown-image.png)
@@ -157,7 +157,7 @@ To translate emoticons into emoji, you'll need to
 You can also [add custom emoji](/help/add-custom-emoji).
 
 ```
-:octopus: :heart: :zulip: :)
+:octopus: :heart: :Axxess: :)
 ```
 
 ![](/static/images/help/markdown-emoji.png)

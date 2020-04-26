@@ -29,10 +29,8 @@ At a high level:
 * From the perspective of a guest, all streams are private streams, and they
   additionally can't add other members to the streams they are subscribed to.
 
-There are two situations in which an organization administrator can access
+There is a method in which an organization administrator can access
 private stream messages:
-
-* Via some types of [data export](/help/export-your-organization).
 
 * Administrators can change the ownership of a bot. If a bot is subscribed
   to a private stream, then an administrator can get access to that stream by

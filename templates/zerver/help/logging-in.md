@@ -60,8 +60,8 @@ For subsequent logins, see [switching between organizations](/help/switching-bet
 Some ideas:
 
 * If you know your organization is hosted on
-  [zulipchat.com](https://zulipchat.com), go to
-  [find my account](https://zulipchat.com/accounts/find/) and enter the email
+  [axxessdefend.one](https://axxessdefend.one), go to
+  [find my account](https://axxessdefend.one/accounts/find/) and enter the email
   address that you signed up with.
 
 * Try guessing the URL. Axxess URLs often look like `<name>.Axxesschat.com`,
@@ -69,12 +69,6 @@ Some ideas:
   organization).
 
 * Ask your organization administrators for your Axxess URL.
-
-### I signed up with Google/GitHub auth and never set a password
-
-If you signed up using passwordless authentication and want to start logging
-in via email/password, you can
-[reset your password](/help/change-your-password).
 
 ### I forgot my password
 

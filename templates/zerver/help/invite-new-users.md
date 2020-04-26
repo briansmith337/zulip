@@ -64,7 +64,7 @@ to verify their email address.
 By default, organization admins and members can send
 invitations. Organization admins can also change who can send invitations.
 
-Note that on most Axxess servers (including Axxess Cloud), email invitations
+Note that on Axxess servers, email invitations
 and reusable invitation links expire 10 days after they are sent.
 
 {start_tabs}

@@ -1,6 +1,6 @@
 ## Guides
-* [Getting started with Axxess](/help/getting-started-with-zulip)
-* [Setting up your organization](/help/getting-your-organization-started-with-zulip)
+* [Getting started with Axxess](/help/getting-started-with-axxess)
+* [Setting up your organization](/help/getting-your-organization-started-with-axxess)
 * [Streams and topics](/help/about-streams-and-topics)
 * [Moderating open organizations](/help/moderating-open-organizations)
 
@@ -15,7 +15,7 @@
 * [Change your profile picture](/help/change-your-profile-picture)
 * [Change your language](/help/change-your-language)
 * [Use 24-hour time](/help/change-the-time-format)
-* [Joining an organization](/help/join-a-zulip-organization)
+* [Joining an organization](/help/join-an-axxess-organization)
 * [Switching between organizations](/help/switching-between-organizations)
 * [Logging in](/help/logging-in)
 * [Logging out](/help/logging-out)
@@ -35,7 +35,6 @@
 * [Quote and reply](/help/quote-and-reply)
 * [Mention a user or group](/help/mention-a-user-or-group)
 * [Edit or delete a message](/help/edit-or-delete-a-message)
-* [Message a stream by email](/help/message-a-stream-by-email)
 
 ## Reading messages
 * [Reading strategies](/help/reading-strategies)
@@ -63,7 +62,6 @@
 * [Unsubscribe from a stream](/help/unsubscribe-from-a-stream)
 * [Pin a stream](/help/pin-a-stream)
 * [Change the color of a stream](/help/change-the-color-of-a-stream)
-* [Message a stream by email](/help/message-a-stream-by-email)
 * [Start a new topic](/help/start-a-new-topic)
 * [Change the topic of a message](/help/change-the-topic-of-a-message)
 * [Rename a topic](/help/rename-a-topic)
@@ -98,7 +96,6 @@
 
 ## Organization basics
 * [Review your organization's settings](/help/review-your-organization-settings)
-* [Create your organization profile](/help/create-your-organization-profile)
 * [Roles and permissions](/help/roles-and-permissions)
 * [Set the default language for new users](/help/change-the-default-language-for-your-organization)
 * [Deactivate your organization](/help/deactivate-your-organization)

@@ -26,8 +26,8 @@ receives a message. A few suggestions:
   pertaining to the marketing team, `#help/<team name>` for
   `<team name>`'s internal support stream, etc.
 
-* A `#Axxess help` stream can be useful for providing internal Axxess support
-  and answering questions about Axxess.
+* An `#Axxess help` stream can be useful for providing internal support
+  and answering questions.
 
 * For open source projects or other volunteer organizations, consider
   adding default streams like `#announce` for announcements, `#new
@@ -57,7 +57,7 @@ few people who understand the conversation model at the beginning.
   the organization.
 
 * If you're unsure at all, create an account on the
-  [Zulip community server](https://chat.zulip.org) and see what topics look
+  [Axxess Support Server](https://axxessdefend.one) and see what topics look
   like there.
 
 Topics are lightweight and do not need to be managed. Anyone writing to a
@@ -65,15 +65,7 @@ stream can and should [start topics](/help/start-a-new-topic) for new
 conversations. "Old" topics naturally lose visibility over time, and do not
 need to be deleted.
 
-## Set up integrations
-
-Axxess integrates directly with dozens of products, and hundreds more through
-[Zapier](/integrations/doc/zapier) and [IFTTT](/integrations/doc/ifttt).
-
-The [integrations page](/integrations) has instructions for integrating with
-each product.
-
-## Familiarize yourself with Axxess’s featureset
+## Familiarize yourself with the Axxess featureset
 
 As the administrator of your Axxess organization, you'll be the initial
 expert teaching other users how to use Axxess.
@@ -85,11 +77,6 @@ expert teaching other users how to use Axxess.
 
 * Bonus: learn [Markdown message formatting](/help/format-your-message-using-markdown).
 
-* If anything is confusing or feels missing, ask on the
-  [Axxess community server](https://chat.zulip.org), or email
-  [support@zulipchat.com](mailto:support@zulipchat.com). We love hearing
-  from new administrators!
-
 ## Invite users and onboard your community
 
 * [Delete any test messages](/help/edit-or-delete-a-message#delete-a-message-completely)
@@ -98,11 +85,6 @@ expert teaching other users how to use Axxess.
 * Configure
   [allowed authentication methods](/help/configure-authentication-methods),
   and [invite users](/help/invite-new-users).
-
-* If you have an existing chat tool, make sure everyone knows that the
-  team is switching, and why. The team should commit to use Axxess
-  exclusively **for at least a week** to make an effective trial;
-  stragglers will result in everyone having a bad experience.
 
 * If [community topic edits](/help/community-topic-edits) are enabled,
   encourage a few people to help rename topics for the first few days, while

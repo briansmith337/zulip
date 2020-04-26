@@ -27,6 +27,8 @@ This article assumes you've [logged in](/help/logging-in) to each organization a
 
 You can log in to multiple Axxess organizations by opening multiple tabs, and
 logging into one Axxess organization in each tab. To switch Axxess organizations,
-just switch tabs.
+just switch tabs.  *Note:  Multiple organization support is currently being
+developed by Axxess.  We will notify all users and update this documentation
+when complete.
 
 {end_tabs}

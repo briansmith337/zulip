@@ -15,7 +15,7 @@
 !!! warn ""
     **Note**: This action cannot be undone by anyone in the organization. If you
     deactivated your organization by accident, please contact your server
-    administrator ({{ support_email }}) as soon as possible, before the
+    administrator as soon as possible, before the
     deactivated organization is permanently deleted.
 
 !!! warn ""
