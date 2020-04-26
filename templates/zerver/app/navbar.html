@@ -102,18 +102,8 @@
                             </li>
                             <li class="divider" role="presentation"></li>
                             <li role="presentation">
-                                <a href="{{ apps_page_url }}" target="_blank" role="menuitem">
+                                <a href="https://axxess.one/apps" target="_blank" role="menuitem">
                                     <i class="fa fa-desktop" aria-hidden="true"></i> {{ _('Desktop & mobile apps') }}
-                                </a>
-                            </li>
-                            <li role="presentation">
-                                <a href="/integrations" target="_blank" role="menuitem">
-                                    <i class="fa fa-github" aria-hidden="true"></i> {{ _('Integrations') }}
-                                </a>
-                            </li>
-                            <li role="presentation">
-                                <a href="/api" target="_blank" role="menuitem">
-                                    <i class="fa fa-sitemap" aria-hidden="true"></i> {{ _('API documentation') }}
                                 </a>
                             </li>
                             {% if not is_guest %}
@@ -121,20 +111,6 @@
                                 <a href="/stats" target="_blank" role="menuitem">
                                     <i class="fa fa-bar-chart" aria-hidden="true"></i>
                                     <span>{{ _('Statistics') }}</span>
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if show_plans %}
-                            <li role="presentation">
-                                <a href="/plans" target="_blank" role="menuitem">
-                                    <i class="fa fa-rocket" aria-hidden="true"></i> {{ _('Plans and pricing') }}
-                                </a>
-                            </li>
-                            {% endif %}
-                            {% if show_billing %}
-                            <li role="presentation">
-                                <a href="/billing" target="_blank" role="menuitem">
-                                    <i class="fa fa-credit-card" aria-hidden="true"></i> {{ _('Billing') }}
                                 </a>
                             </li>
                             {% endif %}
