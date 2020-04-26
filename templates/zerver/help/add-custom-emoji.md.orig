@@ -28,6 +28,7 @@ are treated the same as spaces.
 
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
 ### Bulk add emoji
 
 We expose a [REST API endpoint](/api/upload-custom-emoji) for bulk uploading
@@ -39,7 +40,9 @@ emoji. Using REST API endpoints requires some technical expertise; email
 support@axxess.one if you get stuck.
 >>>>>>> Big Changes - changed documentation and other help.  Initial check in with modified documents
 
->>>>>>> merged with first rebase
+=======
+>>>>>>> Modified the Help Docs for users
+>>>>>>> Modified the Help Docs for users
 ## Replace a default emoji
 
 You can replace a default emoji by adding a custom emoji of the same
