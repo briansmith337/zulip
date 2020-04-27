@@ -139,7 +139,7 @@ exports.redraw_title = function () {
     const new_title = (new_message_count ? "(" + new_message_count + ") " : "")
         + narrow.narrow_title + " - "
         + page_params.realm_name + " - "
-        + "Zulip";
+        + "Axxess";
 
     if (document.title === new_title) {
         return;
