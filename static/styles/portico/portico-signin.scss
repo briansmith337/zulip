@@ -235,12 +235,16 @@ html {
 
     .header-main .logo .brand-logo {
         circle {
-            fill: hsl(0, 0%, 27%) !important;
+            /*fill: hsl(0, 0%, 27%) !important;*/
+			fill: #145cb5 !important;
         }
 
         path {
-            fill: hsl(0, 0%, 100%) !important;
-            stroke: hsl(0, 0%, 100%) !important;
+            /*fill: hsl(0, 0%, 100%) !important;
+            stroke: hsl(0, 0%, 100%) !important;*/
+			fill: #145cb5 !important;
+            stroke: #145cb5 !important;
+			
         }
     }
 }

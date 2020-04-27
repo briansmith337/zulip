@@ -162,8 +162,10 @@ p.n-margin {
 }
 
 .top-messages-logo svg path {
-    fill: hsl(0, 0%, 100%);
-    stroke: hsl(0, 0%, 100%);
+    /*fill: hsl(0, 0%, 100%);
+    stroke: hsl(0, 0%, 100%);*/
+	fill: #145cb5;
+    stroke: #145cb5;
 }
 
 #feedback_container {

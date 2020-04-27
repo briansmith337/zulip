@@ -1309,7 +1309,7 @@ input.new-organization-button {
 .error_page {
     min-height: calc(100vh - 290px);
     height: 100%;
-    background-color: hsl(163, 42%, 85%);
+    background-color: #BCD0E8;
     font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
 }
 
@@ -1331,10 +1331,10 @@ input.new-organization-button {
 
 .error_page .errorbox {
     margin: auto;
-    border: 2px solid hsl(163, 43%, 46%);
+    border: 2px solid #145cb5;
     max-width: 500px;
     background-color: hsl(0, 0%, 100%);
-    box-shadow: 0 0 4px hsl(163, 43%, 46%);
+    box-shadow: 0 0 4px #827c7c;
     font-size: 18px;
 }
 
@@ -1352,7 +1352,7 @@ input.new-organization-button {
 }
 
 .error_page .lead {
-    color: hsl(163, 49%, 44%);
+    color: #145cb5;
     font-size: 35px;
     margin-bottom: 20px;
     line-height: normal;
