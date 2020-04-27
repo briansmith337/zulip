@@ -24,13 +24,7 @@ You are receiving this because you have email notifications enabled for this str
 {% endif %}
 
 {% if reply_to_zulip  %}
-<<<<<<< HEAD
 Reply to this email directly, or view it in Axxess:
-=======
-<<<<<<< HEAD
-{% trans %}Reply to this email directly, or view it in Zulip:{% endtrans %}
-
->>>>>>> Mainly email message formatting
 {{ narrow_url }}
 {% elif not show_message_content %}
 View or reply in Axxess:
@@ -39,28 +33,19 @@ View or reply in Axxess:
 Reply in Axxess:
 {{ narrow_url }}
 
-<<<<<<< HEAD
 Do not reply to this email. This Axxess server is not configured to accept
+<<<<<<< HEAD
 incoming emails.
 =======
-{% trans %}
-Do not reply to this email. This Zulip server is not configured to accept
-=======
-Reply to this email directly, or view it in Axxess:
-{{ narrow_url }}
-{% elif not show_message_content %}
-View or reply in Axxess:
-{{ narrow_url }}
-{% else %}
-Reply in Axxess:
-{{ narrow_url }}
-
-Do not reply to this email. This Axxess server is not configured to accept
+<<<<<<< HEAD
 >>>>>>> Mainly email message formatting
 incoming emails. Help:
 {% endtrans %}
 https://zulip.readthedocs.io/en/latest/production/email-gateway.html
->>>>>>> Mainly email message formatting
+=======
+incoming emails.
+>>>>>>> Modified emails and email images and colors
+>>>>>>> Modified emails and email images and colors
 {% endif %}
 
 Manage email preferences:
