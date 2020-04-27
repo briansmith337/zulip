@@ -1,32 +1,32 @@
 <div id="data-exports" class="settings-section" data-name="data-exports-admin">
     <h3>{{t "Data exports" }}
-        <a href="/help/export-your-organization" target="_blank">
-            <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+        <!--<a href="/help/export-your-organization" target="_blank">
+            <i class="fa fa-question-circle-o" aria-hidden="true"></i>-->
         </a>
     </h3>
     <p>
-        {{t 'Exports all users, settings, and all data visible in public streams.' }}
-        {{t 'Any organization administrator can conduct an export.'}}
-        {{t 'Depending on the size of your organization, an export can take anywhere from seconds to an hour.' }}
+        <!--{{t 'Exports all users, settings, and all data visible in public streams.' }}-->
+        <!--{{t 'Any organization administrator can conduct an export.'}}-->
+        <!--{{t 'Depending on the size of your organization, an export can take anywhere from seconds to an hour.' }}-->
     </p>
     <p>
-        {{#tr this}}<a href="/help/export-your-organization" target="_blank">Click here</a> to learn about exporting private streams and messages.{{/tr}}
-        {{t 'Note that organizations are limited to five exports per week.' }}
+        <!--{{#tr this}}<a href="/help/export-your-organization" target="_blank">Click here</a> to learn about exporting private streams and messages.{{/tr}}-->
+        <!--{{t 'Note that organizations are limited to five exports per week.' }}-->
     </p>
 
     {{#if is_admin}}
-    <div class="alert" id="export_status" role="alert">
-        <span class="export_status_text"></span>
-    </div>
-    <form class="form-horizontal">
-        <div class="add-new-export-box grey-box">
-            <div class="wrapper">
-                <button type="submit" class="button rounded sea-green" id="export-data">
-                    {{t 'Start public export' }}
-                </button>
-            </div>
-        </div>
-    </form>
+    <!--<div class="alert" id="export_status" role="alert">-->
+        <!--<span class="export_status_text"></span>-->
+    <!--</div>-->
+    <!--<form class="form-horizontal">-->
+        <!--<div class="add-new-export-box grey-box">-->
+            <!--<div class="wrapper">-->
+                <!--<button type="submit" class="button rounded sea-green" id="export-data">-->
+                    <!--{{t 'Start public export' }}-->
+                <!--</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</form>-->
     {{/if}}
     <input type="hidden" class="search" placeholder="{{t 'Filter exports' }}"
       aria-label="{{t 'Filter exports' }}"/>

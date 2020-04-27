@@ -2,46 +2,46 @@
     <div class="admin-table-wrapper">
 
         <p>
-            {{#tr this}}
-            Configure regular expression patterns that will be
-            automatically linkified when used in Zulip message bodies or
-            topics.  For example to automatically linkify commit IDs and
-            issue numbers (e.g. #123) to the corresponding items in a GitHub
-            project, you could use the following:
-            {{/tr}}
+            <!--{{#tr this}}-->
+            <!--Configure regular expression patterns that will be-->
+            <!--automatically linkified when used in Axxess message bodies or-->
+            <!--topics.  For example to automatically linkify commit IDs and-->
+            <!--issue numbers (e.g. #123) to the corresponding items in a GitHub-->
+            <!--project, you could use the following:-->
+            <!--{{/tr}}-->
         </p>
-        <ul>
+        <!--<ul>
             <li>
                 <code>#(?P&lt;id&gt;[0-9]+)</code>
                 {{t "and" }}
-                <code>https://github.com/zulip/zulip/issues/%(id)s</code>
+                <code>https://github.com/axxess/axxess/issues/%(id)s</code>
             </li>
             <li>
                 <code>(?P&lt;id&gt;[0-9a-f]{40})</code>
                 {{t "and" }}
-                <code>https://github.com/zulip/zulip/commit/%(id)s</code>
+                <code>https://github.com/axxess/axxess/commit/%(id)s</code>
             </li>
-        </ul>
-        <p>
-            {{#tr this}}
-            Or, to automatically linkify GitHub's <code>org/repo#1234</code> syntax:
-            {{/tr}}
-        </p>
-        <ul>
+        </ul>-->
+        <!--<p>-->
+        <!--{{#tr this}}-->
+            <!--Or, to automatically linkify GitHub's <code>org/repo#1234</code> syntax:-->
+            <!--{{/tr}}-->
+        <!--</p>-->
+        <!--<ul>
             <li>
                 <code>(?P&lt;org&gt;[a-zA-Z0-9_-]+)/(?P&lt;repo&gt;[a-zA-Z0-9_-]+)#(?P&lt;id&gt;[0-9]+)</code>
                 {{t "and" }}
                 <code>https://github.com/%(org)s/%(repo)s/issues/%(id)s</code>
             </li>
-        </ul>
-        <p>
-            {{#tr this}}
-            More details are available <a href="/help/add-a-custom-linkification-filter" target="_blank">in the Help Center article</a>.
-            {{/tr}}
-        </p>
+        </ul>-->
+        <!--<p>-->
+            <!--{{#tr this}}-->
+            <!--More details are available <a href="/help/add-a-custom-linkification-filter" target="_blank">in the Help Center article</a>.-->
+            <!--{{/tr}}-->
+        <!--</p>-->
 
         {{#if is_admin}}
-        <form class="form-horizontal admin-filter-form">
+        <!--<form class="form-horizontal admin-filter-form">
             <div class="add-new-filter-box grey-box">
                 <div class="new-filter-form wrapper">
                     <div class="settings-section-title new-filter-section-title">{{t "Add a new linkifier" }}</div>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="control-group">
                         <label for="filter_format_string" class="control-label">{{t "URL format string" }}</label>
-                        <input type="text" id="filter_format_string" name="url_format_string" placeholder="https://github.com/zulip/zulip/issues/%(id)s" />
+                        <input type="text" id="filter_format_string" name="url_format_string" placeholder="https://github.com/axxess/axxess/issues/%(id)s" />
                         <div class="alert" id="admin-filter-format-status"></div>
                     </div>
                     <button type="submit" class="button rounded sea-green">
@@ -61,7 +61,7 @@
                     </button>
                 </div>
             </div>
-        </form>
+        </form>-->
         {{/if}}
 
         <input type="text" class="search" placeholder="{{t 'Filter linkifiers' }}" aria-label="{{t 'Filter linkifiers' }}"/>

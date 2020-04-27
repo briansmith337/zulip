@@ -16,10 +16,10 @@
     <section>
         <h3>{{ _("Accounts") }}</h3>
         <ul>
-            {% if find_team_link_disabled %}
-            {% else %}
+            <!--{% if find_team_link_disabled %}
+            {% else %}-->
             <li><a href="{{ root_domain_uri }}/accounts/find">{{ _("Find account") }}</a></li>
-            {% endif %}
+            <!--{% endif %}-->
             {% if open_realm_creation %}
             <li><a href="{{ root_domain_uri }}/new/">{{ _("New organization") }}</a></li>
             {% endif %}
