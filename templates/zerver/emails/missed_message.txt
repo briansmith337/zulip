@@ -34,8 +34,7 @@ Reply in Axxess:
 {{ narrow_url }}
 
 Do not reply to this email. This Axxess server is not configured to accept
-incoming emails. Help:
-https://zulip.readthedocs.io/en/latest/production/email-gateway.html
+incoming emails.
 {% endif %}
 
 Manage email preferences:
