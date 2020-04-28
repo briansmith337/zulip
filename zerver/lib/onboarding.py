@@ -50,6 +50,7 @@ def create_if_missing_realm_internal_bots() -> None:
 def send_initial_pms(user: UserProfile) -> None:
     organization_setup_text = ""
     if user.is_realm_admin:
+<<<<<<< HEAD
         help_url = user.realm.uri + "/help/getting-your-organization-started-with-zulip"
         organization_setup_text = (
                                    "started with Axxess\n" % (help_url,))
@@ -92,6 +93,24 @@ def send_initial_pms(user: UserProfile) -> None:
 
     content = content.format(apps_url="/apps", settings_url="#settings",
                              organization_setup_text=organization_setup_text)
+=======
+        help_url = user.realm.uri + "/help/getting-your-organization-started-with-axxess"
+        organization_setup_text = ("* [Read the guide](%s) for getting your organization "
+                                   "started with Axxess\n" % (help_url,))
+
+    content = (
+        "Hello, and welcome to Axxess!\n\nYour Privacy and Data are now Protected.\n"
+        "\nGuaranteed\n"
+        "Here are some tips to get you started:\n"
+        "* Download our [Desktop and mobile apps](https://axxess.one/apps) \n"
+        "* Customize your account and notifications on your [Settings page](#settings)\n"
+        "* Type `?` to check out the Axxess keyboard shortcuts\n"
+        "%s"
+        "\n"
+        "The most important shortcut is `r` to reply.\n\n"
+        "Sign Up for our support\n") \
+        % (organization_setup_text,)
+>>>>>>> Modified the Welcome Bot Language
 
     internal_send_private_message(user.realm, get_system_bot(settings.WELCOME_BOT),
                                   user, content)
