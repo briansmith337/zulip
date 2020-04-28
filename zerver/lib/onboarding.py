@@ -49,21 +49,21 @@ def create_if_missing_realm_internal_bots() -> None:
 def send_initial_pms(user: UserProfile) -> None:
     organization_setup_text = ""
     if user.is_realm_admin:
-        help_url = user.realm.uri + "/help/getting-your-organization-started-with-zulip"
+        help_url = user.realm.uri + "/help/getting-your-organization-started-with-axxess"
         organization_setup_text = ("* [Read the guide](%s) for getting your organization "
-                                   "started with Zulip\n" % (help_url,))
+                                   "started with Axxess\n" % (help_url,))
 
     content = (
-        "Hello, and welcome to Zulip!\n\nThis is a private message from me, Welcome Bot. "
+        "Hello, and welcome to Axxess!\n\nYour Privacy and Data are now Protected.\n"
+        "\nGuaranteed\n"
         "Here are some tips to get you started:\n"
-        "* Download our [Desktop and mobile apps](/apps)\n"
+        "* Download our [Desktop and mobile apps](https://axxess.one/apps) \n"
         "* Customize your account and notifications on your [Settings page](#settings)\n"
-        "* Type `?` to check out Zulip's keyboard shortcuts\n"
+        "* Type `?` to check out the Axxess keyboard shortcuts\n"
         "%s"
         "\n"
         "The most important shortcut is `r` to reply.\n\n"
-        "Practice sending a few messages by replying to this conversation. If you're not into "
-        "keyboards, that's okay too; clicking anywhere on this message will also do the trick!") \
+        "Sign Up for our support\n") \
         % (organization_setup_text,)
 
     internal_send_private_message(user.realm, get_system_bot(settings.WELCOME_BOT),
