@@ -8,6 +8,10 @@ $left_col_size: 19px;
    the above (and another 5px of padding not measured here) */
 $topic_indent: calc($far_left_gutter_size + $left_col_size + 4px);
 
+div#add-stream-link a {
+    color: #fff;
+}
+
 #left-sidebar #group-pm-list {
     display: none;
 }
@@ -133,12 +137,15 @@ li.show-more-topics {
 .top_left_row:hover,
 .bottom_left_row:hover,
 #stream_filters li.highlighted_stream {
-    background-color: hsl(93, 18%, 82%);
+    background-color: #fff;
+	color: #000;
+	/*background-color: hsl(93, 18%, 82%);*/
     border-radius: 4px;
 }
 
 #stream_filters li.active-sub-filter:hover {
     background-color: hsl(120, 11%, 82%);
+	color: #000;
 }
 
 #add-stream-link {
@@ -174,6 +181,7 @@ li.active-sub-filter {
     background-color: hsl(202, 56%, 91%);
     position: relative;
     border-radius: 4px;
+	color: #000;
 }
 
 #global_filters .filter-icon {

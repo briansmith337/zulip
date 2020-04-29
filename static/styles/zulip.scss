@@ -17,7 +17,7 @@ html {
 }
 .fa-search:before {
     content: "\f002";
-	color: #145cb5;
+	color: #fff;
 }
 .fa-keyboard-o::before {
     content: "\f11c";
@@ -67,7 +67,9 @@ textarea {
     font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     line-height: normal;
 }
-
+a#invite-user-link {
+    color: #fff;
+}
 blockquote p {
     font-weight: normal;
 }
@@ -299,6 +301,7 @@ p.n-margin {
     overflow-y: scroll;
     z-index: 99;
     -webkit-overflow-scrolling: touch;
+	background-color: #145CB5;
 }
 
 .app-main,
@@ -326,6 +329,8 @@ p.n-margin {
 .app-main {
     height: 100%;
     min-height: 100%;
+	background-color: #145CB5;
+	width: 98%;
 }
 
 .fixed-app {
@@ -351,6 +356,7 @@ p.n-margin {
     position: absolute;
     right: 0px;
     top: 0px;
+	/*color: #fff;*/
 }
 
 .app-main .column-left .left-sidebar,
@@ -363,6 +369,8 @@ p.n-margin {
 .app-main .column-left .left-sidebar {
     width: 242px;
     padding-left: 0px;
+	background-color: #145CB5;
+	color: #fff;
 }
 
 .app-main .column-right .right-sidebar {
@@ -518,6 +526,7 @@ strong {
     color: hsl(0, 0%, 43%);
     font-weight: normal;
     display: inline;
+	color: #fff;
 }
 
 .tooltip.in {
