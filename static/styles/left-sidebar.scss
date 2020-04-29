@@ -268,8 +268,11 @@ li.top_left_starred_messages {
 #stream_filters .count,
 .topic-unread-count,
 .private_message_count {
-    background-color: hsl(105, 2%, 50%);
-    color: hsl(0, 0%, 100%);
+    /*background-color: hsl(105, 2%, 50%);
+    color: hsl(0, 0%, 100%);*/
+	background-color: #fff;
+    color: #000;
+	border: 1px solid red;
 }
 
 #global_filters .count {
