@@ -42,7 +42,8 @@ const HOTSPOT_LOCATIONS = new Map([
 ]);
 
 // popover illustration url(s)
-const WHALE = '/static/images/hotspots/whale.svg';
+//const WHALE = '/static/images/hotspots/whale.svg';
+const WHALE = '/static/images/hotspots/whale.png';
 
 exports.post_hotspot_as_read = function (hotspot_name) {
     channel.post({

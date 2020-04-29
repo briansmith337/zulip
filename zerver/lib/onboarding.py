@@ -92,7 +92,8 @@ def send_initial_realm_messages(realm: Realm) -> None:
         {'stream': realm.DEFAULT_NOTIFICATION_STREAM_NAME,
          'topic': "swimming turtles",
          'content': "This is a message on stream #**%(default_notification_stream_name)s** with the "
-         "topic `swimming turtles`. "
+         "topic `swimming turtles`.  Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles. \n\n"
+         #'content': "Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles."
          "\n\n[](/static/images/cute/turtle.png)"
          "\n\n[Start a new topic](/help/start-a-new-topic) any time you're not replying to a "
          "previous message."},
