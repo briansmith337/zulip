@@ -167,9 +167,19 @@ def send_initial_realm_messages(realm: Realm) -> None:
          'content': content2_of_topic_demonstration_topic},
         {'stream': realm.DEFAULT_NOTIFICATION_STREAM_NAME,
          'topic': "swimming turtles",
+<<<<<<< HEAD
          'content': content_of_swimming_turtles_topic},
     ]
 
+=======
+         'content': "This is a message on stream #**%(default_notification_stream_name)s** with the "
+         "topic `swimming turtles`.  Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles. \n\n"
+         #'content': "Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles."
+         "\n\n[](/static/images/cute/turtle.png)"
+         "\n\n[Start a new topic](/help/start-a-new-topic) any time you're not replying to a "
+         "previous message."},
+    ]  # type: List[Dict[str, str]]
+>>>>>>> trying to fix the hotspots and onboarding.  Error caught in onboarding.  Fixed.  Changed color of whale and converted to png
     messages = [internal_prep_stream_message_by_name(
         realm, welcome_bot, message['stream'], message['topic'], message['content']
     ) for message in welcome_messages]
