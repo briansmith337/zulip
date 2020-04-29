@@ -8,6 +8,7 @@ $left_col_size: 19px;
    the above (and another 5px of padding not measured here) */
 $topic_indent: calc($far_left_gutter_size + $left_col_size + 4px);
 
+<<<<<<< HEAD
 div#add-stream-link a {
     color: #fff;
 }
@@ -19,6 +20,26 @@ div#add-stream-link a {
 #left-sidebar #user-list,
 #left-sidebar #group-pm-list {
     padding-left: 10px;
+=======
+<<<<<<< HEAD
+#left-sidebar {
+    #group-pm-list {
+        display: none;
+    }
+
+    #user-list,
+    #group-pm-list {
+        padding-left: 10px;
+    }
+=======
+div#add-stream-link a {
+    color: #fff;
+}
+
+#left-sidebar #group-pm-list {
+    display: none;
+>>>>>>> aesthetic changes for todd - incomplete atm
+>>>>>>> aesthetic changes for todd - incomplete atm
 }
 
 .hashtag {
@@ -139,11 +160,20 @@ li.show-more-topics {
     border-radius: 4px;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> aesthetic changes for todd - incomplete atm
 #stream_filters li.active-sub-filter:hover {
     background-color: hsl(120, 11%, 82%);
 	color: #000;
 }
 
+<<<<<<< HEAD
+=======
+>>>>>>> aesthetic changes for todd - incomplete atm
+>>>>>>> aesthetic changes for todd - incomplete atm
 #add-stream-link {
     text-decoration: none;
     margin-left: 10px;
@@ -160,38 +190,17 @@ li.show-more-topics {
 ul.filters {
     list-style-type: none;
     margin-left: 0px;
-
-    a {
-        color: inherit;
-    }
-
-    hr {
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-
-<<<<<<< HEAD
-=======
-    li.muted_topic,
-    li.out_of_home_view {
-        opacity: 0.25;
-    }
-
-    li.out_of_home_view {
-        &:hover {
-            opacity: 0.6;
-        }
-
-        li.muted_topic {
-            /* If stream is muted, this resets opacity of muted topics in muted
-            stream to 1; since opacity is multiplied down through child
-            elements, this avoids an unreadable opacity of 0.25^2. */
-            opacity: 1;
-        }
-    }
 }
 
->>>>>>> css: Use SCSS nesting for 'ul.filters'.
+ul.filters a {
+    color: inherit;
+}
+
+ul.filters hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 li.active-filter,
 li.active-sub-filter {
     font-weight: 600 !important;

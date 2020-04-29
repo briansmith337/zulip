@@ -9,7 +9,6 @@ html {
 }
 .fa-gear:before, .fa-cog:before {
     content: "\f013";
-<<<<<<< HEAD
 	/*color: ##b51414;*/
 	opacity: 1;
 }
@@ -20,8 +19,12 @@ html {
 }
 .fa-search:before {
     content: "\f002";
+<<<<<<< HEAD
 	/*color: ##b51414;*/
 	opacity: 1;
+=======
+	color: #fff;
+>>>>>>> aesthetic changes for todd - incomplete atm
 }
 .fa-keyboard-o::before {
     content: "\f11c";
@@ -47,17 +50,6 @@ html {
     content: "\f118";
 	color: #145cb5;
 	opacity: 1;
-=======
-	color: #145cb5;
-}
-.fa-caret-down:before {
-    content: "\f0d7";
-	color: #145cb5;
-}
-.fa-search:before {
-    content: "\f002";
-	color: #145cb5;
->>>>>>> merged with first rebase
 }
 
 #app-loading.loaded {
