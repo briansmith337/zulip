@@ -8,7 +8,6 @@ $left_col_size: 19px;
    the above (and another 5px of padding not measured here) */
 $topic_indent: calc($far_left_gutter_size + $left_col_size + 4px);
 
-<<<<<<< HEAD
 div#add-stream-link a {
     color: #fff;
 }
@@ -20,26 +19,6 @@ div#add-stream-link a {
 #left-sidebar #user-list,
 #left-sidebar #group-pm-list {
     padding-left: 10px;
-=======
-<<<<<<< HEAD
-#left-sidebar {
-    #group-pm-list {
-        display: none;
-    }
-
-    #user-list,
-    #group-pm-list {
-        padding-left: 10px;
-    }
-=======
-div#add-stream-link a {
-    color: #fff;
-}
-
-#left-sidebar #group-pm-list {
-    display: none;
->>>>>>> aesthetic changes for todd - incomplete atm
->>>>>>> aesthetic changes for todd - incomplete atm
 }
 
 .hashtag {
@@ -160,20 +139,11 @@ li.show-more-topics {
     border-radius: 4px;
 }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> aesthetic changes for todd - incomplete atm
 #stream_filters li.active-sub-filter:hover {
     background-color: hsl(120, 11%, 82%);
 	color: #000;
 }
 
-<<<<<<< HEAD
-=======
->>>>>>> aesthetic changes for todd - incomplete atm
->>>>>>> aesthetic changes for todd - incomplete atm
 #add-stream-link {
     text-decoration: none;
     margin-left: 10px;
@@ -299,6 +269,7 @@ li.top_left_starred_messages {
 	background-color: #fff;
     color: #000;
 	border: 1px solid red;
+<<<<<<< HEAD
 }
 
 #global_filters .count {
@@ -309,6 +280,8 @@ li.top_left_starred_messages {
 
 #stream_filters .count {
     margin-right: 15px;
+=======
+>>>>>>> Still aesthetic changes for todd
 }
 
 .topic-box {
