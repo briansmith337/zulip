@@ -9,7 +9,7 @@ html {
 }
 .fa-gear:before, .fa-cog:before {
     content: "\f013";
-	color: #145cb5;
+	color: #fff;
 }
 .fa-caret-down:before {
     content: "\f0d7";
@@ -1956,8 +1956,8 @@ nav a.no-style:hover {
 nav .column-left .nav-logo {
     display: inline-block;
     vertical-align: top;
-    margin-top: 8px;
-    height: 25px;
+    /*margin-top: 8px;
+    height: 25px;*/
     max-width: 200px;
 }
 
