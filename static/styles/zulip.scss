@@ -10,38 +10,42 @@ html {
 .fa-gear:before, .fa-cog:before {
     content: "\f013";
 	color: #145cb5;
+	opacity: 1;
 }
 .fa-caret-down:before {
     content: "\f0d7";
 	color: #145cb5;
+	opacity: 1;
 }
 .fa-search:before {
     content: "\f002";
 	color: #145cb5;
+	opacity: 1;
 }
 .fa-keyboard-o::before {
     content: "\f11c";
     color: #145cb5;
+	opacity: 1;
 }
 .fa-file-text-o:before {
     content: "\f0f6";
     color: #145cb5;
-    opacity: .8;
+    opacity: 1;
 }
 .fa-chevron-down:before {
     content: "\f078";
 	color: #145cb5;
-	opacity: .8;
+	opacity: 1;
 }
 .fa-star-o:before {
     content: "\f006";
 	color: #145cb5;
-	opacity: .8;
+	opacity: 1;
 }
 .fa-smile-o:before {
     content: "\f118";
 	color: #145cb5;
-	opacity: .8;
+	opacity: 1;
 }
 
 #app-loading.loaded {

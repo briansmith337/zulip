@@ -714,7 +714,8 @@ button.login-social-button {
 
 .split-view .actions a,
 .back-to-login {
-    color: hsl(164, 100%, 23%);
+    /*color: hsl(164, 100%, 23%);*/
+	color: #145cb5;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.8em;
@@ -726,6 +727,7 @@ button.login-social-button {
     &:hover {
         text-decoration: none;
         color: hsl(156, 62%, 61%);
+		color: #6389e0;
     }
 }
 
