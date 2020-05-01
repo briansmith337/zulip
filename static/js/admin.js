@@ -12,7 +12,7 @@ const admin_settings_label = {
     realm_inline_image_preview: i18n.t("Show previews of uploaded and linked images"),
     realm_inline_url_embed_preview: i18n.t("Show previews of linked websites"),
     realm_default_twenty_four_hour_time: i18n.t("Time format"),
-    realm_send_welcome_emails: i18n.t("Send emails introducing Zulip to new users"),
+    realm_send_welcome_emails: i18n.t("Send emails introducing Axxess to new users"),
     realm_message_content_allowed_in_email_notifications:
         i18n.t("Allow message content in missed message emails"),
     realm_digest_emails_enabled: i18n.t("Send weekly digest emails to inactive users"),

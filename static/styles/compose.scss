@@ -388,12 +388,16 @@ input.recipient_box {
         padding-top: 3px;
         padding-bottom: 3px;
         font-weight: 600;
-        border: 1px solid hsl(170, 68%, 41%);
-        background-color: hsl(170, 48%, 54%);
+        /*border: 1px solid hsl(170, 68%, 41%);
+        background-color: hsl(170, 48%, 54%);*/
+		border: 1px solid #ffffff;
+        background-color: #145cb545;
+		
         color: hsl(0, 0%, 100%);
 
         &:focus {
             box-shadow: 0px 0px 10px hsl(170, 48%, 54%), 0px 0px 5px hsl(170, 48%, 54%);
+			box-shadow: 0px 0px 10px #145cb545, 0px 0px 5px hsl #145cb545;
         }
     }
 }
