@@ -390,7 +390,7 @@ def process_new_human_user(user_profile: UserProfile,
             user_profile.realm,
             get_system_bot(settings.NOTIFICATION_BOT),
             prereg_user.referred_by,
-            "%s <`%s`> accepted your invitation to join Zulip!" % (
+            "%s <`%s`> accepted your invitation to join Axxess!" % (
                 user_profile.full_name,
                 user_profile.email,
             )
@@ -1876,7 +1876,7 @@ def validate_recipient_user_profiles(user_profiles: Sequence[UserProfile],
     for user_profile in user_profiles:
         if (not user_profile.is_active and not user_profile.is_mirror_dummy and
                 not allow_deactivated) or user_profile.realm.deactivated:
-            raise ValidationError(_("'%s' is no longer using Zulip.") % (user_profile.email,))
+            raise ValidationError(_("'%s' is no longer using Axxess.") % (user_profile.email,))
         recipient_profiles_map[user_profile.id] = user_profile
         if not is_cross_realm_bot_email(user_profile.email):
             realms.add(user_profile.realm_id)
