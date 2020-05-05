@@ -278,7 +278,7 @@ def notify_new_user(user_profile: UserProfile) -> None:
             sender,
             signup_notifications_stream,
             "signups",
-            "@_**%s|%s** just signed up for Zulip. (total: %i)" % (
+            "@_**%s|%s** just signed up for Axxess. (total: %i)" % (
                 user_profile.full_name, user_profile.id, user_count
             )
         )
@@ -293,7 +293,7 @@ def notify_new_user(user_profile: UserProfile) -> None:
             sender,
             signups_stream,
             user_profile.realm.display_subdomain,
-            "%s <`%s`> just signed up for Zulip! (total: **%i**)" % (
+            "%s <`%s`> just signed up for Axxess! (total: **%i**)" % (
                 user_profile.full_name,
                 user_profile.email,
                 user_count,
@@ -5070,7 +5070,7 @@ def do_invite_users(user_profile: UserProfile,
         queue_json_publish("invites", event)
 
     if skipped:
-        raise InvitationError(_("Some of those addresses are already using Zulip, "
+        raise InvitationError(_("Some of those addresses are already using Axxess, "
                                 "so we didn't send them an invitation. We did send "
                                 "invitations to everyone else!"),
                               skipped, sent_invitations=True)
