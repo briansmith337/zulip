@@ -384,6 +384,9 @@ p.n-margin {
 
 .app-main .column-middle {
     min-height: 100%;
+	-moz-box-shadow: inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+    box-shadow: inset 0 0 10px #000000;
 }
 
 .column-middle {
