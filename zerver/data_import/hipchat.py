@@ -70,14 +70,14 @@ def untar_input_file(tar_file: str) -> str:
     data_dir = os.path.abspath(data_dir)
 
     if os.path.exists(data_dir):
-        logging.info('input data was already untarred to %s, we will use it', data_dir)
+        logging.info('input data was already untarred to %s, we will use it' % (data_dir,))
         return data_dir
 
     os.makedirs(data_dir)
 
     subprocess.check_call(['tar', '-xf', tar_file, '-C', data_dir])
 
-    logging.info('input data was untarred to %s', data_dir)
+    logging.info('input data was untarred to %s' % (data_dir,))
 
     return data_dir
 
@@ -244,11 +244,11 @@ def convert_room_data(raw_data: List[ZerverFieldsT],
         )
 
         if invite_only:
-            users: Set[int] = {
+            users = {
                 user_id_mapper.get(key)
                 for key in in_dict['members']
                 if user_id_mapper.has(key)
-            }
+            }  # type: Set[int]
 
             if user_id_mapper.has(in_dict['owner']):
                 owner = user_id_mapper.get(in_dict['owner'])
@@ -671,7 +671,7 @@ def process_raw_message_batch(realm_id: int,
         content = content.replace('@here', '@**all**')
         return content
 
-    mention_map: Dict[int, Set[int]] = dict()
+    mention_map = dict()  # type: Dict[int, Set[int]]
 
     zerver_message = []
 
@@ -696,7 +696,7 @@ def process_raw_message_batch(realm_id: int,
         content = h.handle(content)
 
         if len(content) > 10000:
-            logging.info('skipping too-long message of length %s', len(content))
+            logging.info('skipping too-long message of length %s' % (len(content),))
             continue
 
         date_sent = raw_message['date_sent']
@@ -807,7 +807,7 @@ def do_convert_data(input_tar_file: str,
 
     if api_token is None:
         if slim_mode:
-            public_stream_subscriptions: List[ZerverFieldsT] = []
+            public_stream_subscriptions = []  # type: List[ZerverFieldsT]
         else:
             public_stream_subscriptions = build_public_stream_subscriptions(
                 zerver_userprofile=normal_users,

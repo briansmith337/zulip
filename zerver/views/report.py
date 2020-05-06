@@ -21,7 +21,7 @@ from zerver.models import UserProfile
 import subprocess
 import logging
 
-js_source_map: Optional[SourceMap] = None
+js_source_map = None  # type: Optional[SourceMap]
 
 # Read the source map information for decoding JavaScript backtraces.
 def get_js_source_map() -> Optional[SourceMap]:
@@ -105,10 +105,8 @@ def report_error(request: HttpRequest, user_profile: UserProfile, message: str=R
         stacktrace = js_source_map.annotate_stacktrace(stacktrace)
 
     try:
-        version: Optional[str] = subprocess.check_output(
-            ["git", "log", "HEAD^..HEAD", "--oneline"],
-            universal_newlines=True,
-        )
+        version = subprocess.check_output(["git", "log", "HEAD^..HEAD", "--oneline"],
+                                          universal_newlines=True)  # type: Optional[str]
     except Exception:
         version = None
 
@@ -163,15 +161,14 @@ def report_csp_violations(request: HttpRequest,
                     "Blocked URI('%s'), Original Policy('%s'), "
                     "Violated Directive('%s'), Effective Directive('%s'), "
                     "Disposition('%s'), Referrer('%s'), "
-                    "Status Code('%s'), Script Sample('%s')",
-                    get_attr('document-uri'),
-                    get_attr('blocked-uri'),
-                    get_attr('original-policy'),
-                    get_attr('violated-directive'),
-                    get_attr('effective-directive'),
-                    get_attr('disposition'),
-                    get_attr('referrer'),
-                    get_attr('status-code'),
-                    get_attr('script-sample'))
+                    "Status Code('%s'), Script Sample('%s')" % (get_attr('document-uri'),
+                                                                get_attr('blocked-uri'),
+                                                                get_attr('original-policy'),
+                                                                get_attr('violated-directive'),
+                                                                get_attr('effective-directive'),
+                                                                get_attr('disposition'),
+                                                                get_attr('referrer'),
+                                                                get_attr('status-code'),
+                                                                get_attr('script-sample')))
 
     return json_success()

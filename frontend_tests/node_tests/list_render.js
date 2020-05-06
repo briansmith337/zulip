@@ -23,22 +23,39 @@ set_global('$', (arg) => {
     };
 });
 
-// We build objects here that simulate jQuery containers.
-// The main thing to do at first is simulate that our
-// scroll container is the nearest ancestor to our main
-// container that has a max-height attribute, and then
-// the scroll container will have a scroll event attached to
-// it.  This is a good time to read set_up_event_handlers
-// in the real code.
-
-function make_container() {
+function make_containers() {
+    // We build objects here that simulate jQuery containers.
+    // The main thing to do at first is simulate that our
+    // parent container is the nearest ancestor to our main
+    // container that has a max-height attribute, and then
+    // the parent container will have a scroll event attached to
+    // it.  This is a good time to read set_up_event_handlers
+    // in the real code.
+    const parent_container = {};
     const container = {};
 
+    container.parent = () => parent_container;
     container.length = () => 1;
     container.is = () => false;
     container.css = (prop) => {
         assert.equal(prop, 'max-height');
         return 'none';
+    };
+
+    parent_container.is = () => false;
+    parent_container.length = () => 1;
+    parent_container.css = (prop) => {
+        assert.equal(prop, 'max-height');
+        return 100;
+    };
+
+    // Capture the scroll callback so we can call it in
+    // our tests.
+    parent_container.on = (sel, f) => {
+        assert.equal(sel, 'scroll.list_widget_container');
+        parent_container.call_scroll = () => {
+            f.call(parent_container);
+        };
     };
 
     // Make our append function just set a field we can
@@ -47,74 +64,10 @@ function make_container() {
         container.appended_data = data;
     };
 
-    return container;
-}
-
-function make_scroll_container(container) {
-    const scroll_container = {};
-    scroll_container.is = () => false;
-    scroll_container.length = () => 1;
-    scroll_container.css = (prop) => {
-        assert.equal(prop, 'max-height');
-        return 100;
+    return {
+        container: container,
+        parent_container: parent_container,
     };
-
-    scroll_container.cleared = false;
-
-    // Capture the scroll callback so we can call it in
-    // our tests.
-    scroll_container.on = (ev, f) => {
-        assert.equal(ev, 'scroll.list_widget_container');
-        scroll_container.call_scroll = () => {
-            f.call(scroll_container);
-        };
-    };
-
-    scroll_container.off = (ev) => {
-        assert.equal(ev, 'scroll.list_widget_container');
-        scroll_container.cleared = true;
-    };
-
-    container.parent = () => scroll_container;
-
-    return scroll_container;
-}
-
-function make_sort_container() {
-    const sort_container = {};
-
-    sort_container.cleared = false;
-
-    sort_container.on = (ev, sel, f) => {
-        assert.equal(ev, 'click.list_widget_sort');
-        assert.equal(sel, '[data-sort]');
-        sort_container.f = f;
-    };
-
-    sort_container.off = (ev) => {
-        assert.equal(ev, 'click.list_widget_sort');
-        sort_container.cleared = true;
-    };
-
-    return sort_container;
-}
-
-function make_filter_element() {
-    const element = {};
-
-    element.cleared = false;
-
-    element.on = (ev, f) => {
-        assert.equal(ev, 'input.list_widget_filter');
-        element.f = f;
-    };
-
-    element.off = (ev) => {
-        assert.equal(ev, 'input.list_widget_filter');
-        element.cleared = true;
-    };
-
-    return element;
 }
 
 function make_search_input() {
@@ -142,8 +95,7 @@ function div(item) {
 }
 
 run_test('scrolling', () => {
-    const container = make_container();
-    const scroll_container = make_scroll_container(container);
+    const {container, parent_container} = make_containers();
 
     const items = [];
 
@@ -164,13 +116,13 @@ run_test('scrolling', () => {
     );
 
     // Set up our fake geometry so it forces a scroll action.
-    scroll_container.scrollTop = 180;
-    scroll_container.clientHeight = 100;
-    scroll_container.scrollHeight = 260;
+    parent_container.scrollTop = 180;
+    parent_container.clientHeight = 100;
+    parent_container.scrollHeight = 260;
 
     // Scrolling gets the next two elements from the list into
     // our widget.
-    scroll_container.call_scroll();
+    parent_container.call_scroll();
     assert.deepEqual(
         container.appended_data.html(),
         items.slice(80, 100).join('')
@@ -178,8 +130,7 @@ run_test('scrolling', () => {
 });
 
 run_test('filtering', () => {
-    const container = make_container();
-    make_scroll_container(container);
+    const {container} = make_containers();
 
     const search_input = make_search_input();
 
@@ -192,7 +143,7 @@ run_test('filtering', () => {
         'fence',
         'grape',
     ];
-    const opts = {
+    let opts = {
         filter: {
             element: search_input,
             predicate: (item, value) => {
@@ -203,7 +154,7 @@ run_test('filtering', () => {
     };
 
     container.html = (html) => { assert.equal(html, ''); };
-    const widget = list_render.create(container, list, opts);
+    let widget = list_render.create(container, list, opts);
 
     let expected_html =
         '<div>apple</div>' +
@@ -240,21 +191,16 @@ run_test('filtering', () => {
         '<div>gary</div>' +
         '<div>giraffe</div>';
     assert.deepEqual(container.appended_data.html(), expected_html);
-});
-
-run_test('no filtering', () => {
-    const container = make_container();
-    make_scroll_container(container);
-    container.html = () => {};
 
     // Opts does not require a filter key.
-    const opts = {
+    opts = {
         modifier: (item) => div(item),
     };
-    const widget = list_render.create(container, ['apple', 'banana'], opts);
+    list_render.validate_filter(opts);
+    widget = list_render.create(container, ['apple', 'banana'], opts);
     widget.render();
 
-    const expected_html =
+    expected_html =
         '<div>apple</div>' +
         '<div>banana</div>';
     assert.deepEqual(container.appended_data.html(), expected_html);
@@ -281,76 +227,65 @@ function sort_button(opts) {
         };
     }
 
-    const classList = new Set();
-
     const button = {
         data: data,
         closest: lookup('.progressive-table-wrapper', {
             data: lookup('list-render', opts.list_name),
         }),
-        addClass: (cls) => {
-            classList.add(cls);
-        },
-        hasClass: (cls) => {
-            return classList.has(cls);
-        },
-        removeClass: (cls) => {
-            classList.delete(cls);
+        hasClass: (sel) => {
+            if (sel === 'active') {
+                return opts.active;
+            }
+            assert.equal(sel, 'descend');
+            return false;
         },
         siblings: lookup('.active', {
-            removeClass: (cls) => {
-                assert.equal(cls, 'active');
+            removeClass: (sel) => {
+                assert.equal(sel, 'active');
                 button.siblings_deactivated = true;
             },
         }),
+        addClass: (sel) => {
+            assert.equal(sel, 'active');
+            button.activated = true;
+        },
         siblings_deactivated: false,
-        to_jquery: () => button,
+        activated: false,
     };
 
     return button;
 }
 
-run_test('wire up filter element', () => {
+run_test('filtering', () => {
     const lst = [
+        'alexander',
         'alice',
+        'benedict',
         'JESSE',
-        'moses',
         'scott',
-        'Sean',
+        'Stephanie',
         'Xavier',
     ];
 
-    const container = make_container();
-    make_scroll_container(container);
-    const filter_element = make_filter_element();
-
-    // We don't care about what gets drawn initially.
-    container.html = () => {};
-
     const opts = {
         filter: {
-            filterer: (list, value) => {
-                return list.filter((item) => {
-                    return item.toLowerCase().includes(value);
-                });
+            predicate: (item, value) => {
+                return item.length === value;
             },
-            element: filter_element,
         },
-        modifier: (s) => '(' + s + ')',
     };
 
-    list_render.create(container, lst, opts);
-    filter_element.f.apply({value: 'se'});
-    assert.equal(
-        container.appended_data.html(),
-        '(JESSE)(moses)(Sean)'
-    );
+    const custom_result = list_render.filter(5, lst, opts);
+    assert.deepEqual(custom_result, [
+        'alice',
+        'JESSE',
+        'scott',
+    ]);
+
 });
 
 run_test('sorting', () => {
-    const container = make_container();
-    make_scroll_container(container);
-    const sort_container = make_sort_container();
+    const {container} = make_containers();
 
     let cleared;
     container.html = (html) => {
@@ -362,13 +297,11 @@ run_test('sorting', () => {
     const bob = { name: 'Bob', salary: 40 };
     const cal = { name: 'cal', salary: 30 };
     const dave = { name: 'dave', salary: 25 };
-    const ellen = { name: 'ellen', salary: 95 };
 
-    const list = [bob, ellen, dave, alice, cal];
+    const list = [bob, dave, alice, cal];
 
     const opts = {
-        name: 'sorting-list',
-        parent_container: sort_container,
+        name: 'my-list',
         modifier: (item) => {
             return div(item.name) + div(item.salary);
         },
@@ -381,7 +314,7 @@ run_test('sorting', () => {
         return people.map(opts.modifier).join('');
     }
 
-    list_render.create(container, list, opts);
+    const widget = list_render.create(container, list, opts);
 
     let button_opts;
     let button;
@@ -396,47 +329,13 @@ run_test('sorting', () => {
 
     button = sort_button(button_opts);
 
-    sort_container.f.apply(button);
+    list_render.handle_sort(button, widget);
 
     assert(cleared);
     assert(button.siblings_deactivated);
 
-    expected_html = html_for([
-        alice,
-        bob,
-        cal,
-        dave,
-        ellen,
-    ]);
+    expected_html = html_for([alice, bob, cal, dave]);
     assert.deepEqual(container.appended_data.html(), expected_html);
-
-    // Hit same button again to reverse the data.
-    cleared = false;
-    sort_container.f.apply(button);
-    assert(cleared);
-    expected_html = html_for([
-        ellen,
-        dave,
-        cal,
-        bob,
-        alice,
-    ]);
-    assert.deepEqual(container.appended_data.html(), expected_html);
-    assert(button.hasClass('descend'));
-
-    // And then hit a third time to go back to the forward sort.
-    cleared = false;
-    sort_container.f.apply(button);
-    assert(cleared);
-    expected_html = html_for([
-        alice,
-        bob,
-        cal,
-        dave,
-        ellen,
-    ]);
-    assert.deepEqual(container.appended_data.html(), expected_html);
-    assert(!button.hasClass('descend'));
 
     // Now try a numeric sort.
     button_opts = {
@@ -451,219 +350,11 @@ run_test('sorting', () => {
     cleared = false;
     button.siblings_deactivated = false;
 
-    sort_container.f.apply(button);
+    list_render.handle_sort(button, widget);
 
     assert(cleared);
     assert(button.siblings_deactivated);
 
-    expected_html = html_for([
-        dave,
-        cal,
-        bob,
-        alice,
-        ellen,
-    ]);
+    expected_html = html_for([dave, cal, bob, alice]);
     assert.deepEqual(container.appended_data.html(), expected_html);
-
-    // Hit same button again to reverse the numeric sort.
-    cleared = false;
-    sort_container.f.apply(button);
-    assert(cleared);
-    expected_html = html_for([
-        ellen,
-        alice,
-        bob,
-        cal,
-        dave,
-    ]);
-    assert.deepEqual(container.appended_data.html(), expected_html);
-    assert(button.hasClass('descend'));
-});
-
-run_test('custom sort', () => {
-    const container = make_container();
-    make_scroll_container(container);
-    container.html = () => {};
-
-    const n42 = {x: 6, y: 7};
-    const n43 = {x: 1, y: 43};
-    const n44 = {x: 4, y: 11};
-
-    const list = [n42, n43, n44];
-
-    function sort_by_x(a, b) {
-        return a.x - b.x;
-    }
-
-    function sort_by_product(a, b) {
-        return a.x * a.y - b.x * b.y;
-    }
-
-    list_render.create(container, list, {
-        name: 'custom-sort-list',
-        modifier: (n) => '(' + n.x  + ', ' + n.y + ')',
-        sort_fields: {
-            product: sort_by_product,
-            x_value: sort_by_x,
-        },
-        init_sort: sort_by_product,
-    });
-
-    assert.deepEqual(
-        container.appended_data.html(),
-        '(6, 7)(1, 43)(4, 11)'
-    );
-
-    const widget = list_render.get('custom-sort-list');
-
-    widget.sort('x_value');
-    assert.deepEqual(
-        container.appended_data.html(),
-        '(1, 43)(4, 11)(6, 7)'
-    );
-
-    // We can sort without registering the function, too.
-    function sort_by_y(a, b) {
-        return a.y - b.y;
-    }
-
-    widget.sort(sort_by_y);
-    assert.deepEqual(
-        container.appended_data.html(),
-        '(6, 7)(4, 11)(1, 43)'
-    );
-});
-
-run_test('clear_event_handlers', () => {
-    const container = make_container();
-    const scroll_container = make_scroll_container(container);
-    const sort_container = make_sort_container();
-    const filter_element = make_filter_element();
-
-    // We don't care about actual data for this test.
-    const list = [];
-    container.html = () => {};
-
-    const opts = {
-        name: 'list-we-create-twice',
-        parent_container: sort_container,
-        modifier: () => {},
-        filter: {
-            element: filter_element,
-            predicate: () => true,
-        },
-    };
-
-    // Create it the first time.
-    list_render.create(container, list, opts);
-    assert.equal(sort_container.cleared, false);
-    assert.equal(scroll_container.cleared, false);
-    assert.equal(filter_element.cleared, false);
-
-    // The second time we'll clear the old events.
-    list_render.create(container, list, opts);
-    assert.equal(sort_container.cleared, true);
-    assert.equal(scroll_container.cleared, true);
-    assert.equal(filter_element.cleared, true);
-});
-
-run_test('errors', () => {
-    // We don't care about actual data for this test.
-    const list = 'stub';
-    const container = make_container();
-    make_scroll_container(container);
-
-    blueslip.expect('error', 'Need opts to create widget.');
-    list_render.create(container, list);
-    blueslip.reset();
-
-    blueslip.expect('error', 'Filter predicate is not a function.');
-    list_render.create(container, list, {
-        filter: {
-            predicate: 'wrong type',
-        },
-    });
-    blueslip.reset();
-
-    blueslip.expect('error', 'Filterer and predicate are mutually exclusive.');
-    list_render.create(container, list, {
-        filter: {
-            filterer: () => true,
-            predicate: () => true,
-        },
-    });
-    blueslip.reset();
-
-    blueslip.expect('error', 'Filter filterer is not a function (or missing).');
-    list_render.create(container, list, {
-        filter: {
-        },
-    });
-    blueslip.reset();
-
-    container.html = () => {};
-    blueslip.expect('error', 'List item is not a string: 999');
-    list_render.create(container, list, {
-        modifier: () => 999,
-    });
-    blueslip.reset();
-});
-
-run_test('sort helpers', () => {
-    /*
-        We mostly test our sorting helpers using the
-        actual widget, but this test gets us a bit
-        more line coverage.
-    */
-    const alice2 = {name: 'alice', id: 2};
-    const alice10 = {name: 'alice', id: 10};
-    const bob2 = {name: 'bob', id: 2};
-    const bob10 = {name: 'bob', id: 10};
-
-    const alpha_cmp = list_render.alphabetic_sort('name');
-    const num_cmp = list_render.numeric_sort('id');
-
-    assert.equal(alpha_cmp(alice2, alice10), 0);
-    assert.equal(alpha_cmp(alice2, bob2), -1);
-    assert.equal(alpha_cmp(bob2, alice10), 1);
-    assert.equal(num_cmp(alice2, bob2), 0);
-    assert.equal(num_cmp(alice2, bob10), -1);
-    assert.equal(num_cmp(alice10, bob2), 1);
-});
-
-run_test('replace_list_data w/filter update', () => {
-    const container = make_container();
-    make_scroll_container(container);
-    container.html = () => {};
-
-    const list = [1, 2, 3, 4];
-    let num_updates = 0;
-
-    list_render.create(container, list, {
-        name: 'replace-list',
-        modifier: (n) => '(' + n.toString() + ')',
-        filter: {
-            predicate: (n) => n % 2 === 0,
-            onupdate: () => {
-                num_updates += 1;
-            },
-        },
-    });
-
-    assert.equal(num_updates, 0);
-
-    assert.deepEqual(
-        container.appended_data.html(),
-        '(2)(4)'
-    );
-
-    const widget = list_render.get('replace-list');
-    widget.replace_list_data([5, 6, 7, 8]);
-
-    assert.equal(num_updates, 1);
-
-    assert.deepEqual(
-        container.appended_data.html(),
-        '(6)(8)'
-    );
 });

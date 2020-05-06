@@ -1,6 +1,11 @@
 # Update a message
 
-{generate_api_description(/messages/{message_id}:patch)}
+Edit/update the content or topic of a message.
+
+`PATCH {{ api_url }}/v1/messages/{msg_id}`
+
+`{msg_id}` in the above URL should be replaced with the ID of the
+message you wish you update.
 
 ## Usage examples
 

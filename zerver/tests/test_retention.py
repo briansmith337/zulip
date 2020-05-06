@@ -327,7 +327,7 @@ class TestArchiveMessagesGeneral(ArchiveMessagesTestingBase):
         self.assertEqual(ArchivedAttachment.objects.count(), 3)
         self.assertEqual(
             list(ArchivedAttachment.objects.distinct('messages__id').values_list('messages__id',
-                                                                                 flat=True)),
+                 flat=True)),
             [msgs_ids['expired_message_id']]
         )
         self.assertEqual(Attachment.objects.count(), 3)
@@ -554,7 +554,7 @@ class MoveMessageToArchiveGeneral(MoveMessageToArchiveBase):
             self.send_personal_message(self.sender, self.recipient, body2)
         ]
 
-        attachment_id_to_message_ids: Dict[int, List[int]] = {}
+        attachment_id_to_message_ids = {}  # type: Dict[int, List[int]]
         attachment_ids = list(
             Attachment.objects.filter(messages__id__in=msg_ids).values_list("id", flat=True)
         )

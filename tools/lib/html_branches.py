@@ -5,7 +5,6 @@ from collections import defaultdict
 
 from .template_parser import (
     tokenize,
-    FormattedException,
     Token,
 )
 
@@ -27,7 +26,7 @@ class HtmlTreeBranch:
         self.fn = fn
         self.line = tags[-1].token.line
 
-        self.words: Set[str] = set()
+        self.words = set()  # type: Set[str]
         for tag in tags:
             for word in tag.words:
                 self.words.add(word)
@@ -61,8 +60,8 @@ class Node:
     def __init__(self, token: Token, parent: "Optional[Node]") -> None:
         # FIXME parent parameter is not used!
         self.token = token
-        self.children: List[Node] = []
-        self.parent: Optional[Node] = None
+        self.children = []  # type: List[Node]
+        self.parent = None  # type: Optional[Node]
 
 
 class TagInfo:
@@ -88,8 +87,8 @@ class TagInfo:
 def get_tag_info(token: Token) -> TagInfo:
     s = token.s
     tag = token.tag
-    classes: List[str] = []
-    ids: List[str] = []
+    classes = []  # type: List[str]
+    ids = []  # type: List[str]
 
     searches = [
         (classes, ' class="(.*?)"'),
@@ -112,7 +111,7 @@ def split_for_id_and_class(element: str) -> List[str]:
     # attributes from HTML tags. This also takes care of template variables
     # in string during splitting process. For eg. 'red black {{ a|b|c }}'
     # is split as ['red', 'black', '{{ a|b|c }}']
-    outside_braces: bool = True
+    outside_braces = True  # type: bool
     lst = []
     s = ''
 
@@ -134,8 +133,8 @@ def split_for_id_and_class(element: str) -> List[str]:
 
 
 def html_branches(text: str, fn: Optional[str] = None) -> List[HtmlTreeBranch]:
-    tree = html_tag_tree(text, fn)
-    branches: List[HtmlTreeBranch] = []
+    tree = html_tag_tree(text)
+    branches = []  # type: List[HtmlTreeBranch]
 
     def walk(node: Node, tag_info_list: Optional[List[TagInfo]] = None) -> None:
         info = get_tag_info(node.token)
@@ -157,7 +156,7 @@ def html_branches(text: str, fn: Optional[str] = None) -> List[HtmlTreeBranch]:
     return branches
 
 
-def html_tag_tree(text: str, fn: Optional[str]=None) -> Node:
+def html_tag_tree(text: str) -> Node:
     tokens = tokenize(text)
     top_level = Node(token=None, parent=None)
     stack = [top_level]
@@ -180,18 +179,12 @@ def html_tag_tree(text: str, fn: Optional[str]=None) -> Node:
 
 
 def build_id_dict(templates: List[str]) -> (Dict[str, List[str]]):
-    template_id_dict: (Dict[str, List[str]]) = defaultdict(list)
+    template_id_dict = defaultdict(list)  # type: (Dict[str, List[str]])
 
     for fn in templates:
         with open(fn) as f:
             text = f.read()
-
-        try:
-            list_tags = tokenize(text)
-        except FormattedException as e:
-            raise Exception('''
-                fn: %s
-                %s''' % (fn, e))
+        list_tags = tokenize(text)
 
         for tag in list_tags:
             info = get_tag_info(tag)

@@ -43,7 +43,7 @@ def overwrite_symlink(src: str, dst: str) -> None:
     while True:
         tmp = tempfile.mktemp(
             prefix='.' + os.path.basename(dst) + '.',
-            dir=os.path.dirname(dst))
+            dir=os.path.dirname(dst))  # type: ignore # https://github.com/python/typeshed/issues/3449
         try:
             os.symlink(src, tmp)
         except FileExistsError:
@@ -56,7 +56,6 @@ def overwrite_symlink(src: str, dst: str) -> None:
         raise
 
 def parse_cache_script_args(description: str) -> argparse.Namespace:
-    # Keep this in sync with clean_unused_caches in provision_inner.py
     parser = argparse.ArgumentParser(description=description)
 
     parser.add_argument(
@@ -210,11 +209,13 @@ def log_management_command(cmd: str, log_path: str) -> None:
     logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
 
-    logger.info("Ran '%s'", cmd)
+    logger.info("Ran '%s'" % (cmd,))
 
 def get_environment() -> str:
     if os.path.exists(DEPLOYMENTS_DIR):
         return "prod"
+    if os.environ.get("TRAVIS"):
+        return "travis"
     return "dev"
 
 def get_recent_deployments(threshold_days: int) -> Set[str]:
@@ -378,40 +379,26 @@ def os_families() -> Set[str]:
     distro_info = parse_os_release()
     return {distro_info["ID"], *distro_info.get("ID_LIKE", "").split()}
 
-def files_and_string_digest(filenames: List[str],
-                            extra_strings: List[str]) -> str:
-    # see is_digest_obsolete for more context
+def path_version_digest(paths: List[str],
+                        package_versions: List[str]) -> str:
     sha1sum = hashlib.sha1()
-    for fn in filenames:
-        with open(fn, 'rb') as file_to_hash:
+    for path in paths:
+        with open(path, 'rb') as file_to_hash:
             sha1sum.update(file_to_hash.read())
 
-    for extra_string in extra_strings:
-        sha1sum.update(extra_string.encode("utf-8"))
+    # The output of tools like build_pygments_data depends
+    # on the version of some pip packages as well.
+    for package_version in package_versions:
+        sha1sum.update(package_version.encode("utf-8"))
 
     return sha1sum.hexdigest()
 
 def is_digest_obsolete(hash_name: str,
-                       filenames: List[str],
-                       extra_strings: List[str]=[]) -> bool:
-    '''
-    In order to determine if we need to run some
-    process, we calculate a digest of the important
-    files and strings whose respective contents
-    or values may indicate such a need.
+                       paths: List[str],
+                       package_versions: List[str]=[]) -> bool:
+    # Check whether the `paths` contents or
+    # `package_versions` have changed.
 
-        filenames = files we should hash the contents of
-        extra_strings = strings we should hash directly
-
-    Grep for callers to see examples of how this is used.
-
-    To elaborate on extra_strings, they will typically
-    be things like:
-
-        - package versions (that we import)
-        - settings values (that we stringify with
-          json, deterministically)
-    '''
     last_hash_path = os.path.join(get_dev_uuid_var_path(), hash_name)
     try:
         with open(last_hash_path) as f:
@@ -421,15 +408,15 @@ def is_digest_obsolete(hash_name: str,
         # digest is an obsolete digest.
         return True
 
-    new_hash = files_and_string_digest(filenames, extra_strings)
+    new_hash = path_version_digest(paths, package_versions)
 
     return new_hash != old_hash
 
 def write_new_digest(hash_name: str,
-                     filenames: List[str],
-                     extra_strings: List[str]=[]) -> None:
+                     paths: List[str],
+                     package_versions: List[str]=[]) -> None:
     hash_path = os.path.join(get_dev_uuid_var_path(), hash_name)
-    new_hash = files_and_string_digest(filenames, extra_strings)
+    new_hash = path_version_digest(paths, package_versions)
     with open(hash_path, 'w') as f:
         f.write(new_hash)
 

@@ -39,7 +39,7 @@
         white-space: nowrap;
         text-overflow: ellipsis;
 
-        .user-list-sidebar-menu-icon {
+        .user-list-arrow {
             position: absolute;
             top: 0px;
             right: 10px;
@@ -60,7 +60,7 @@
         }
 
         &:hover {
-            .user-list-sidebar-menu-icon {
+            .user-list-arrow {
                 display: inline;
                 cursor: pointer;
                 color: hsl(0, 0%, 53%);
@@ -128,10 +128,9 @@
 
 .user-presence-link {
     width: calc(100% - 24px);
-}
-
-.my_user_status {
-    opacity: 0.5;
+    .my_user_status {
+        opacity: 0.5;
+    }
 }
 
 .group-pm-link {

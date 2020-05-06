@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import hashlib
 import subprocess
 import sys
 from typing import Any, List, Set
@@ -25,35 +26,7 @@ from scripts.lib.zulip_tools import (
 )
 
 UUID_VAR_DIR = get_dev_uuid_var_path()
-
-IMPORTANT_FILES = [
-    'zilencer/management/commands/populate_db.py',
-    'zerver/lib/bulk_create.py',
-    'zerver/lib/generate_test_data.py',
-    'zerver/lib/server_initialization.py',
-    'tools/setup/postgres-init-test-db',
-    'tools/setup/postgres-init-dev-db',
-    'zerver/migrations/0258_enable_online_push_notifications_default.py',
-]
-
-VERBOSE_MESSAGE_ABOUT_HASH_TRANSITION = '''
-    NOTE!!!!
-
-    We are rebuilding your database for a one-time transition.
-
-    We have a hashing scheme that we use to detect whether any
-    important files used in the construction of the database
-    have changed.
-
-    We are changing that scheme so it only uses one file
-    instead of a directory of files.
-
-    In order to prevent errors due to this transition, we are
-    doing a one-time rebuild of your database.  This should
-    be the last time this happens (for this particular reason,
-    at least), unless you go back to older branches.
-
-'''
+FILENAME_SPLITTER = re.compile(r'[\W\-_]')
 
 def migration_paths() -> List[str]:
     return [
@@ -65,25 +38,12 @@ class Database:
     def __init__(self, platform: str, database_name: str, settings: str):
         self.database_name = database_name
         self.settings = settings
-        self.digest_name = 'db_files_hash_for_' + platform
         self.migration_status_file = 'migration_status_' + platform
         self.migration_status_path = os.path.join(
             UUID_VAR_DIR,
             self.migration_status_file
         )
         self.migration_digest_file = "migrations_hash_" + database_name
-
-    def important_settings(self) -> List[str]:
-        def get(setting_name: str) -> str:
-            value = getattr(settings, setting_name, {})
-            return json.dumps(value, sort_keys=True)
-
-        return [
-            get('LOCAL_DATABASE_PASSWORD'),
-            get('INTERNAL_BOTS'),
-            get('REALM_INTERNAL_BOTS'),
-            get('DISABLED_REALM_INTERNAL_BOTS'),
-        ]
 
     def run_db_migrations(self) -> None:
         # We shell out to `manage.py` and pass `DJANGO_SETTINGS_MODULE` on
@@ -138,7 +98,7 @@ class Database:
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT 1 from pg_database WHERE datname=%s;", [self.database_name],
+                    "SELECT 1 from pg_database WHERE datname='{}';".format(self.database_name)
                 )
                 return_value = bool(cursor.fetchone())
             connections.close_all()
@@ -146,35 +106,29 @@ class Database:
         except OperationalError:
             return False
 
-    def files_or_settings_have_changed(self) -> bool:
-        database_name = self.database_name
-
-        # Deal with legacy hash files.  We can kill off this code when
-        # enough time has passed since April 2020 that we're not
-        # worried about anomalies doing `git bisect`--probably a few
-        # months is sufficient.
-        legacy_status_dir = os.path.join(UUID_VAR_DIR, database_name + '_db_status')
-        if os.path.exists(legacy_status_dir):
-            print(VERBOSE_MESSAGE_ABOUT_HASH_TRANSITION)
-
-            # Remove the old digest for several reasons:
-            #   - tidiness
-            #   - preventing false positives if you bisect
-            #   - make this only a one-time headache (generally)
-            shutil.rmtree(legacy_status_dir)
-
-            # Return True to force a one-time rebuild.
-            return True
-
-        return is_digest_obsolete(
-            self.digest_name,
-            IMPORTANT_FILES,
-            self.important_settings(),
-        )
-
     def template_status(self) -> str:
         # This function returns a status string specifying the type of
         # state the template db is in and thus the kind of action required.
+        database_name = self.database_name
+
+        check_files = [
+            'zilencer/management/commands/populate_db.py',
+            'zerver/lib/bulk_create.py',
+            'zerver/lib/generate_test_data.py',
+            'zerver/lib/server_initialization.py',
+            'tools/setup/postgres-init-test-db',
+            'tools/setup/postgres-init-dev-db',
+            'zerver/migrations/0258_enable_online_push_notifications_default.py',
+        ]
+        check_settings = [
+            'REALM_INTERNAL_BOTS',
+        ]
+
+        # Construct a directory to store hashes named after the target database.
+        status_dir = os.path.join(UUID_VAR_DIR, database_name + '_db_status')
+        if not os.path.exists(status_dir):
+            os.mkdir(status_dir)
+
         if not self.database_exists():
             # TODO: It's possible that `database_exists` will
             #       return `False` even though the database
@@ -186,7 +140,14 @@ class Database:
             #       it's better to err on that side, generally.
             return 'needs_rebuild'
 
-        if self.files_or_settings_have_changed():
+        # To ensure Python evaluates all the hash tests (and thus creates the
+        # hash files about the current state), we evaluate them in a
+        # list and then process the result
+        files_hash_status = all([check_file_hash(fn, status_dir) for fn in check_files])
+        settings_hash_status = all([check_setting_hash(setting_name, status_dir)
+                                    for setting_name in check_settings])
+        hash_status = files_hash_status and settings_hash_status
+        if not hash_status:
             return 'needs_rebuild'
 
         # Here we hash and compare our migration files before doing
@@ -194,7 +155,7 @@ class Database:
         # changes, we can safely assume we don't need to run
         # migrations without spending a few 100ms parsing all the
         # Python migration code.
-        if not self.is_migration_digest_obsolete():
+        if not self.is_digest_obsolete():
             return 'current'
 
         '''
@@ -206,7 +167,7 @@ class Database:
             AFTER the migrations actually succeeded, but the
             caller codepaths are kind of complicated here.
         '''
-        self.write_new_migration_digest()
+        self.write_new_digest()
 
         migration_op = self.what_to_do_with_migrations()
         if migration_op == 'scrap':
@@ -217,23 +178,16 @@ class Database:
 
         return 'current'
 
-    def is_migration_digest_obsolete(self) -> bool:
+    def is_digest_obsolete(self) -> bool:
         return is_digest_obsolete(
             self.migration_digest_file,
             migration_paths(),
         )
 
-    def write_new_migration_digest(self) -> None:
+    def write_new_digest(self) -> None:
         write_new_digest(
             self.migration_digest_file,
             migration_paths(),
-        )
-
-    def write_new_db_digest(self) -> None:
-        write_new_digest(
-            self.digest_name,
-            IMPORTANT_FILES,
-            self.important_settings(),
         )
 
 DEV_DATABASE = Database(
@@ -248,7 +202,8 @@ TEST_DATABASE = Database(
     settings='zproject.test_settings',
 )
 
-def update_test_databases_if_required(rebuild_test_database: bool=False) -> None:
+def update_test_databases_if_required(use_force: bool=False,
+                                      rebuild_test_database: bool=False) -> None:
     """Checks whether the zulip_test_template database template, is
     consistent with our database migrations; if not, it updates it
     in the fastest way possible:
@@ -264,21 +219,18 @@ def update_test_databases_if_required(rebuild_test_database: bool=False) -> None
     The `rebuild_test_database` option (used by our Casper tests) asks
     us to drop and re-cloning the zulip_test database from the
     template so those test suites can run with a fresh copy.
+
+    If use_force is specified, it will always do a full rebuild.
     """
+    generate_fixtures_command = ['tools/setup/generate-fixtures']
     test_template_db_status = TEST_DATABASE.template_status()
-
-    if test_template_db_status == 'needs_rebuild':
-        run(['tools/rebuild-test-database'])
-        TEST_DATABASE.write_new_db_digest()
-        return
-
-    if test_template_db_status == 'run_migrations':
+    if use_force or test_template_db_status == 'needs_rebuild':
+        generate_fixtures_command.append('--force')
+    elif test_template_db_status == 'run_migrations':
         TEST_DATABASE.run_db_migrations()
-        run(['tools/setup/generate-fixtures'])
+    elif not rebuild_test_database:
         return
-
-    if rebuild_test_database:
-        run(['tools/setup/generate-fixtures'])
+    subprocess.check_call(generate_fixtures_command)
 
 def get_migration_status(**options: Any) -> str:
     verbosity = options.get('verbosity', 1)
@@ -313,6 +265,45 @@ def extract_migrations_as_list(migration_status: str) -> List[str]:
     MIGRATIONS_RE = re.compile(r'\[[X| ]\] (\d+_.+)\n')
     return MIGRATIONS_RE.findall(migration_status)
 
+def _get_hash_file_path(source_file_path: str, status_dir: str) -> str:
+    basename = os.path.basename(source_file_path)
+    filename = '_'.join(FILENAME_SPLITTER.split(basename)).lower()
+    return os.path.join(status_dir, filename)
+
+def _check_hash(source_hash_file: str, target_content: str) -> bool:
+    """
+    This function has a side effect of creating a new hash file or
+    updating the old hash file.
+    """
+    target_hash_content = hashlib.sha1(target_content.encode('utf8')).hexdigest()
+
+    if not os.path.exists(source_hash_file):
+        source_hash_content = None
+    else:
+        with open(source_hash_file) as f:
+            source_hash_content = f.read().strip()
+
+    with open(source_hash_file, 'w') as f:
+        f.write(target_hash_content)
+
+    return source_hash_content == target_hash_content
+
+def check_file_hash(target_file_path: str, status_dir: str) -> bool:
+    source_hash_file = _get_hash_file_path(target_file_path, status_dir)
+
+    with open(target_file_path) as f:
+        target_content = f.read()
+
+    return _check_hash(source_hash_file, target_content)
+
+def check_setting_hash(setting_name: str, status_dir: str) -> bool:
+    hash_filename = '_'.join(['settings', setting_name])
+    source_hash_file = os.path.join(status_dir, hash_filename)
+
+    target_content = json.dumps(getattr(settings, setting_name), sort_keys=True)
+
+    return _check_hash(source_hash_file, target_content)
+
 def destroy_leaked_test_databases(expiry_time: int = 60 * 60) -> int:
     """The logic in zerver/lib/test_runner.py tries to delete all the
     temporary test databases generated by test-backend threads, but it
@@ -329,7 +320,7 @@ def destroy_leaked_test_databases(expiry_time: int = 60 * 60) -> int:
     while also ensuring we will eventually delete all leaked databases.
     """
     files = glob.glob(os.path.join(UUID_VAR_DIR, TEMPLATE_DATABASE_DIR, "*"))
-    test_databases: Set[str] = set()
+    test_databases = set()  # type: Set[str]
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT datname FROM pg_database;")
@@ -340,7 +331,7 @@ def destroy_leaked_test_databases(expiry_time: int = 60 * 60) -> int:
     except ProgrammingError:
         pass
 
-    databases_in_use: Set[str] = set()
+    databases_in_use = set()  # type: Set[str]
     for file in files:
         if round(time.time()) - os.path.getmtime(file) < expiry_time:
             with open(file) as f:

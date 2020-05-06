@@ -68,6 +68,3 @@ importlib-resources
 
 # Needed for using integration logo svg files as bot avatars
 cairosvg
-
-# Needed for tools/check-thirdparty
-python-debian

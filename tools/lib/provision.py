@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 
 VAR_DIR_PATH = os.path.join(ZULIP_PATH, 'var')
 
+is_travis = 'TRAVIS' in os.environ
 is_circleci = 'CIRCLECI' in os.environ
 
 if not os.path.exists(os.path.join(ZULIP_PATH, ".git")):
@@ -80,8 +81,12 @@ else:
 distro_info = parse_os_release()
 vendor = distro_info['ID']
 os_version = distro_info['VERSION_ID']
-if vendor == "debian" and os_version == "10":  # buster
+if vendor == "debian" and os_version == "9":  # stretch
+    POSTGRES_VERSION = "9.6"
+elif vendor == "debian" and os_version == "10":  # buster
     POSTGRES_VERSION = "11"
+elif vendor == "ubuntu" and os_version == "16.04":  # xenial
+    POSTGRES_VERSION = "9.5"
 elif vendor == "ubuntu" and os_version in ["18.04", "18.10"]:  # bionic, cosmic
     POSTGRES_VERSION = "10"
 elif vendor == "ubuntu" and os_version in ["19.04", "19.10"]:  # disco, eoan
@@ -95,7 +100,7 @@ elif vendor == "rhel" and os_version.startswith("7."):
 elif vendor == "centos" and os_version == "7":
     POSTGRES_VERSION = "10"
 else:
-    logging.critical("Unsupported platform: %s %s", vendor, os_version)
+    logging.critical("Unsupported platform: {} {}".format(vendor, os_version))
     if vendor == 'ubuntu' and os_version == '14.04':
         print()
         print("Ubuntu Trusty reached end-of-life upstream and is no longer a supported platform for Zulip")
@@ -378,18 +383,17 @@ def main(options: argparse.Namespace) -> "NoReturn":
     # Install shellcheck.
     run_as_root(["tools/setup/install-shellcheck"])
 
-    # Install semgrep.
-    run_as_root(["tools/setup/install-semgrep"])
+    # Install sgrep.
+    run_as_root(["tools/setup/install-sgrep"])
 
     setup_venvs.main()
 
     run_as_root(["cp", REPO_STOPWORDS_PATH, TSEARCH_STOPWORDS_PATH])
 
-    if is_circleci and not options.is_production_test_suite:
+    if is_circleci or (is_travis and not options.is_production_travis):
+        run_as_root(["service", "rabbitmq-server", "restart"])
         run_as_root(["service", "redis-server", "restart"])
         run_as_root(["service", "memcached", "restart"])
-    if is_circleci:
-        run_as_root(["service", "rabbitmq-server", "restart"])
         run_as_root(["service", "postgresql", "restart"])
     elif "fedora" in os_families():
         # These platforms don't enable and start services on
@@ -412,7 +416,7 @@ def main(options: argparse.Namespace) -> "NoReturn":
         [
             provision_inner,
             *(["--force"] if options.is_force else []),
-            *(["--production-test-suite"] if options.is_production_test_suite else []),
+            *(["--production-travis"] if options.is_production_travis else []),
         ]
     )
 
@@ -423,10 +427,10 @@ if __name__ == "__main__":
                         default=False,
                         help="Ignore all provisioning optimizations.")
 
-    parser.add_argument('--production-test-suite', action='store_true',
-                        dest='is_production_test_suite',
+    parser.add_argument('--production-travis', action='store_true',
+                        dest='is_production_travis',
                         default=False,
-                        help="Provision for test suite with production settings.")
+                        help="Provision for Travis with production settings.")
 
     options = parser.parse_args()
     main(options)

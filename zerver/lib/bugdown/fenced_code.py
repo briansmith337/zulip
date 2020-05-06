@@ -157,41 +157,41 @@ class BaseHandler:
 
 def generic_handler(processor: Any, output: MutableSequence[str],
                     fence: str, lang: str,
-                    run_content_validators: Optional[bool]=False,
-                    default_language: Optional[str]=None) -> BaseHandler:
+                    run_content_validators: Optional[bool]=False) -> BaseHandler:
     if lang in ('quote', 'quoted'):
-        return QuoteHandler(processor, output, fence, default_language)
+        return QuoteHandler(processor, output, fence)
     elif lang in ('math', 'tex', 'latex'):
         return TexHandler(processor, output, fence)
     else:
         return CodeHandler(processor, output, fence, lang, run_content_validators)
 
+def remap_language(lang: str) -> str:
+    if lang in ['none', 'noop', 'text', 'plain']:
+        return ''
+    return lang
+
 def check_for_new_fence(processor: Any, output: MutableSequence[str], line: str,
-                        run_content_validators: Optional[bool]=False,
-                        default_language: Optional[str]=None) -> None:
+                        run_content_validators: Optional[bool]=False) -> None:
     m = FENCE_RE.match(line)
     if m:
         fence = m.group('fence')
         lang = m.group('lang')
-        if not lang and default_language:
-            lang = default_language
-        handler = generic_handler(processor, output, fence, lang, run_content_validators, default_language)
+
+        handler = generic_handler(processor, output, fence, lang, run_content_validators)
         processor.push(handler)
     else:
         output.append(line)
 
 class OuterHandler(BaseHandler):
     def __init__(self, processor: Any, output: MutableSequence[str],
-                 run_content_validators: Optional[bool]=False,
-                 default_language: Optional[str]=None) -> None:
+                 run_content_validators: Optional[bool]=False) -> None:
         self.output = output
         self.processor = processor
         self.run_content_validators = run_content_validators
-        self.default_language = default_language
 
     def handle_line(self, line: str) -> None:
         check_for_new_fence(self.processor, self.output, line,
-                            self.run_content_validators, self.default_language)
+                            self.run_content_validators)
 
     def done(self) -> None:
         self.processor.pop()
@@ -203,7 +203,7 @@ class CodeHandler(BaseHandler):
         self.output = output
         self.fence = fence
         self.lang = lang
-        self.lines: List[str] = []
+        self.lines = []  # type: List[str]
         self.run_content_validators = run_content_validators
 
     def handle_line(self, line: str) -> None:
@@ -229,19 +229,17 @@ class CodeHandler(BaseHandler):
         self.processor.pop()
 
 class QuoteHandler(BaseHandler):
-    def __init__(self, processor: Any, output: MutableSequence[str],
-                 fence: str, default_language: Optional[str]=None) -> None:
+    def __init__(self, processor: Any, output: MutableSequence[str], fence: str) -> None:
         self.processor = processor
         self.output = output
         self.fence = fence
-        self.lines: List[str] = []
-        self.default_language = default_language
+        self.lines = []  # type: List[str]
 
     def handle_line(self, line: str) -> None:
         if line.rstrip() == self.fence:
             self.done()
         else:
-            check_for_new_fence(self.processor, self.lines, line, default_language=self.default_language)
+            check_for_new_fence(self.processor, self.lines, line)
 
     def done(self) -> None:
         text = '\n'.join(self.lines)
@@ -257,7 +255,7 @@ class TexHandler(BaseHandler):
         self.processor = processor
         self.output = output
         self.fence = fence
-        self.lines: List[str] = []
+        self.lines = []  # type: List[str]
 
     def handle_line(self, line: str) -> None:
         if line.rstrip() == self.fence:
@@ -282,7 +280,7 @@ class FencedBlockPreprocessor(markdown.preprocessors.Preprocessor):
 
         self.checked_for_codehilite = False
         self.run_content_validators = run_content_validators
-        self.codehilite_conf: Dict[str, List[Any]] = {}
+        self.codehilite_conf = {}  # type: Dict[str, List[Any]]
 
     def push(self, handler: BaseHandler) -> None:
         self.handlers.append(handler)
@@ -293,17 +291,12 @@ class FencedBlockPreprocessor(markdown.preprocessors.Preprocessor):
     def run(self, lines: Iterable[str]) -> List[str]:
         """ Match and store Fenced Code Blocks in the HtmlStash. """
 
-        output: List[str] = []
+        output = []  # type: List[str]
 
         processor = self
-        self.handlers: List[BaseHandler] = []
+        self.handlers = []  # type: List[BaseHandler]
 
-        default_language = None
-        try:
-            default_language = self.md.zulip_realm.default_code_block_language
-        except AttributeError:
-            pass
-        handler = OuterHandler(processor, output, self.run_content_validators, default_language)
+        handler = OuterHandler(processor, output, self.run_content_validators)
         self.push(handler)
 
         for line in lines:
@@ -320,6 +313,12 @@ class FencedBlockPreprocessor(markdown.preprocessors.Preprocessor):
         return output
 
     def format_code(self, lang: str, text: str) -> str:
+        if not lang:
+            try:
+                lang = self.md.zulip_realm.default_code_block_language
+            except AttributeError:
+                pass
+        lang = remap_language(lang)
         if lang:
             langclass = LANG_TAG % (lang,)
         else:

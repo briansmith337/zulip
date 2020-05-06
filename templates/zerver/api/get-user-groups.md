@@ -2,7 +2,9 @@
 
 {!api-members-only.md!}
 
-{generate_api_description(/user_groups:get)}
+Fetches all of the user groups in the organization.
+
+`GET {{ api_url }}/v1/user_groups`
 
 ## Usage examples
 

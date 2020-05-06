@@ -49,8 +49,8 @@ loopworker_sleep_mock = patch(
 class WorkerTest(ZulipTestCase):
     class FakeClient:
         def __init__(self) -> None:
-            self.consumers: Dict[str, Callable[[Dict[str, Any]], None]] = {}
-            self.queue: List[Tuple[str, Any]] = []
+            self.consumers = {}  # type: Dict[str, Callable[[Dict[str, Any]], None]]
+            self.queue = []  # type: List[Tuple[str, Any]]
 
         def register_json_consumer(self,
                                    queue_name: str,
@@ -414,10 +414,9 @@ class WorkerTest(ZulipTestCase):
                     fake_client.queue.append(('email_mirror', data[0]))
                     worker.start()
                     self.assertEqual(mock_mirror_email.call_count, 4)
-                    mock_warn.assert_called_with(
-                        "Deadlock trying to incr_ratelimit for %s",
-                        "RateLimitedRealmMirror:%s" % (realm.string_id,),
-                    )
+                    expected_warn = "Deadlock trying to incr_ratelimit for RateLimitedRealmMirror:%s" % (
+                        realm.string_id,)
+                    mock_warn.assert_called_with(expected_warn)
 
     def test_email_sending_worker_retries(self) -> None:
         """Tests the retry_send_email_failures decorator to make sure it
@@ -502,9 +501,7 @@ class WorkerTest(ZulipTestCase):
                 with patch('logging.warning') as logging_warning_mock:
                     worker.start()
                     logging_warning_mock.assert_called_once_with(
-                        "Attempted to sign up already existing email to list: %s",
-                        "foo@bar.baz",
-                    )
+                        "Attempted to sign up already existing email to list: foo@bar.baz")
 
     def test_signups_bad_request(self) -> None:
         fake_client = self.FakeClient()

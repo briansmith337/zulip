@@ -119,7 +119,6 @@ class HomeTest(ZulipTestCase):
             "pm_content_in_desktop_notifications",
             "pointer",
             "poll_timeout",
-            "presence_enabled",
             "presences",
             "prompt_for_invites",
             "queue_id",
@@ -225,7 +224,6 @@ class HomeTest(ZulipTestCase):
             "warn_no_email",
             "webpack_public_path",
             "wildcard_mentions_notify",
-            "zulip_feature_level",
             "zulip_version",
         ]
 
@@ -250,7 +248,7 @@ class HomeTest(ZulipTestCase):
         self.assertEqual(set(result["Cache-Control"].split(", ")),
                          {"must-revalidate", "no-store", "no-cache"})
 
-        self.assert_length(queries, 43)
+        self.assert_length(queries, 42)
         self.assert_length(cache_mock.call_args_list, 5)
 
         html = result.content.decode('utf-8')
@@ -316,7 +314,7 @@ class HomeTest(ZulipTestCase):
                 result = self._get_home_page()
                 self.assertEqual(result.status_code, 200)
                 self.assert_length(cache_mock.call_args_list, 6)
-            self.assert_length(queries, 41)
+            self.assert_length(queries, 40)
 
     @slow("Creates and subscribes 10 users in a loop.  Should use bulk queries.")
     def test_num_queries_with_streams(self) -> None:
@@ -348,7 +346,7 @@ class HomeTest(ZulipTestCase):
         with queries_captured() as queries2:
             result = self._get_home_page()
 
-        self.assert_length(queries2, 38)
+        self.assert_length(queries2, 37)
 
         # Do a sanity check that our new streams were in the payload.
         html = result.content.decode('utf-8')
@@ -403,22 +401,6 @@ class HomeTest(ZulipTestCase):
         html = result.content.decode('utf-8')
         self.assertIn('You are using old version of the Zulip desktop', html)
 
-    def test_unsupported_browser(self) -> None:
-        user = self.example_user('hamlet')
-        self.login_user(user)
-
-        # currently we don't support IE, so some of IE's user agents are added.
-        unsupported_user_agents = [
-            "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2)",
-            "Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko",
-            "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)"
-        ]
-        for user_agent in unsupported_user_agents:
-            result = self.client_get('/',
-                                     HTTP_USER_AGENT=user_agent)
-            html = result.content.decode('utf-8')
-            self.assertIn('Internet Explorer is not supported by Zulip.', html)
-
     def test_terms_of_service_first_time_template(self) -> None:
         user = self.example_user('hamlet')
         self.login_user(user)
@@ -461,9 +443,7 @@ class HomeTest(ZulipTestCase):
         self.login_user(user_profile)
         with patch('logging.warning') as mock:
             result = self._get_home_page()
-        mock.assert_called_once_with(
-            'User %s has invalid pointer %s', user_profile.id, 999999,
-        )
+        mock.assert_called_once_with('User %s has invalid pointer 999999' % (user_profile.id,))
         self._sanity_check(result)
 
     def test_topic_narrow(self) -> None:

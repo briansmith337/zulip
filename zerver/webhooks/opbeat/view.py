@@ -9,7 +9,7 @@ from zerver.lib.response import json_success
 from zerver.lib.webhooks.common import check_send_webhook_message
 from zerver.models import UserProfile
 
-subject_types: Dict[str, List[List[str]]] = {
+subject_types = {
     'app': [  # Object type name
         ['name'],  # Title
         ['html_url'],  # Automatically put into title
@@ -37,7 +37,7 @@ subject_types: Dict[str, List[List[str]]] = {
         ['in {}', 'extra/pathname'],
         ['!message']
     ]
-}
+}  # type: Dict[str, List[List[str]]]
 
 
 def get_value(_obj: Dict[str, Any], key: str) -> str:
@@ -56,7 +56,7 @@ def format_object(
 ) -> str:
     if subject_type not in subject_types.keys():
         return message
-    keys: List[List[str]] = subject_types[subject_type][1:]
+    keys = subject_types[subject_type][1:]  # type: List[List[str]]
     title = subject_types[subject_type][0]
     if title[0] != '':
         title_str = ''
@@ -65,7 +65,7 @@ def format_object(
         else:
             title_str = obj[title[0]]
         if obj['html_url'] is not None:
-            url: str = obj['html_url']
+            url = obj['html_url']  # type: str
             if 'opbeat.com' not in url:
                 url = 'https://opbeat.com/' + url.lstrip('/')
             message += '\n**[{}]({})**'.format(title_str, url)

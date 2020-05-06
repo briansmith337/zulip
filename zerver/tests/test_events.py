@@ -169,7 +169,7 @@ class LogEventsTest(ZulipTestCase):
 
         self.assertFalse(os.path.exists(dir_name))
         with self.settings(EVENT_LOG_DIR=dir_name):
-            event: Dict[str, int] = {}
+            event = {}  # type: Dict[str, int]
             log_event(event)
         self.assertTrue(os.path.exists(dir_name))
 
@@ -189,7 +189,7 @@ class EventsEndpointTest(ZulipTestCase):
         self.assert_json_error(result, "Could not allocate event queue")
 
         return_event_queue = '15:11'
-        return_user_events: List[Dict[str, Any]] = []
+        return_user_events = []  # type: List[Dict[str, Any]]
 
         # Test that call is made to deal with a returning soft deactivated user.
         with mock.patch('zerver.lib.events.reactivate_user_if_soft_deactivated') as fa:
@@ -737,8 +737,8 @@ class EventsRegisterTest(ZulipTestCase):
         propagate_mode = 'change_all'
         content = 'new content'
         rendered_content = render_markdown(message, content)
-        prior_mention_user_ids: Set[int] = set()
-        mentioned_user_ids: Set[int] = set()
+        prior_mention_user_ids = set()  # type: Set[int]
+        mentioned_user_ids = set()  # type: Set[int]
         mention_data = MentionData(
             realm_id=self.user_profile.realm_id,
             content=content,
@@ -846,7 +846,6 @@ class EventsRegisterTest(ZulipTestCase):
             ('emoji_name', check_string),
             ('emoji_code', check_string),
             ('reaction_type', check_string),
-            ('user_id', check_int),
             ('user', check_dict_only([
                 ('email', check_string),
                 ('full_name', check_string),
@@ -872,7 +871,6 @@ class EventsRegisterTest(ZulipTestCase):
             ('emoji_name', check_string),
             ('emoji_code', check_string),
             ('reaction_type', check_string),
-            ('user_id', check_int),
             ('user', check_dict_only([
                 ('email', check_string),
                 ('full_name', check_string),
@@ -899,7 +897,6 @@ class EventsRegisterTest(ZulipTestCase):
             ('emoji_name', check_string),
             ('emoji_code', check_string),
             ('reaction_type', check_string),
-            ('user_id', check_int),
             ('user', check_dict_only([
                 ('email', check_string),
                 ('full_name', check_string),
@@ -954,7 +951,6 @@ class EventsRegisterTest(ZulipTestCase):
             ('emoji_name', check_string),
             ('emoji_code', check_string),
             ('reaction_type', check_string),
-            ('user_id', check_int),
             ('user', check_dict_only([
                 ('email', check_string),
                 ('full_name', check_string),
@@ -1608,8 +1604,8 @@ class EventsRegisterTest(ZulipTestCase):
         self.assert_on_error(error)
 
     def do_set_realm_property_test(self, name: str) -> None:
-        bool_tests: List[bool] = [True, False, True]
-        test_values: Dict[str, Any] = dict(
+        bool_tests = [True, False, True]  # type: List[bool]
+        test_values = dict(
             default_language=['es', 'de', 'en'],
             description=['Realm description', 'New description'],
             digest_weekday=[0, 1, 2],
@@ -1631,7 +1627,7 @@ class EventsRegisterTest(ZulipTestCase):
             zoom_api_key=["abc", "xyz"],
             zoom_user_id=["example@example.com", "example@example.org"],
             default_code_block_language=['python', 'javascript'],
-        )
+        )  # type: Dict[str, Any]
 
         vals = test_values.get(name)
         property_type = Realm.property_types[name]
@@ -1846,12 +1842,12 @@ class EventsRegisterTest(ZulipTestCase):
     def do_set_user_display_settings_test(self, setting_name: str) -> None:
         """Test updating each setting in UserProfile.property_types dict."""
 
-        test_changes: Dict[str, Any] = dict(
+        test_changes = dict(
             emojiset = ['twitter'],
             default_language = ['es', 'de', 'en'],
             timezone = ['US/Mountain', 'US/Samoa', 'Pacific/Galapogos', ''],
             demote_inactive_streams = [2, 3, 1],
-        )
+        )  # type: Dict[str, Any]
 
         property_type = UserProfile.property_types[setting_name]
         if property_type is bool:
@@ -2592,7 +2588,7 @@ class EventsRegisterTest(ZulipTestCase):
         ])
 
         # Subscribe to a totally new stream, so it's just Hamlet on it
-        action: Callable[[], object] = lambda: self.subscribe(self.example_user("hamlet"), "test_stream")
+        action = lambda: self.subscribe(self.example_user("hamlet"), "test_stream")  # type: Callable[[], object]
         events = self.do_test(action, event_types=["subscription", "realm_user"],
                               include_subscribers=include_subscribers)
         error = add_schema_checker('events[0]', events[0])
@@ -2813,19 +2809,6 @@ class EventsRegisterTest(ZulipTestCase):
         self.assert_on_error(error)
 
     def test_notify_realm_export(self) -> None:
-        pending_schema_checker = self.check_events_dict([
-            ('type', equals('realm_export')),
-            ('exports', check_list(check_dict_only([
-                ('id', check_int),
-                ('export_time', check_float),
-                ('acting_user_id', check_int),
-                ('export_url', equals(None)),
-                ('deleted_timestamp', equals(None)),
-                ('failed_timestamp', equals(None)),
-                ('pending', check_bool),
-            ]))),
-        ])
-
         schema_checker = self.check_events_dict([
             ('type', equals('realm_export')),
             ('exports', check_list(check_dict_only([
@@ -2834,8 +2817,6 @@ class EventsRegisterTest(ZulipTestCase):
                 ('acting_user_id', check_int),
                 ('export_url', check_string),
                 ('deleted_timestamp', equals(None)),
-                ('failed_timestamp', equals(None)),
-                ('pending', check_bool),
             ]))),
         ])
 
@@ -2847,14 +2828,10 @@ class EventsRegisterTest(ZulipTestCase):
             with stdout_suppressed():
                 events = self.do_test(
                     lambda: self.client_post('/json/export/realm'),
-                    state_change_expected=True, num_events=3)
+                    state_change_expected=True, num_events=2)
 
-        # We first notify when an export is initiated,
-        error = pending_schema_checker('events[0]', events[0])
-        self.assert_on_error(error)
-
-        # The second event is then a message from notification-bot.
-        error = schema_checker('events[2]', events[2])
+        # The first event is a message from notification-bot.
+        error = schema_checker('events[1]', events[1])
         self.assert_on_error(error)
 
         # Now we check the deletion of the export.
@@ -2864,10 +2841,8 @@ class EventsRegisterTest(ZulipTestCase):
                 ('id', check_int),
                 ('export_time', check_float),
                 ('acting_user_id', check_int),
-                ('export_url', equals(None)),
+                ('export_url', check_string),
                 ('deleted_timestamp', check_float),
-                ('failed_timestamp', equals(None)),
-                ('pending', check_bool),
             ]))),
         ])
 
@@ -2877,49 +2852,6 @@ class EventsRegisterTest(ZulipTestCase):
             lambda: self.client_delete('/json/export/realm/{id}'.format(id=audit_log_entry.id)),
             state_change_expected=False, num_events=1)
         error = deletion_schema_checker('events[0]', events[0])
-        self.assert_on_error(error)
-
-    def test_notify_realm_export_on_failure(self) -> None:
-        pending_schema_checker = self.check_events_dict([
-            ('type', equals('realm_export')),
-            ('exports', check_list(check_dict_only([
-                ('id', check_int),
-                ('export_time', check_float),
-                ('acting_user_id', check_int),
-                ('export_url', equals(None)),
-                ('deleted_timestamp', equals(None)),
-                ('failed_timestamp', equals(None)),
-                ('pending', check_bool),
-            ]))),
-        ])
-
-        failed_schema_checker = self.check_events_dict([
-            ('type', equals('realm_export')),
-            ('exports', check_list(check_dict_only([
-                ('id', check_int),
-                ('export_time', check_float),
-                ('acting_user_id', check_int),
-                ('export_url', equals(None)),
-                ('deleted_timestamp', equals(None)),
-                ('failed_timestamp', check_float),
-                ('pending', check_bool),
-            ]))),
-        ])
-
-        do_change_is_admin(self.user_profile, True)
-        self.login_user(self.user_profile)
-
-        with mock.patch('zerver.lib.export.do_export_realm',
-                        side_effect=Exception("test")):
-            with stdout_suppressed():
-                events = self.do_test(
-                    lambda: self.client_post('/json/export/realm'),
-                    state_change_expected=False, num_events=2)
-
-        error = pending_schema_checker('events[0]', events[0])
-        self.assert_on_error(error)
-
-        error = failed_schema_checker('events[1]', events[1])
         self.assert_on_error(error)
 
 class FetchInitialStateDataTest(ZulipTestCase):
@@ -3014,7 +2946,7 @@ class GetUnreadMsgsTest(ZulipTestCase):
             self.subscribe(hamlet, stream_name)
             self.subscribe(cordelia, stream_name)
 
-        all_message_ids: Set[int] = set()
+        all_message_ids = set()  # type: Set[int]
         message_ids = dict()
 
         tups = [
@@ -3517,7 +3449,7 @@ class ClientDescriptorsTest(ZulipTestCase):
                 self.apply_markdown = apply_markdown
                 self.client_gravatar = client_gravatar
                 self.client_type_name = 'whatever'
-                self.events: List[Dict[str, Any]] = []
+                self.events = []  # type: List[Dict[str, Any]]
 
             def accepts_messages(self) -> bool:
                 return True
@@ -3600,7 +3532,7 @@ class ClientDescriptorsTest(ZulipTestCase):
         # Setting users to `[]` bypasses code we don't care about
         # for this test--we assume client_info is correct in our mocks,
         # and we are interested in how messages are put on event queue.
-        users: List[Dict[str, Any]] = []
+        users = []  # type: List[Dict[str, Any]]
 
         with mock.patch('zerver.tornado.event_queue.get_client_info_for_message_event',
                         return_value=client_info):
@@ -3696,10 +3628,10 @@ class FetchQueriesTest(ZulipTestCase):
                     client_gravatar=False,
                 )
 
-        self.assert_length(queries, 32)
+        self.assert_length(queries, 31)
 
         expected_counts = dict(
-            alert_words=1,
+            alert_words=0,
             custom_profile_fields=1,
             default_streams=1,
             default_stream_groups=1,
@@ -3726,6 +3658,7 @@ class FetchQueriesTest(ZulipTestCase):
             update_global_notifications=0,
             update_message_flags=5,
             user_status=1,
+            zulip_version=0,
         )
 
         wanted_event_types = {

@@ -7,7 +7,7 @@ class BadEventQueueIdError(JsonableError):
     data_fields = ['queue_id']
 
     def __init__(self, queue_id: str) -> None:
-        self.queue_id: str = queue_id
+        self.queue_id = queue_id  # type: str
 
     @staticmethod
     def msg_format() -> str:

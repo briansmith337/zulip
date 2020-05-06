@@ -1,6 +1,9 @@
 # Add an emoji reaction
 
-{generate_api_description(/messages/{message_id}/reactions:post)}
+Add an [emoji reaction](/help/emoji-reactions) to a message.
+
+`POST {{ api_url }}/v1/messages/{message_id}/reactions`
+
 
 ## Usage examples
 

@@ -12,28 +12,11 @@ def load_config() -> Dict[str, Any]:
 
     return config
 
-def generate_topics(num_topics: int) -> List[str]:
-    config = load_config()["gen_fodder"]
+def get_stream_title(gens: Dict[str, Any]) -> str:
 
-    topics = []
-    # Make single word topics account for 30% of total topics.
-    # Single word topics are most common, thus
-    # it is important we test on it.
-    num_single_word_topics = num_topics // 3
-    for _ in itertools.repeat(None, num_single_word_topics):
-        topics.append(random.choice(config["nouns"]))
-
-    sentence = ["adjectives", "nouns", "connectors", "verbs", "adverbs"]
-    for pos in sentence:
-        # Add an empty string so that we can generate variable length topics.
-        config[pos].append("")
-
-    for _ in itertools.repeat(None, num_topics - num_single_word_topics):
-        generated_topic = [random.choice(config[pos]) for pos in sentence]
-        topic = " ".join(filter(None, generated_topic))
-        topics.append(topic)
-
-    return topics
+    return next(gens["adjectives"]) + " " + next(gens["nouns"]) + " " + \
+        next(gens["connectors"]) + " " + next(gens["verbs"]) + " " + \
+        next(gens["adverbs"])
 
 def load_generators(config: Dict[str, Any]) -> Dict[str, Any]:
 
@@ -62,7 +45,7 @@ def parse_file(config: Dict[str, Any], gens: Dict[str, Any], corpus_file: str) -
     # First, load the entire file into a dictionary,
     # then apply our custom filters to it as needed.
 
-    paragraphs: List[str] = []
+    paragraphs = []  # type: List[str]
 
     with open(corpus_file) as infile:
         # OUR DATA: we need to separate the person talking and what they say

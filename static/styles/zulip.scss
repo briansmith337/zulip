@@ -1297,13 +1297,6 @@ div.focused_table {
 .topic_edit {
     display: none;
     line-height: 22px;
-    .alert {
-        display: inline-block;
-        margin: 0;
-        padding: 0 10px;
-        line-height: 17px;
-        font-size: 14px;
-    }
 }
 
 #inline_topic_edit,
@@ -1501,17 +1494,6 @@ div.focused_table {
             &:nth-last-child(2) {
                 flex-grow: 1;
             }
-
-            // We extend the clickable area for the search_closed icon over the
-            // 2nd last navbar element for better design (user convenience) this
-            // selector makes it so mousing over that element also gives the user
-            // a visual cue about the results of clicking the element
-            &:nth-last-child(2) {
-                cursor: pointer;
-                &:hover + .search_closed {
-                    color: hsl(0, 0%, 0%);
-                }
-            }
             i {
                 margin-right: 3px;
             }
@@ -1602,21 +1584,18 @@ div.focused_table {
                 padding: 7px 0;
                 padding-left: 2px;
             }
-
-            & > a {
-                padding: 12px 0px;
-            }
         }
 
         .search_closed {
             flex: 0; // makes sure search icon is always visible
+            margin-right: 15px;
 
             cursor: pointer;
             font-size: 20px;
 
-            padding: 10px 15px 0px 0px;
+            padding: 12px 0px 0px 0px;
             @media (max-width: 500px) {
-                padding: 5px 15px 0px 0px;
+                padding: 5px 0px 0px 0px;
             }
         }
     }
@@ -2623,10 +2602,6 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
 .hotkey-hint {
     opacity: 0.75;
-}
-
-select.inline_select_topic_edit {
-    margin: 0;
 }
 
 // Hide the up and down arrows in the Flatpickr datepicker year

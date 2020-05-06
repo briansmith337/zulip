@@ -24,8 +24,7 @@ from zerver.lib.streams import access_stream_by_name
 from zerver.lib.subdomains import get_subdomain
 from zerver.lib.users import compute_show_invites_and_add_streams
 from zerver.lib.utils import statsd, generate_random_token
-from zerver.views.compatibility import is_outdated_desktop_app, \
-    is_unsupported_browser
+from zerver.views.compatibility import is_outdated_desktop_app
 from two_factor.utils import default_device
 
 import calendar
@@ -75,7 +74,7 @@ def detect_narrowed_window(request: HttpRequest,
     if user_profile is None:  # nocoverage
         return [], None, None
 
-    narrow: List[List[str]] = []
+    narrow = []  # type: List[List[str]]
     narrow_stream = None
     narrow_topic = request.GET.get("topic")
 
@@ -113,7 +112,7 @@ def sent_time_in_epoch_seconds(user_message: Optional[UserMessage]) -> Optional[
     return calendar.timegm(user_message.message.date_sent.utctimetuple())
 
 def get_bot_types(user_profile: Optional[UserProfile]) -> List[Dict[str, object]]:
-    bot_types: List[Dict[str, object]] = []
+    bot_types = []  # type: List[Dict[str, object]]
     if user_profile is None:  # nocoverage
         return bot_types
 
@@ -148,24 +147,14 @@ def home(request: HttpRequest) -> HttpResponse:
 @zulip_login_required
 def home_real(request: HttpRequest) -> HttpResponse:
     # Before we do any real work, check if the app is banned.
-    client_user_agent = request.META.get("HTTP_USER_AGENT", "")
     (insecure_desktop_app, banned_desktop_app, auto_update_broken) = is_outdated_desktop_app(
-        client_user_agent)
+        request.META.get("HTTP_USER_AGENT", ""))
     if banned_desktop_app:
         return render(
             request,
             'zerver/insecure_desktop_app.html',
             context={
                 "auto_update_broken": auto_update_broken,
-            }
-        )
-    (unsupported_browser, browser_name) = is_unsupported_browser(client_user_agent)
-    if unsupported_browser:
-        return render(
-            request,
-            'zerver/unsupported_browser.html',
-            context={
-                "browser_name": browser_name,
             }
         )
 
@@ -210,7 +199,7 @@ def home_real(request: HttpRequest) -> HttpResponse:
         needs_tutorial = False
 
     if user_profile is None:  # nocoverage
-        furthest_read_time: Optional[float] = time.time()
+        furthest_read_time = time.time()  # type: Optional[float]
     elif user_profile.pointer == -1:
         if user_has_messages:
             # Put the new user's pointer at the bottom
@@ -221,12 +210,13 @@ def home_real(request: HttpRequest) -> HttpResponse:
             # first messages on the system.
 
             register_ret['pointer'] = register_ret['max_message_id']
+            user_profile.last_pointer_updater = request.session.session_key
         furthest_read_time = None
     else:
         latest_read = get_usermessage_by_message_id(user_profile, user_profile.pointer)
         if latest_read is None:
             # Don't completely fail if your saved pointer ID is invalid
-            logging.warning("User %s has invalid pointer %s", user_profile.id, user_profile.pointer)
+            logging.warning("User %s has invalid pointer %s" % (user_profile.id, user_profile.pointer))
         furthest_read_time = sent_time_in_epoch_seconds(latest_read)
 
     # We pick a language for the user as follows:
@@ -349,7 +339,6 @@ def home_real(request: HttpRequest) -> HttpResponse:
                                'show_invites': show_invites,
                                'show_add_streams': show_add_streams,
                                'show_billing': show_billing,
-                               'corporate_enabled': settings.CORPORATE_ENABLED,
                                'show_plans': show_plans,
                                'is_admin': is_realm_admin,
                                'is_guest': is_guest,

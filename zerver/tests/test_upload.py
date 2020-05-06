@@ -844,7 +844,7 @@ class AvatarTest(UploadSerializeMixin, ZulipTestCase):
 
     def test_avatar_url(self) -> None:
         """Verifies URL schemes for avatars and realm icons."""
-        backend: ZulipUploadBackend = LocalUploadBackend()
+        backend = LocalUploadBackend()  # type: ZulipUploadBackend
         self.assertEqual(backend.get_avatar_url("hash", False),
                          "/user_avatars/hash.png?x=x")
         self.assertEqual(backend.get_avatar_url("hash", True),
@@ -1646,10 +1646,8 @@ class S3Test(ZulipTestCase):
         data = result.json()
         url_only_url = data['url']
         self.assertEqual(b"zulip!", urllib.request.urlopen(url_only_url).read().strip())
-
-        # Note: Depending on whether the calls happened in the same
-        # second (resulting in the same timestamp+signature),
-        # url_only_url may or may not equal redirect_url.
+        # Verify the URLs are different.
+        self.assertEqual(url_only_url, redirect_url)
 
         self.subscribe(self.example_user("hamlet"), "Denmark")
         body = "First message ...[zulip.txt](http://localhost:9991" + uri + ")"

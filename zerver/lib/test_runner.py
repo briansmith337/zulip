@@ -80,7 +80,7 @@ def get_test_method(test: TestCase) -> Callable[[], None]:
     return getattr(test, test._testMethodName)
 
 # Each tuple is delay, test_name, slowness_reason
-TEST_TIMINGS: List[Tuple[float, str, str]] = []
+TEST_TIMINGS = []  # type: List[Tuple[float, str, str]]
 
 
 def report_slow_tests() -> None:
@@ -151,22 +151,21 @@ class TextTestResult(runner.TextTestResult):
     This class has unpythonic function names because base class follows
     this style.
     """
-
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.failed_tests: List[str] = []
+        self.failed_tests = []  # type: List[str]
 
     def addInfo(self, test: TestCase, msg: str) -> None:
-        self.stream.write(msg)  # type: ignore[attr-defined] # https://github.com/python/typeshed/issues/3139
-        self.stream.flush()  # type: ignore[attr-defined] # https://github.com/python/typeshed/issues/3139
+        self.stream.write(msg)  # type: ignore # https://github.com/python/typeshed/issues/3139
+        self.stream.flush()  # type: ignore # https://github.com/python/typeshed/issues/3139
 
     def addInstrumentation(self, test: TestCase, data: Dict[str, Any]) -> None:
         append_instrumentation_data(data)
 
     def startTest(self, test: TestCase) -> None:
         TestResult.startTest(self, test)
-        self.stream.writeln("Running {}".format(full_test_name(test)))  # type: ignore[attr-defined] # https://github.com/python/typeshed/issues/3139
-        self.stream.flush()  # type: ignore[attr-defined] # https://github.com/python/typeshed/issues/3139
+        self.stream.writeln("Running {}".format(full_test_name(test)))  # type: ignore # https://github.com/python/typeshed/issues/3139
+        self.stream.flush()  # type: ignore # https://github.com/python/typeshed/issues/3139
 
     def addSuccess(self, *args: Any, **kwargs: Any) -> None:
         TestResult.addSuccess(self, *args, **kwargs)
@@ -183,17 +182,16 @@ class TextTestResult(runner.TextTestResult):
 
     def addSkip(self, test: TestCase, reason: str) -> None:
         TestResult.addSkip(self, test, reason)
-        self.stream.writeln("** Skipping {}: {}".format(  # type: ignore[attr-defined] # https://github.com/python/typeshed/issues/3139
+        self.stream.writeln("** Skipping {}: {}".format(  # type: ignore # https://github.com/python/typeshed/issues/3139
             full_test_name(test),
             reason))
-        self.stream.flush()  # type: ignore[attr-defined] # https://github.com/python/typeshed/issues/3139
+        self.stream.flush()  # type: ignore # https://github.com/python/typeshed/issues/3139
 
 class RemoteTestResult(django_runner.RemoteTestResult):
     """
     The class follows the unpythonic style of function names of the
     base class.
     """
-
     def addInfo(self, test: TestCase, msg: str) -> None:
         self.events.append(('addInfo', self.test_index, msg))
 
@@ -226,6 +224,18 @@ def run_subsuite(args: SubsuiteArgs) -> Tuple[int, Any]:
     # addInstrumentation does not need it.
     process_instrumented_calls(partial(result.addInstrumentation, None))
     return subsuite_index, result.events
+
+# Monkey-patch database creation to fix unnecessary sleep(1)
+from django.db.backends.postgresql.creation import DatabaseCreation
+def _replacement_destroy_test_db(self: DatabaseCreation,
+                                 test_database_name: str,
+                                 verbosity: int) -> None:
+    """Replacement for Django's _destroy_test_db that removes the
+    unnecessary sleep(1)."""
+    with self.connection._nodb_connection.cursor() as cursor:
+        cursor.execute("DROP DATABASE %s"
+                       % (self.connection.ops.quote_name(test_database_name),))
+DatabaseCreation._destroy_test_db = _replacement_destroy_test_db
 
 def destroy_test_databases(worker_id: Optional[int]=None) -> None:
     for alias in connections:
@@ -326,7 +336,7 @@ class TestSuite(unittest.TestSuite):
         """
         topLevel = False
         if getattr(result, '_testRunEntered', False) is False:
-            result._testRunEntered = topLevel = True  # type: ignore[attr-defined]
+            result._testRunEntered = topLevel = True  # type: ignore
 
         for test in self:
             # but this is correct. Taken from unittest.
@@ -336,10 +346,10 @@ class TestSuite(unittest.TestSuite):
             if isinstance(test, TestSuite):
                 test.run(result, debug=debug)
             else:
-                self._tearDownPreviousClass(test, result)  # type: ignore[attr-defined]
-                self._handleModuleFixture(test, result)  # type: ignore[attr-defined]
-                self._handleClassSetUp(test, result)  # type: ignore[attr-defined]
-                result._previousTestClass = test.__class__  # type: ignore[attr-defined]
+                self._tearDownPreviousClass(test, result)  # type: ignore
+                self._handleModuleFixture(test, result)  # type: ignore
+                self._handleClassSetUp(test, result)  # type: ignore
+                result._previousTestClass = test.__class__  # type: ignore
                 if (getattr(test.__class__, '_classSetupFailed', False) or
                         getattr(result, '_moduleSetUpFailed', False)):
                     continue
@@ -350,9 +360,9 @@ class TestSuite(unittest.TestSuite):
                     break
 
         if topLevel:
-            self._tearDownPreviousClass(None, result)  # type: ignore[attr-defined]
-            self._handleModuleTearDown(result)  # type: ignore[attr-defined]
-            result._testRunEntered = False  # type: ignore[attr-defined]
+            self._tearDownPreviousClass(None, result)  # type: ignore
+            self._handleModuleTearDown(result)  # type: ignore
+            result._testRunEntered = False  # type: ignore
         return result
 
 class TestLoader(loader.TestLoader):
@@ -368,7 +378,7 @@ class ParallelTestSuite(django_runner.ParallelTestSuite):
         # the whole idea here is to monkey-patch that so we can use
         # most of django_runner.ParallelTestSuite with our own suite
         # definitions.
-        self.subsuites = SubSuiteList(self.subsuites)  # type: ignore[has-type] # Type of self.subsuites changes.
+        self.subsuites = SubSuiteList(self.subsuites)  # type: ignore # Type of self.subsuites changes.
 
 def check_import_error(test_name: str) -> None:
     try:
@@ -404,10 +414,10 @@ class Runner(DiscoverRunner):
 
         # `templates_rendered` holds templates which were rendered
         # in proper logical tests.
-        self.templates_rendered: Set[str] = set()
+        self.templates_rendered = set()  # type: Set[str]
         # `shallow_tested_templates` holds templates which were rendered
         # in `zerver.tests.test_templates`.
-        self.shallow_tested_templates: Set[str] = set()
+        self.shallow_tested_templates = set()  # type: Set[str]
         template_rendered.connect(self.on_template_rendered)
 
     def get_resultclass(self) -> Type[TestResult]:
@@ -588,7 +598,6 @@ class SubSuiteList(List[Tuple[Type[TestSuite], List[str]]]):
     This class allows us to avoid changing the main logic of
     ParallelTestSuite and still make it serializable.
     """
-
     def __init__(self, suites: List[TestSuite]) -> None:
         serialized_suites = [serialize_suite(s) for s in suites]
         super().__init__(serialized_suites)

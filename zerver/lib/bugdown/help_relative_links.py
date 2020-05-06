@@ -71,7 +71,7 @@ class RelativeLinksHelpExtension(markdown.Extension):
         md.registerExtension(self)
         md.preprocessors.add('help_relative_links', RelativeLinks(), '_begin')
 
-relative_help_links: Optional[bool] = None
+relative_help_links = None  # type: Optional[bool]
 
 def set_relative_help_links(value: bool) -> None:
     global relative_help_links

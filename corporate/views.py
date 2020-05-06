@@ -57,7 +57,7 @@ def check_upgrade_parameters(
 
 # Should only be called if the customer is being charged automatically
 def payment_method_string(stripe_customer: stripe.Customer) -> str:
-    stripe_source: Optional[Union[stripe.Card, stripe.Source]] = stripe_customer.default_source
+    stripe_source = stripe_customer.default_source  # type: Optional[Union[stripe.Card, stripe.Source]]
     # In case of e.g. an expired card
     if stripe_source is None:  # nocoverage
         return _("No payment method on file")
@@ -99,11 +99,10 @@ def upgrade(request: HttpRequest, user: UserProfile,
     except BillingError as e:
         if not settings.TEST_SUITE:  # nocoverage
             billing_logger.warning(
-                "BillingError during upgrade: %s. user=%s, realm=%s (%s), billing_modality=%s, "
-                "schedule=%s, license_management=%s, licenses=%s, has stripe_token: %s",
-                e.description, user.id, user.realm.id, user.realm.string_id, billing_modality,
-                schedule, license_management, licenses, stripe_token is not None,
-            )
+                ("BillingError during upgrade: %s. user=%s, realm=%s (%s), billing_modality=%s, "
+                 "schedule=%s, license_management=%s, licenses=%s, has stripe_token: %s")
+                % (e.description, user.id, user.realm.id, user.realm.string_id, billing_modality,
+                   schedule, license_management, licenses, stripe_token is not None))
         return json_error(e.message, data={'error_description': e.description})
     except Exception as e:
         billing_logger.exception("Uncaught exception in billing: %s" % (e,))
@@ -129,7 +128,7 @@ def initial_upgrade(request: HttpRequest) -> HttpResponse:
 
     seat_count = get_latest_seat_count(user.realm)
     signed_seat_count, salt = sign_string(str(seat_count))
-    context: Dict[str, Any] = {
+    context = {
         'publishable_key': STRIPE_PUBLISHABLE_KEY,
         'email': user.delivery_email,
         'seat_count': seat_count,
@@ -144,7 +143,7 @@ def initial_upgrade(request: HttpRequest) -> HttpResponse:
             'monthly_price': 800,
             'percent_off': float(percent_off),
         },
-    }
+    }  # type: Dict[str, Any]
     response = render(request, 'corporate/upgrade.html', context=context)
     return response
 
@@ -158,7 +157,7 @@ def billing_home(request: HttpRequest) -> HttpResponse:
         return HttpResponseRedirect(reverse('corporate.views.initial_upgrade'))
 
     if not user.is_realm_admin and not user.is_billing_admin:
-        context: Dict[str, Any] = {'admin_access': False}
+        context = {'admin_access': False}  # type: Dict[str, Any]
         return render(request, 'corporate/billing.html', context=context)
 
     context = {
@@ -204,8 +203,9 @@ def billing_home(request: HttpRequest) -> HttpResponse:
 
 @require_billing_access
 @has_request_variables
-def change_plan_status(request: HttpRequest, user: UserProfile,
-                       status: int=REQ("status", validator=check_int)) -> HttpResponse:
+def change_plan_at_end_of_cycle(request: HttpRequest, user: UserProfile,
+                                status: int=REQ("status", validator=check_int)) -> HttpResponse:
+    assert(status in [CustomerPlan.ACTIVE, CustomerPlan.DOWNGRADE_AT_END_OF_CYCLE])
     plan = get_current_plan_by_realm(user.realm)
     assert(plan is not None)  # for mypy
     do_change_plan_status(plan, status)

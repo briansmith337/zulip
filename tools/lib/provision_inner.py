@@ -57,12 +57,6 @@ def inline_email_css_paths() -> List[str]:
     paths += glob.glob('templates/zerver/emails/*.source.html')
     return paths
 
-def configure_rabbitmq_paths() -> List[str]:
-    paths = [
-        "scripts/setup/configure-rabbitmq",
-    ]
-    return paths
-
 def setup_shell_profile(shell_profile: str) -> None:
     shell_profile_path = os.path.expanduser(shell_profile)
 
@@ -151,37 +145,6 @@ def need_to_run_inline_email_css() -> bool:
         inline_email_css_paths(),
     )
 
-def need_to_run_configure_rabbitmq(settings_list: List[str]) -> bool:
-    obsolete = is_digest_obsolete(
-        'last_configure_rabbitmq_hash',
-        configure_rabbitmq_paths(),
-        settings_list
-    )
-
-    if obsolete:
-        return True
-
-    try:
-        from zerver.lib.queue import SimpleQueueClient
-        SimpleQueueClient()
-        return False
-    except Exception:
-        return True
-
-
-def clean_unused_caches() -> None:
-    args = argparse.Namespace(
-        threshold_days=6,
-        # The defaults here should match parse_cache_script_args in zulip_tools.py
-        dry_run=False,
-        verbose=False,
-        no_headings=True,
-    )
-    from scripts.lib import clean_venv_cache, clean_node_cache, clean_emoji_cache
-    clean_venv_cache.main(args)
-    clean_node_cache.main(args)
-    clean_emoji_cache.main(args)
-
 def main(options: argparse.Namespace) -> int:
     setup_bash_profile()
     setup_shell_profile('~/.zprofile')
@@ -218,8 +181,8 @@ def main(options: argparse.Namespace) -> int:
     else:
         print("No need to run `scripts/setup/inline_email_css.py`.")
 
-    if not options.is_production_test_suite:
-        # The following block is skipped for the production test
+    if not options.is_production_travis:
+        # The following block is skipped for the production Travis
         # suite, because that suite doesn't make use of these elements
         # of the development environment (it just uses the development
         # environment to build a release tarball).
@@ -234,24 +197,23 @@ def main(options: argparse.Namespace) -> int:
             TEST_DATABASE,
             destroy_leaked_test_databases,
         )
-        from django.conf import settings
 
-        if options.is_force or need_to_run_configure_rabbitmq(
-                [settings.RABBITMQ_PASSWORD]):
+        try:
+            from zerver.lib.queue import SimpleQueueClient
+            SimpleQueueClient()
+            rabbitmq_is_configured = True
+        except Exception:
+            rabbitmq_is_configured = False
+
+        if options.is_force or not rabbitmq_is_configured:
             run(["scripts/setup/configure-rabbitmq"])
-            write_new_digest(
-                'last_configure_rabbitmq_hash',
-                configure_rabbitmq_paths(),
-                [settings.RABBITMQ_PASSWORD]
-            )
         else:
             print("No need to run `scripts/setup/configure-rabbitmq.")
 
         dev_template_db_status = DEV_DATABASE.template_status()
         if options.is_force or dev_template_db_status == 'needs_rebuild':
             run(["tools/setup/postgres-init-dev-db"])
-            run(["tools/rebuild-dev-database"])
-            DEV_DATABASE.write_new_db_digest()
+            run(["tools/do-destroy-rebuild-database"])
         elif dev_template_db_status == 'run_migrations':
             DEV_DATABASE.run_db_migrations()
         elif dev_template_db_status == 'current':
@@ -260,8 +222,7 @@ def main(options: argparse.Namespace) -> int:
         test_template_db_status = TEST_DATABASE.template_status()
         if options.is_force or test_template_db_status == 'needs_rebuild':
             run(["tools/setup/postgres-init-test-db"])
-            run(["tools/rebuild-test-database"])
-            TEST_DATABASE.write_new_db_digest()
+            run(["tools/do-destroy-rebuild-test-database"])
         elif test_template_db_status == 'run_migrations':
             TEST_DATABASE.run_db_migrations()
         elif test_template_db_status == 'current':
@@ -280,7 +241,7 @@ def main(options: argparse.Namespace) -> int:
         if destroyed:
             print("Dropped %s stale test databases!" % (destroyed,))
 
-    clean_unused_caches()
+    run(["scripts/lib/clean-unused-caches", "--threshold=6"])
 
     # Keeping this cache file around can cause eslint to throw
     # random TypeErrors when new/updated dependencies are added
@@ -319,10 +280,10 @@ if __name__ == "__main__":
                         default=False,
                         help="Ignore all provisioning optimizations.")
 
-    parser.add_argument('--production-test-suite', action='store_true',
-                        dest='is_production_test_suite',
+    parser.add_argument('--production-travis', action='store_true',
+                        dest='is_production_travis',
                         default=False,
-                        help="Provision for test suite with production settings.")
+                        help="Provision for Travis with production settings.")
 
     options = parser.parse_args()
     sys.exit(main(options))

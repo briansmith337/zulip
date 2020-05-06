@@ -46,7 +46,6 @@ from zerver.lib.send_email import send_future_email, FromAddress, \
     deliver_email
 from zerver.lib.initial_password import initial_password
 from zerver.lib.actions import (
-    do_get_user_invites,
     do_deactivate_realm,
     do_deactivate_user,
     do_set_realm_property,
@@ -68,8 +67,6 @@ from zerver.lib.test_classes import (
 from zerver.lib.name_restrictions import is_disposable_domain
 from zerver.context_processors import common_context
 
-from zproject.backends import ExternalAuthResult, ExternalAuthDataDict
-
 import re
 import smtplib
 import time
@@ -81,44 +78,47 @@ import urllib
 import pytz
 
 class RedirectAndLogIntoSubdomainTestCase(ZulipTestCase):
-    def test_data(self) -> None:
-        realm = get_realm("zulip")
-        user_profile = self.example_user("hamlet")
-        name = user_profile.full_name
-        email = user_profile.delivery_email
-        response = redirect_and_log_into_subdomain(ExternalAuthResult(user_profile=user_profile))
+    def test_cookie_data(self) -> None:
+        realm = Realm.objects.all().first()
+        name = 'Hamlet'
+        email = self.example_email("hamlet")
+        response = redirect_and_log_into_subdomain(realm, name, email)
         data = load_subdomain_token(response)
-        self.assertDictEqual(data, {'full_name': name,
+        self.assertDictEqual(data, {'name': name, 'next': '',
                                     'email': email,
+                                    'full_name_validated': False,
                                     'subdomain': realm.subdomain,
-                                    'is_signup': False})
-
-        data_dict = ExternalAuthDataDict(is_signup=True, multiuse_object_key='key')
-        response = redirect_and_log_into_subdomain(ExternalAuthResult(user_profile=user_profile,
-                                                                      data_dict=data_dict))
-        data = load_subdomain_token(response)
-        self.assertDictEqual(data, {'full_name': name,
-                                    'email': email,
-                                    'subdomain': realm.subdomain,
-                                    # the email has an account at the subdomain,
-                                    # so is_signup get overridden to False:
                                     'is_signup': False,
+                                    'desktop_flow_otp': None,
+                                    'mobile_flow_otp': None,
+                                    'multiuse_object_key': ''})
+
+        response = redirect_and_log_into_subdomain(realm, name, email,
+                                                   is_signup=True,
+                                                   multiuse_object_key='key')
+        data = load_subdomain_token(response)
+        self.assertDictEqual(data, {'name': name, 'next': '',
+                                    'email': email,
+                                    'full_name_validated': False,
+                                    'subdomain': realm.subdomain,
+                                    'is_signup': True,
+                                    'desktop_flow_otp': None,
+                                    'mobile_flow_otp': None,
                                     'multiuse_object_key': 'key'
                                     })
 
-        data_dict = ExternalAuthDataDict(email=self.nonreg_email("alice"),
-                                         full_name="Alice",
-                                         subdomain=realm.subdomain,
-                                         is_signup=True,
-                                         full_name_validated=True,
-                                         multiuse_object_key='key')
-        response = redirect_and_log_into_subdomain(ExternalAuthResult(data_dict=data_dict))
+        response = redirect_and_log_into_subdomain(realm, name, email,
+                                                   is_signup=True,
+                                                   full_name_validated=True,
+                                                   multiuse_object_key='key')
         data = load_subdomain_token(response)
-        self.assertDictEqual(data, {'full_name': "Alice",
-                                    'email': self.nonreg_email("alice"),
+        self.assertDictEqual(data, {'name': name, 'next': '',
+                                    'email': email,
                                     'full_name_validated': True,
                                     'subdomain': realm.subdomain,
                                     'is_signup': True,
+                                    'desktop_flow_otp': None,
+                                    'mobile_flow_otp': None,
                                     'multiuse_object_key': 'key'
                                     })
 
@@ -1470,26 +1470,6 @@ so we didn't send them an invitation. We did send invitations to everyone else!"
                                          "or been deactivated."], result)
 
 class InvitationsTestCase(InviteUserBase):
-    def test_do_get_user_invites(self) -> None:
-        self.login('iago')
-        user_profile = self.example_user("iago")
-        hamlet = self.example_user('hamlet')
-        othello = self.example_user('othello')
-        prereg_user_one = PreregistrationUser(email="TestOne@zulip.com", referred_by=user_profile)
-        prereg_user_one.save()
-        prereg_user_two = PreregistrationUser(email="TestTwo@zulip.com", referred_by=user_profile)
-        prereg_user_two.save()
-        prereg_user_three = PreregistrationUser(email="TestThree@zulip.com", referred_by=hamlet)
-        prereg_user_three.save()
-        prereg_user_four = PreregistrationUser(email="TestFour@zulip.com", referred_by=othello)
-        prereg_user_four.save()
-        prereg_user_other_realm = PreregistrationUser(
-            email="TestOne@zulip.com", referred_by=self.mit_user("sipbtest"))
-        prereg_user_other_realm.save()
-        self.assertEqual(len(do_get_user_invites(user_profile)), 4)
-        self.assertEqual(len(do_get_user_invites(hamlet)), 1)
-        self.assertEqual(len(do_get_user_invites(othello)), 1)
-
     def test_successful_get_open_invitations(self) -> None:
         """
         A GET call to /json/invites returns all unexpired invitations.
@@ -1558,46 +1538,6 @@ class InvitationsTestCase(InviteUserBase):
                           lambda: ScheduledEmail.objects.get(address__iexact=invitee,
                                                              type=ScheduledEmail.INVITATION_REMINDER))
 
-    def test_successful_member_delete_invitation(self) -> None:
-        """
-        A DELETE call from member account to /json/invites/<ID> should delete the invite and
-        any scheduled invitation reminder emails.
-        """
-        user_profile = self.example_user('hamlet')
-        self.login_user(user_profile)
-        invitee = "DeleteMe@zulip.com"
-        self.assert_json_success(self.invite(invitee, ['Denmark']))
-
-        # Verify that the scheduled email exists.
-        prereg_user = PreregistrationUser.objects.get(email=invitee,
-                                                      referred_by=user_profile)
-        ScheduledEmail.objects.get(address__iexact=invitee,
-                                   type=ScheduledEmail.INVITATION_REMINDER)
-
-        # Verify another non-admin can't delete
-        result = self.api_delete(self.example_user("othello"),
-                                 '/api/v1/invites/' + str(prereg_user.id))
-        self.assert_json_error(result, "Must be an organization administrator")
-
-        # Verify that the scheduled email still exists.
-        prereg_user = PreregistrationUser.objects.get(email=invitee,
-                                                      referred_by=user_profile)
-        ScheduledEmail.objects.get(address__iexact=invitee,
-                                   type=ScheduledEmail.INVITATION_REMINDER)
-
-        # Verify deletion works.
-        result = self.api_delete(user_profile,
-                                 '/api/v1/invites/' + str(prereg_user.id))
-        self.assertEqual(result.status_code, 200)
-
-        result = self.api_delete(user_profile,
-                                 '/api/v1/invites/' + str(prereg_user.id))
-        self.assert_json_error(result, "No such invitation")
-
-        self.assertRaises(ScheduledEmail.DoesNotExist,
-                          lambda: ScheduledEmail.objects.get(address__iexact=invitee,
-                                                             type=ScheduledEmail.INVITATION_REMINDER))
-
     def test_delete_multiuse_invite(self) -> None:
         """
         A DELETE call to /json/invites/multiuse<ID> should delete the
@@ -1659,56 +1599,6 @@ class InvitationsTestCase(InviteUserBase):
         self.assert_json_error(error_result, "No such invitation")
 
         self.check_sent_emails([invitee], custom_from_name="Zulip")
-
-    def test_successful_member_resend_invitation(self) -> None:
-        """A POST call from member a account to /json/invites/<ID>/resend
-        should send an invitation reminder email and delete any
-        scheduled invitation reminder email if they send the invite.
-        """
-        self.login('hamlet')
-        user_profile = self.example_user('hamlet')
-        invitee = "resend_me@zulip.com"
-        self.assert_json_success(self.invite(invitee, ['Denmark']))
-        # Verify hamlet has only one invitation (Member can resend invitations only sent by him).
-        invitation = PreregistrationUser.objects.filter(referred_by=user_profile)
-        self.assertEqual(len(invitation), 1)
-        prereg_user = PreregistrationUser.objects.get(email=invitee)
-
-        # Verify and then clear from the outbox the original invite email
-        self.check_sent_emails([invitee], custom_from_name="Zulip")
-        from django.core.mail import outbox
-        outbox.pop()
-
-        # Verify that the scheduled email exists.
-        scheduledemail_filter = ScheduledEmail.objects.filter(
-            address__iexact=invitee, type=ScheduledEmail.INVITATION_REMINDER)
-        self.assertEqual(scheduledemail_filter.count(), 1)
-        original_timestamp = scheduledemail_filter.values_list('scheduled_timestamp', flat=True)
-
-        # Resend invite
-        result = self.client_post('/json/invites/' + str(prereg_user.id) + '/resend')
-        self.assertEqual(ScheduledEmail.objects.filter(
-            address__iexact=invitee, type=ScheduledEmail.INVITATION_REMINDER).count(), 1)
-
-        # Check that we have exactly one scheduled email, and that it is different
-        self.assertEqual(scheduledemail_filter.count(), 1)
-        self.assertNotEqual(original_timestamp,
-                            scheduledemail_filter.values_list('scheduled_timestamp', flat=True))
-
-        self.assertEqual(result.status_code, 200)
-        error_result = self.client_post('/json/invites/' + str(9999) + '/resend')
-        self.assert_json_error(error_result, "No such invitation")
-
-        self.check_sent_emails([invitee], custom_from_name="Zulip")
-
-        self.logout()
-        self.login("othello")
-        invitee = "TestOne@zulip.com"
-        prereg_user_one = PreregistrationUser(email=invitee, referred_by=user_profile)
-        prereg_user_one.save()
-        prereg_user = PreregistrationUser.objects.get(email=invitee)
-        error_result = self.client_post('/json/invites/' + str(prereg_user.id) + '/resend')
-        self.assert_json_error(error_result, "Must be an organization administrator")
 
     def test_accessing_invites_in_another_realm(self) -> None:
         inviter = UserProfile.objects.exclude(realm=get_realm('zulip')).first()
@@ -2273,8 +2163,8 @@ class UserSignUpTest(InviteUserBase):
         self._assert_redirected_to(result, '/config-error/smtp')
 
         self.assertEqual(
-            err.call_args_list[0][0],
-            ('Error in accounts_home: %s', 'uh oh'),
+            err.call_args_list[0][0][0],
+            'Error in accounts_home: uh oh'
         )
 
     def test_bad_email_configuration_for_create_realm(self) -> None:
@@ -2296,8 +2186,8 @@ class UserSignUpTest(InviteUserBase):
         self._assert_redirected_to(result, '/config-error/smtp')
 
         self.assertEqual(
-            err.call_args_list[0][0],
-            ('Error in create_realm: %s', 'uh oh'),
+            err.call_args_list[0][0][0],
+            'Error in create_realm: uh oh'
         )
 
     def test_user_default_language_and_timezone(self) -> None:
@@ -2823,7 +2713,7 @@ class UserSignUpTest(InviteUserBase):
         do_set_realm_property(realm, 'emails_restricted_to_domains', True)
 
         request = HostRequestMock(host = realm.host)
-        request.session = {}  # type: ignore[attr-defined]
+        request.session = {}  # type: ignore
         email = 'user@acme.com'
         form = HomepageForm({'email': email}, realm=realm)
         self.assertIn("Your email address, {}, is not in one of the domains".format(email),
@@ -2836,7 +2726,7 @@ class UserSignUpTest(InviteUserBase):
         realm.save()
 
         request = HostRequestMock(host = realm.host)
-        request.session = {}  # type: ignore[attr-defined]
+        request.session = {}  # type: ignore
         email = 'abc@mailnator.com'
         form = HomepageForm({'email': email}, realm=realm)
         self.assertIn("Please use your real email address", form.errors['email'][0])
@@ -2847,7 +2737,7 @@ class UserSignUpTest(InviteUserBase):
         realm.save()
 
         request = HostRequestMock(host = realm.host)
-        request.session = {}  # type: ignore[attr-defined]
+        request.session = {}  # type: ignore
         email = 'iago+label@zulip.com'
         form = HomepageForm({'email': email}, realm=realm)
         self.assertIn("Email addresses containing + are not allowed in this organization.", form.errors['email'][0])
@@ -2857,7 +2747,7 @@ class UserSignUpTest(InviteUserBase):
         realm.invite_required = True
         realm.save()
         request = HostRequestMock(host = realm.host)
-        request.session = {}  # type: ignore[attr-defined]
+        request.session = {}  # type: ignore
         email = 'user@zulip.com'
         form = HomepageForm({'email': email}, realm=realm)
         self.assertIn("Please request an invite for {} from".format(email),
@@ -2865,7 +2755,7 @@ class UserSignUpTest(InviteUserBase):
 
     def test_failed_signup_due_to_nonexistent_realm(self) -> None:
         request = HostRequestMock(host = 'acme.' + settings.EXTERNAL_HOST)
-        request.session = {}  # type: ignore[attr-defined]
+        request.session = {}  # type: ignore
         email = 'user@acme.com'
         form = HomepageForm({'email': email}, realm=None)
         self.assertIn("organization you are trying to join using {} does "
@@ -3310,10 +3200,7 @@ class UserSignUpTest(InviteUserBase):
                     # Pass HTTP_HOST for the target subdomain
                     HTTP_HOST=subdomain + ".testserver")
                 self.assertEqual(result.status_code, 200)
-                mock_warning.assert_called_once_with(
-                    "New account email %s could not be found in LDAP",
-                    "newuser@zulip.com",
-                )
+                mock_warning.assert_called_once_with("New account email newuser@zulip.com could not be found in LDAP")
 
             result = self.submit_reg_form_for_user(email,
                                                    password,
@@ -3399,10 +3286,7 @@ class UserSignUpTest(InviteUserBase):
                     # Pass HTTP_HOST for the target subdomain
                     HTTP_HOST=subdomain + ".testserver")
                 self.assertEqual(result.status_code, 200)
-                mock_warning.assert_called_once_with(
-                    "New account email %s could not be found in LDAP",
-                    "nonexistent@zulip.com",
-                )
+                mock_warning.assert_called_once_with("New account email nonexistent@zulip.com could not be found in LDAP")
 
             result = self.submit_reg_form_for_user(email,
                                                    password,

@@ -1,6 +1,7 @@
 const settings_config = require("./settings_config");
 const render_settings_admin_auth_methods_list = require('../templates/settings/admin_auth_methods_list.hbs');
 const render_settings_admin_realm_domains_list = require("../templates/settings/admin_realm_domains_list.hbs");
+const render_settings_admin_realm_dropdown_stream_list = require("../templates/settings/admin_realm_dropdown_stream_list.hbs");
 const render_settings_organization_settings_tip = require("../templates/settings/organization_settings_tip.hbs");
 const pygments_data = require("../generated/pygments_data.json");
 
@@ -11,7 +12,6 @@ const meta = {
 exports.reset = function () {
     meta.loaded = false;
 };
-
 
 exports.maybe_disable_widgets = function () {
     if (page_params.is_admin) {
@@ -153,6 +153,14 @@ function get_property_value(property_name) {
 
     if (property_name === 'realm_default_twenty_four_hour_time') {
         return JSON.stringify(page_params[property_name]);
+    }
+
+    if (property_name === 'realm_notifications_stream') {
+        return page_params.realm_notifications_stream_id;
+    }
+
+    if (property_name === 'realm_signup_notifications_stream') {
+        return page_params.realm_signup_notifications_stream_id;
     }
 
     return page_params[property_name];
@@ -312,6 +320,81 @@ function insert_tip_box() {
         .prepend(tip_box);
 }
 
+exports.render_notifications_stream_ui = function (stream_id, notification_type) {
+    const name = stream_data.maybe_get_stream_name(stream_id);
+
+    $(`#id_realm_${notification_type}_stream`).data("stream-id", stream_id);
+
+    const elem = $(`#realm_${notification_type}_stream_name`);
+
+    if (!name) {
+        elem.text(i18n.t("Disabled"));
+        elem.addClass("text-warning");
+        elem.closest('.input-group').find('.notification-disable').hide();
+        return;
+    }
+
+    // Happy path
+    elem.text('#' + name);
+    elem.removeClass('text-warning');
+    elem.closest('.input-group').find('.notification-disable').show();
+};
+
+exports.populate_notifications_stream_dropdown = function (stream_list) {
+    const dropdown_list_body = $("#id_realm_notifications_stream .dropdown-list-body").expectOne();
+    const search_input = $("#id_realm_notifications_stream .dropdown-search > input[type=text]");
+
+    list_render.create(dropdown_list_body, stream_list, {
+        name: "admin-realm-notifications-stream-dropdown-list",
+        modifier: function (item) {
+            return render_settings_admin_realm_dropdown_stream_list({ stream: item });
+        },
+        filter: {
+            element: search_input,
+            predicate: function (item, value) {
+                return item.name.toLowerCase().includes(value);
+            },
+            onupdate: function () {
+                ui.reset_scrollbar(dropdown_list_body);
+            },
+        },
+    });
+
+    $("#id_realm_notifications_stream .dropdown-search").click(function (e) {
+        e.stopPropagation();
+    });
+
+    $("#id_realm_notifications_stream .dropdown-toggle").click(function () {
+        search_input.val("").trigger("input");
+    });
+};
+
+exports.populate_signup_notifications_stream_dropdown = function (stream_list) {
+    const dropdown_list_body = $("#id_realm_signup_notifications_stream .dropdown-list-body").expectOne();
+    const search_input = $("#id_realm_signup_notifications_stream .dropdown-search > input[type=text]");
+
+    list_render.create(dropdown_list_body, stream_list, {
+        name: "admin-realm-signup-notifications-stream-dropdown-list",
+        modifier: function (item) {
+            return render_settings_admin_realm_dropdown_stream_list({ stream: item });
+        },
+        filter: {
+            element: search_input,
+            predicate: function (item, value) {
+                return item.name.toLowerCase().includes(value);
+            },
+        },
+    });
+
+    $("#id_realm_signup_notifications_stream .dropdown-search").click(function (e) {
+        e.stopPropagation();
+    });
+
+    $("#id_realm_signup_notifications_stream .dropdown-toggle").click(function () {
+        search_input.val("").trigger("input");
+    });
+};
+
 function update_dependent_subsettings(property_name) {
     if (simple_dropdown_properties.includes(property_name)) {
         set_property_dropdown_value(property_name);
@@ -344,10 +427,10 @@ function discard_property_element_changes(elem) {
 
     if (property_name === 'realm_authentication_methods') {
         exports.populate_auth_methods(property_value);
-    } else if (property_name === 'realm_notifications_stream_id') {
-        exports.notifications_stream_widget.render(property_value);
-    } else if (property_name === 'realm_signup_notifications_stream_id') {
-        exports.signup_notifications_stream_widget.render(property_value);
+    } else if (property_name === 'realm_notifications_stream') {
+        exports.render_notifications_stream_ui(property_value, "notifications");
+    } else if (property_name === 'realm_signup_notifications_stream') {
+        exports.render_notifications_stream_ui(property_value, "signup_notifications");
     } else if (property_name === 'realm_default_code_block_language') {
         exports.default_code_language_widget.render(property_value);
     } else if (typeof property_value === 'boolean') {
@@ -466,7 +549,6 @@ exports.set_up = function () {
     exports.maybe_disable_widgets();
 };
 
-
 function get_auth_method_table_data() {
     const new_auth_methods = {};
     const auth_method_rows = $("#id_realm_authentication_methods").find('tr.method_row');
@@ -489,10 +571,10 @@ function check_property_changed(elem) {
         current_val = JSON.stringify(current_val);
         changed_val = get_auth_method_table_data();
         changed_val = JSON.stringify(changed_val);
-    } else if (property_name === 'realm_notifications_stream_id') {
-        changed_val = parseInt(exports.notifications_stream_widget.value(), 10);
-    } else if (property_name === 'realm_signup_notifications_stream_id') {
-        changed_val = parseInt(exports.signup_notifications_stream_widget.value(), 10);
+    } else if (property_name === 'realm_notifications_stream') {
+        changed_val = parseInt($("#id_realm_notifications_stream").data('stream-id'), 10);
+    } else if (property_name === 'realm_signup_notifications_stream') {
+        changed_val = parseInt($("#id_realm_signup_notifications_stream").data('stream-id'), 10);
     } else if (property_name === 'realm_default_code_block_language') {
         changed_val = exports.default_code_language_widget.value();
     } else if (typeof current_val === 'boolean') {
@@ -508,7 +590,7 @@ function check_property_changed(elem) {
     return current_val !== changed_val;
 }
 
-exports.save_discard_widget_status_handler = (subsection) => {
+function save_discard_widget_status_handler(subsection) {
     subsection.find('.subsection-failed-status p').hide();
     subsection.find('.save-button').show();
     const properties_elements = get_subsection_property_elements(subsection);
@@ -517,53 +599,124 @@ exports.save_discard_widget_status_handler = (subsection) => {
     const save_btn_controls = subsection.find('.subsection-header .save-button-controls');
     const button_state = show_change_process_button ? "unsaved" : "discarded";
     exports.change_save_button_state(save_btn_controls, button_state);
-};
+}
 
-exports.default_code_language_widget = null;
-exports.notifications_stream_widget = null;
-exports.signup_notifications_stream_widget = null;
+exports.DropdownListWidget = function (opts) {
+    opts.container_id = `${opts.setting_name}_widget`;
+    opts.value_id = `id_${opts.setting_name}`;
 
-exports.init_dropdown_widgets = () => {
-    const streams = stream_data.get_streams_for_settings_page();
-    const notification_stream_options = {
-        data: streams.map(x => {
-            const item = {
-                name: x.name,
-                value: x.stream_id.toString(),
-            };
-            return item;
-        }),
-        subsection: 'notifications',
-        default_text: i18n.t("Disabled"),
-        render_text: (x) => {return `#${x}`;},
-        null_value: -1,
+    const render_dropdown_list = require("../templates/settings/dropdown_list.hbs");
+
+    const setup = () => {
+        // populate the dropdown
+        const dropdown_list_body = $(`#${opts.container_id} .dropdown-list-body`).expectOne();
+        const search_input = $(`#${opts.container_id} .dropdown-search > input[type=text]`);
+        list_render.create(dropdown_list_body, opts.data, {
+            name: `${opts.setting_name}_list`,
+            modifier: function (item) {
+                return render_dropdown_list({ item: item });
+            },
+            filter: {
+                element: search_input,
+                predicate: function (item, value) {
+                    return item.name.toLowerCase().includes(value);
+                },
+            },
+        });
+        $(`#${opts.container_id} .dropdown-search`).click(function (e) {
+            e.stopPropagation();
+        });
+
+        $(`#${opts.container_id} .dropdown-toggle`).click(function () {
+            search_input.val("").trigger("input");
+        });
     };
-    exports.notifications_stream_widget = settings_list_widget(
-        Object.assign({setting_name: 'realm_notifications_stream_id'},
-                      notification_stream_options));
-    exports.signup_notifications_stream_widget = settings_list_widget(
-        Object.assign({setting_name: 'realm_signup_notifications_stream_id'},
-                      notification_stream_options));
-    exports.default_code_language_widget = settings_list_widget({
-        setting_name: 'realm_default_code_block_language',
-        data: Object.keys(pygments_data.langs).map(x => {
-            return {
-                name: x,
-                value: x,
-            };
-        }),
-        subsection: 'other-settings',
-        default_text: i18n.t("No language set"),
-    });
+
+    const render = (name) => {
+        $(`#${opts.container_id} #${opts.value_id}`).data("value", name);
+
+        const elem = $(`#${opts.container_id} #${opts.setting_name}_name`);
+
+        if (!name) {
+            elem.text(opts.default_text);
+            elem.addClass("text-warning");
+            elem.closest('.input-group').find('.dropdown_list_reset_button').hide();
+            return;
+        }
+
+        // Happy path
+        elem.text(name);
+        elem.removeClass('text-warning');
+        elem.closest('.input-group').find('.dropdown_list_reset_button').show();
+    };
+
+    const update = (item) => {
+        render(item);
+        save_discard_widget_status_handler($(`#org-${opts.subsection}`));
+    };
+
+    const register_event_handlers = () => {
+        $(`#${opts.container_id} .dropdown-list-body`).on("click keypress", ".list_item", function (e) {
+            const setting_elem = $(this).closest(`.${opts.setting_name}_setting`);
+            if (e.type === "keypress") {
+                if (e.which === 13) {
+                    setting_elem.find(".dropdown-menu").dropdown("toggle");
+                } else {
+                    return;
+                }
+            }
+            const item = $(this).attr('data-value');
+            update(item);
+        });
+        $(`#${opts.container_id} .dropdown_list_reset_button`).click(function () {
+            update(null);
+        });
+    };
+
+    const value = () => {
+        let val = $(`#${opts.container_id} #${opts.value_id}`).data('value');
+        if (val === null) {
+            val = '';
+        }
+        return val;
+    };
+
+    return {
+        setup,
+        render,
+        register_event_handlers,
+        value,
+    };
 };
+
+exports.default_code_language_widget = exports.DropdownListWidget({
+    setting_name: 'realm_default_code_block_language',
+    data: Object.keys(pygments_data.langs).map(x => {
+        return {
+            name: x,
+            value: x,
+        };
+    }),
+    subsection: 'other-settings',
+    default_text: i18n.t("No language set"),
+});
 
 exports.build_page = function () {
     meta.loaded = true;
 
     loading.make_indicator($('#admin_page_auth_methods_loading_indicator'));
 
-    // Initialize all the dropdown list widgets.
-    exports.init_dropdown_widgets();
+    // Populate notifications stream modal
+    if (page_params.is_admin) {
+        const streams = stream_data.get_streams_for_settings_page();
+        exports.populate_notifications_stream_dropdown(streams);
+        exports.populate_signup_notifications_stream_dropdown(streams);
+        exports.default_code_language_widget.setup();
+    }
+    exports.render_notifications_stream_ui(page_params.realm_notifications_stream_id, 'notifications');
+    exports.render_notifications_stream_ui(page_params.realm_signup_notifications_stream_id, 'signup_notifications');
+    exports.default_code_language_widget.render(page_params.realm_default_code_block_language);
+
     // Populate realm domains
     exports.populate_realm_domains(page_params.realm_domains);
 
@@ -600,7 +753,7 @@ exports.build_page = function () {
         }
 
         const subsection = $(e.target).closest('.org-subsection-parent');
-        exports.save_discard_widget_status_handler(subsection);
+        save_discard_widget_status_handler(subsection);
     });
 
     $('.organization').on('click', '.subsection-header .subsection-changes-discard .button', function (e) {
@@ -669,9 +822,9 @@ exports.build_page = function () {
             }
         } else if (subsection === 'notifications') {
             data.notifications_stream_id = JSON.stringify(
-                parseInt(exports.notifications_stream_widget.value(), 10));
+                parseInt($('#id_realm_notifications_stream').data('stream-id'), 10));
             data.signup_notifications_stream_id = JSON.stringify(
-                parseInt(exports.signup_notifications_stream_widget.value(), 10));
+                parseInt($('#id_realm_signup_notifications_stream').data('stream-id'), 10));
         } else if (subsection === 'other_settings') {
             let new_message_retention_days = $("#id_realm_message_retention_days").val();
 
@@ -909,6 +1062,30 @@ exports.build_page = function () {
                 fade_status_element(realm_domains_info);
             },
         });
+    });
+
+    function notification_stream_update(stream_id, notification_type) {
+        exports.render_notifications_stream_ui(stream_id, notification_type);
+        save_discard_widget_status_handler($('#org-notifications'));
+    }
+
+    exports.default_code_language_widget.register_event_handlers();
+
+    $(".notifications-stream-setting .dropdown-list-body").on("click keypress", ".stream_name", function (e) {
+        const notifications_stream_setting_elem = $(this).closest(".notifications-stream-setting");
+        if (e.type === "keypress") {
+            if (e.which === 13) {
+                notifications_stream_setting_elem.find(".dropdown-menu").dropdown("toggle");
+            } else {
+                return;
+            }
+        }
+        const stream_id = parseInt($(this).attr('data-stream-id'), 10);
+        notification_stream_update(stream_id, notifications_stream_setting_elem.data("notifications-type"));
+    });
+
+    $(".notification-disable").click(function (e) {
+        notification_stream_update(-1, e.target.id.replace("_stream_disable", ""));
     });
 
     function upload_realm_icon(file_input) {

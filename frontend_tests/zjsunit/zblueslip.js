@@ -56,7 +56,7 @@ exports.make_zblueslip = function () {
             for (const obj of lib.test_data[name]) {
                 const message = obj.message;
                 if (obj.count > 0) {
-                    throw Error(`We did not see expected ${obj.expected_count} of '${name}': ${message}`);
+                    throw Error(`We saw ${obj.count} (expected ${obj.expected_count}) of '${name}': ${message}`);
                 } else if (obj.count < 0) {
                     throw Error(`We saw ${obj.expected_count - obj.count} (expected ${obj.expected_count}) of '${name}': ${message}`);
                 }
@@ -115,10 +115,6 @@ exports.make_zblueslip = function () {
 
     lib.start_timing = () => {
         return () => {};
-    };
-
-    lib.preview_node = (node) => {
-        return 'node:' + node;
     };
 
     return lib;

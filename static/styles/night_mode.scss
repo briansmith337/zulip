@@ -26,11 +26,6 @@ body.night-mode {
 
     .compose-send-status-close {
         color: hsl(0, 0%, 100%);
-        opacity: 1.0;
-    }
-
-    .compose-send-status-close:hover {
-        opacity: .4;
     }
 
     .message_embed .data-container::after {
@@ -39,7 +34,6 @@ body.night-mode {
 
     .column-left .left-sidebar,
     #settings_page .form-sidebar,
-    .stream_name_search_section,
     .column-right .right-sidebar {
         border-color: hsla(0, 0%, 0%, 0.2);
     }
@@ -237,10 +231,6 @@ on a dark background, and don't change the dark labels dark either. */
         background: hsla(0, 0%, 100%, 0.5);
     }
 
-    #tab_bar #tab_list span:nth-last-child(2):hover + .search_closed {
-        color: hsl(0, 0%, 100%);
-    }
-
     #searchbox_legacy {
         #tab_bar #tab_list .sub_count,
         #tab_bar #tab_list .narrow_description {
@@ -308,11 +298,11 @@ on a dark background, and don't change the dark labels dark either. */
     #searchbox .search_icon,
     #searchbox .search_button,
     .close,
-    #user_presences li:hover .user-list-sidebar-menu-icon,
-    li.top_left_all_messages:hover .all-messages-sidebar-menu-icon,
-    li.top_left_starred_messages:hover .starred-messages-sidebar-menu-icon,
-    #stream_filters li:hover .stream-sidebar-menu-icon,
-    li.topic-list-item:hover .topic-sidebar-menu-icon {
+    #user_presences li:hover .user-list-arrow,
+    li.top_left_all_messages:hover .all-messages-arrow,
+    li.top_left_starred_messages:hover .starred-messages-sidebar-arrow,
+    #stream_filters li:hover .stream-sidebar-arrow,
+    li.topic-list-item:hover .topic-sidebar-arrow {
         color: hsl(236, 33%, 80%);
     }
 
@@ -326,11 +316,11 @@ on a dark background, and don't change the dark labels dark either. */
         color: hsl(0, 0%, 100%);
     }
 
-    #user_presences li .user-list-sidebar-menu-icon:hover,
-    .all-messages-sidebar-menu-icon:hover,
-    .starred-messages-sidebar-menu-icon:hover,
-    .stream-sidebar-menu-icon:hover,
-    .topic-sidebar-menu-icon:hover {
+    #user_presences li .user-list-arrow:hover,
+    .all-messages-arrow:hover,
+    .starred-messages-sidebar-arrow:hover,
+    .stream-sidebar-arrow:hover,
+    .topic-sidebar-arrow:hover {
         color: hsl(0, 0%, 100%) !important;
     }
 

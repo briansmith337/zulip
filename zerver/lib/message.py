@@ -58,7 +58,7 @@ from zerver.models import (
 from typing import Any, Dict, List, Optional, Set, Tuple, Sequence
 from typing_extensions import TypedDict
 
-RealmAlertWord = Dict[int, List[str]]
+RealmAlertWords = Dict[int, List[str]]
 
 RawUnreadMessagesResult = TypedDict('RawUnreadMessagesResult', {
     'pm_dict': Dict[int, Any],
@@ -113,7 +113,7 @@ def messages_for_ids(message_ids: List[int],
         extractor=extract_message_dict,
         setter=stringify_message_dict)
 
-    message_list: List[Dict[str, Any]] = []
+    message_list = []  # type: List[Dict[str, Any]]
 
     for message_id in message_ids:
         msg_dict = message_dicts[message_id]
@@ -499,13 +499,11 @@ class MessageDict:
             if len(display_recipient) == 1:
                 # add the sender in if this isn't a message between
                 # someone and themself, preserving ordering
-                recip: UserDisplayRecipient = {
-                    'email': sender_email,
-                    'full_name': sender_full_name,
-                    'short_name': sender_short_name,
-                    'id': sender_id,
-                    'is_mirror_dummy': sender_is_mirror_dummy,
-                }
+                recip = {'email': sender_email,
+                         'full_name': sender_full_name,
+                         'short_name': sender_short_name,
+                         'id': sender_id,
+                         'is_mirror_dummy': sender_is_mirror_dummy}  # type: UserDisplayRecipient
                 if recip['email'] < display_recipient[0]['email']:
                     display_recipient = [recip, display_recipient[0]]
                 elif recip['email'] > display_recipient[0]['email']:
@@ -556,17 +554,9 @@ class ReactionDict:
         return {'emoji_name': row['emoji_name'],
                 'emoji_code': row['emoji_code'],
                 'reaction_type': row['reaction_type'],
-                # TODO: We plan to remove this redundant user dictionary once
-                # clients are updated to support accessing use user_id.  See
-                # https://github.com/zulip/zulip/pull/14711 for details.
-                #
-                # When we do that, we can likely update the `.values()` query to
-                # not fetch the extra user_profile__* fields from the database
-                # as a small performance optimization.
                 'user': {'email': row['user_profile__email'],
                          'id': row['user_profile__id'],
-                         'full_name': row['user_profile__full_name']},
-                'user_id': row['user_profile__id']}
+                         'full_name': row['user_profile__full_name']}}
 
 
 def access_message(user_profile: UserProfile, message_id: int) -> Tuple[Message, Optional[UserMessage]]:
@@ -668,7 +658,7 @@ def render_markdown(message: Message,
     '''
 
     if user_ids is None:
-        message_user_ids: Set[int] = set()
+        message_user_ids = set()  # type: Set[int]
     else:
         message_user_ids = user_ids
 
@@ -729,21 +719,21 @@ def do_render_markdown(message: Message,
     return rendered_content
 
 def huddle_users(recipient_id: int) -> str:
-    display_recipient: DisplayRecipientT = get_display_recipient_by_id(
-        recipient_id, Recipient.HUDDLE, None
-    )
+    display_recipient = get_display_recipient_by_id(recipient_id,
+                                                    Recipient.HUDDLE,
+                                                    None)  # type: DisplayRecipientT
 
     # str is for streams.
     assert not isinstance(display_recipient, str)
 
-    user_ids: List[int] = [obj['id'] for obj in display_recipient]
+    user_ids = [obj['id'] for obj in display_recipient]  # type: List[int]
     user_ids = sorted(user_ids)
     return ','.join(str(uid) for uid in user_ids)
 
 def aggregate_message_dict(input_dict: Dict[int, Dict[str, Any]],
                            lookup_fields: List[str],
                            collect_senders: bool) -> List[Dict[str, Any]]:
-    lookup_dict: Dict[Tuple[Any, ...], Dict[str, Any]] = dict()
+    lookup_dict = dict()  # type: Dict[Tuple[Any, ...], Dict[str, Any]]
 
     '''
     A concrete example might help explain the inputs here:
@@ -872,7 +862,7 @@ def get_raw_unread_data(user_profile: UserProfile) -> RawUnreadMessagesResult:
 
         return False
 
-    huddle_cache: Dict[int, str] = {}
+    huddle_cache = {}  # type: Dict[int, str]
 
     def get_huddle_users(recipient_id: int) -> str:
         if recipient_id in huddle_cache:
@@ -985,12 +975,12 @@ def aggregate_unread_data(raw_data: RawUnreadMessagesResult) -> UnreadMessagesRe
         collect_senders=False,
     )
 
-    result: UnreadMessagesResult = dict(
+    result = dict(
         pms=pm_objects,
         streams=stream_objects,
         huddles=huddle_objects,
         mentions=mentions,
-        count=count)
+        count=count)  # type: UnreadMessagesResult
 
     return result
 

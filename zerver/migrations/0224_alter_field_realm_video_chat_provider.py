@@ -3,7 +3,7 @@
 from typing import Any, Dict, Optional
 
 from django.db import migrations, models
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 
 # We include a copy of this structure as it was at the time this
@@ -69,8 +69,7 @@ class Migration(migrations.Migration):
             field=models.PositiveSmallIntegerField(default=VIDEO_CHAT_PROVIDERS['jitsi_meet']['id']),
         ),
         migrations.RunPython(update_existing_video_chat_provider_values,
-                             reverse_code=reverse_code,
-                             elidable=True),
+                             reverse_code=reverse_code),
         migrations.RemoveField(
             model_name='realm',
             name='video_chat_provider_old',

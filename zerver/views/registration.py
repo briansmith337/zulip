@@ -37,7 +37,7 @@ from zerver.views.auth import create_preregistration_user, redirect_and_log_into
 
 from zproject.backends import ldap_auth_enabled, password_auth_enabled, \
     ZulipLDAPExceptionNoMatchingLDAPUser, email_auth_enabled, ZulipLDAPAuthBackend, \
-    email_belongs_to_ldap, any_social_backend_enabled, ExternalAuthResult
+    email_belongs_to_ldap, any_social_backend_enabled
 
 from confirmation.models import Confirmation, RealmCreationKey, ConfirmationKeyException, \
     validate_key, create_confirmation_link, get_object_from_key, \
@@ -136,7 +136,7 @@ def accounts_register(request: HttpRequest) -> HttpResponse:
                     try:
                         ldap_username = backend.django_to_ldap_username(email)
                     except ZulipLDAPExceptionNoMatchingLDAPUser:
-                        logging.warning("New account email %s could not be found in LDAP", email)
+                        logging.warning("New account email %s could not be found in LDAP" % (email,))
                         break
 
                     # Note that this `ldap_user` object is not a
@@ -252,14 +252,14 @@ def accounts_register(request: HttpRequest) -> HttpResponse:
 
         if not realm_creation:
             try:
-                existing_user_profile: Optional[UserProfile] = get_user_by_delivery_email(email, realm)
+                existing_user_profile = get_user_by_delivery_email(email, realm)  # type: Optional[UserProfile]
             except UserProfile.DoesNotExist:
                 existing_user_profile = None
         else:
             existing_user_profile = None
 
-        user_profile: Optional[UserProfile] = None
-        return_data: Dict[str, bool] = {}
+        user_profile = None  # type: Optional[UserProfile]
+        return_data = {}  # type: Dict[str, bool]
         if ldap_auth_enabled(realm):
             # If the user was authenticated using an external SSO
             # mechanism like Google or GitHub auth, then authentication
@@ -343,7 +343,7 @@ def accounts_register(request: HttpRequest) -> HttpResponse:
             # Because for realm creation, registration happens on the
             # root domain, we need to log them into the subdomain for
             # their new realm.
-            return redirect_and_log_into_subdomain(ExternalAuthResult(user_profile=user_profile))
+            return redirect_and_log_into_subdomain(realm, full_name, email)
 
         # This dummy_backend check below confirms the user is
         # authenticating to the correct subdomain.
@@ -353,10 +353,8 @@ def accounts_register(request: HttpRequest) -> HttpResponse:
                                    use_dummy_backend=True)
         if return_data.get('invalid_subdomain'):
             # By construction, this should never happen.
-            logging.error(
-                "Subdomain mismatch in registration %s: %s",
-                realm.subdomain, user_profile.delivery_email,
-            )
+            logging.error("Subdomain mismatch in registration %s: %s" % (
+                realm.subdomain, user_profile.delivery_email,))
             return redirect('/')
 
         return login_and_go_to_home(request, auth_result)
@@ -466,7 +464,7 @@ def create_realm(request: HttpRequest, creation_key: Optional[str]=None) -> Http
             try:
                 send_confirm_registration_email(email, activation_url, request.LANGUAGE_CODE)
             except smtplib.SMTPException as e:
-                logging.error('Error in create_realm: %s', str(e))
+                logging.error('Error in create_realm: %s' % (str(e),))
                 return HttpResponseRedirect("/config-error/smtp")
 
             if key_record is not None:
@@ -507,7 +505,7 @@ def accounts_home(request: HttpRequest, multiuse_object_key: Optional[str]="",
             try:
                 send_confirm_registration_email(email, activation_url, request.LANGUAGE_CODE)
             except smtplib.SMTPException as e:
-                logging.error('Error in accounts_home: %s', str(e))
+                logging.error('Error in accounts_home: %s' % (str(e),))
                 return HttpResponseRedirect("/config-error/smtp")
 
             return HttpResponseRedirect(reverse('signup_send_confirm', kwargs={'email': email}))
@@ -544,7 +542,7 @@ def find_account(request: HttpRequest) -> HttpResponse:
     from zerver.context_processors import common_context
     url = reverse('zerver.views.registration.find_account')
 
-    emails: List[str] = []
+    emails = []  # type: List[str]
     if request.method == 'POST':
         form = FindMyTeamForm(request.POST)
         if form.is_valid():

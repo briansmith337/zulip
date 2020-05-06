@@ -86,7 +86,7 @@ class AdminNotifyHandler(logging.Handler):
         logging.Handler.__init__(self)
 
     def emit(self, record: logging.LogRecord) -> None:
-        report: Dict[str, Any] = {}
+        report = {}  # type: Dict[str, Any]
 
         # This parameter determines whether Zulip should attempt to
         # send Zulip messages containing the error report.  If there's
@@ -129,7 +129,7 @@ class AdminNotifyHandler(logging.Handler):
             report['log_lineno'] = record.lineno
 
             if hasattr(record, "request"):
-                add_request_metadata(report, record.request)  # type: ignore[attr-defined]  # record.request is added dynamically
+                add_request_metadata(report, record.request)  # type: ignore  # record.request is added dynamically
 
         except Exception:
             report['message'] = "Exception in preparing exception report!"
@@ -138,11 +138,9 @@ class AdminNotifyHandler(logging.Handler):
 
         if settings.DEBUG_ERROR_REPORTING:  # nocoverage
             logging.warning("Reporting an error to admins...")
-            logging.warning(
-                "Reporting an error to admins: %s %s %s %s %s",
+            logging.warning("Reporting an error to admins: {} {} {} {} {}" .format(
                 record.levelname, report['logger_name'], report['log_module'],
-                report['message'], report['stack_trace'],
-            )
+                report['message'], report['stack_trace']))
 
         try:
             if settings.STAGING_ERROR_NOTIFICATIONS:

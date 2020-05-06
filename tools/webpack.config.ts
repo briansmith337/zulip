@@ -50,7 +50,7 @@ export default (env?: string): webpack.Configuration[] => {
                         resolve(__dirname, '../static/shared/js'),
                         resolve(__dirname, '../static/js'),
                     ],
-                    use: [cacheLoader, 'babel-loader'],
+                    loader: 'babel-loader',
                 },
                 // Uses script-loader on minified files so we don't change global variables in them.
                 // Also has the effect of making processing these files fast
@@ -109,22 +109,15 @@ export default (env?: string): webpack.Configuration[] => {
                 },
                 {
                     test: /\.hbs$/,
-                    use: [
-                        cacheLoader,
-                        {
-                            loader: 'handlebars-loader',
-                            options: {
-                                // Tell webpack not to explicitly require these.
-                                knownHelpers: [
-                                    'if', 'unless', 'each', 'with',
-                                    // The ones below are defined in static/js/templates.js
-                                    'plural', 'eq', 'and', 'or', 'not',
-                                    't', 'tr', 'rendered_markdown',
-                                ],
-                                preventIndent: true,
-                            },
-                        },
-                    ],
+                    loader: 'handlebars-loader',
+                    options: {
+                        // Tell webpack not to explicitly require these.
+                        knownHelpers: ['if', 'unless', 'each', 'with',
+                            // The ones below are defined in static/js/templates.js
+                            'plural', 'eq', 'and', 'or', 'not',
+                            't', 'tr', 'rendered_markdown'],
+                        preventIndent: true,
+                    },
                 },
                 // load fonts and files
                 {

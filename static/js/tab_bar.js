@@ -69,44 +69,12 @@ function build_tab_bar(filter) {
     } else {
         const tab_bar_data = make_tab_data(filter);
         display_tab_bar(tab_bar_data);
-
         $(".search_closed").on("click", function (e) {
             exports.open_search_bar_and_close_narrow_description();
             search.initiate_search();
             e.preventDefault();
             e.stopPropagation();
         });
-
-        $("#tab_list span:nth-last-child(2)").on("click", function (e) {
-            exports.open_search_bar_and_close_narrow_description();
-            search.initiate_search();
-            e.preventDefault();
-            e.stopPropagation();
-        });
-
-        // Hacky way of protecting the behaviour of links via preventDefault
-        // and stopPropagation
-        $(".narrow_description > a").on("click", function (e) {
-            window.location.href = e.target.href;
-            e.preventDefault();
-            e.stopPropagation();
-        });
-
-        const color = $(".search_closed").css("color");
-        const night_mode_color = $(".nightmode .closed_icon").css("color");
-
-        // make sure that hover plays nicely with whether search is being
-        // opened or not.
-        $(".narrow_description > a").hover(function () {
-            if (night_mode_color) {
-                $(".search_closed").css("color", night_mode_color);
-            } else {
-                $(".search_closed").css("color", color);
-            }
-        }, function () {
-            $(".search_closed").css("color", "");
-        });
-
         exports.close_search_bar_and_open_narrow_description();
     }
 }
@@ -116,15 +84,6 @@ exports.exit_search = function () {
     if (!filter || filter.is_common_narrow()) {
         // for common narrows, we change the UI (and don't redirect)
         exports.close_search_bar_and_open_narrow_description();
-
-        // reset searchbox text
-        const search_string = narrow_state.search_string();
-        // This does not need to be conditional like the corresponding
-        // function call in narrow.activate because search filters are
-        // not common narrows
-        if (search_string !== "") {
-            $("#search_query").val(search_string + " ");
-        }
     } else {
         // for "searching narrows", we redirect
         window.location.replace(filter.generate_redirect_url());

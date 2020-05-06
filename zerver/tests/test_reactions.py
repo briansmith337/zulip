@@ -62,21 +62,10 @@ class ReactionEmojiTest(ZulipTestCase):
             'emoji_name': 'smile'
         }
 
-        base_query = Reaction.objects.filter(user_profile=sender,
-                                             message=Message.objects.get(id=1),
-                                             )
         result = self.api_post(sender, '/api/v1/messages/1/reactions',
                                reaction_info)
         self.assert_json_success(result)
         self.assertEqual(200, result.status_code)
-        self.assertTrue(base_query.filter(emoji_name=reaction_info['emoji_name']).exists())
-
-        reaction_info['emoji_name'] = 'green_tick'
-        result = self.api_post(sender, '/api/v1/messages/1/reactions',
-                               reaction_info)
-        self.assert_json_success(result)
-        self.assertEqual(200, result.status_code)
-        self.assertTrue(base_query.filter(emoji_name=reaction_info['emoji_name']).exists())
 
     def test_zulip_emoji(self) -> None:
         """
@@ -87,21 +76,11 @@ class ReactionEmojiTest(ZulipTestCase):
             'emoji_name': 'zulip',
             'reaction_type': 'zulip_extra_emoji'
         }
-        base_query = Reaction.objects.filter(user_profile=sender,
-                                             emoji_name=reaction_info['emoji_name'])
 
         result = self.api_post(sender, '/api/v1/messages/1/reactions',
                                reaction_info)
         self.assert_json_success(result)
         self.assertEqual(200, result.status_code)
-        self.assertTrue(base_query.filter(message=Message.objects.get(id=1)).exists())
-
-        reaction_info.pop('reaction_type')
-        result = self.api_post(sender, '/api/v1/messages/2/reactions',
-                               reaction_info)
-        self.assert_json_success(result)
-        self.assertEqual(200, result.status_code)
-        self.assertTrue(base_query.filter(message=Message.objects.get(id=2)).exists())
 
     def test_valid_emoji_react_historical(self) -> None:
         """
@@ -381,7 +360,7 @@ class ReactionEventTest(ZulipTestCase):
             'emoji_name': 'smile'
         }
 
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.api_post(reaction_sender, '/api/v1/messages/%s/reactions' % (pm_id,),
                                    reaction_info)
@@ -425,7 +404,7 @@ class ReactionEventTest(ZulipTestCase):
                             reaction_info)
         self.assert_json_success(add)
 
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.api_delete(reaction_sender, '/api/v1/messages/%s/reactions' % (pm_id,),
                                      reaction_info)
@@ -445,7 +424,6 @@ class ReactionEventTest(ZulipTestCase):
 class EmojiReactionBase(ZulipTestCase):
     """Reusable testing functions for emoji reactions tests.  Be careful when
     changing this: It's used in test_retention.py as well."""
-
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.reaction_type = 'realm_emoji'
         super().__init__(*args, **kwargs)
@@ -841,7 +819,7 @@ class ReactionAPIEventTest(EmojiReactionBase):
             'emoji_code': '1f354',
             'reaction_type': 'unicode_emoji',
         }
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.post_reaction(reaction_info,
                                         message_id=pm_id,
@@ -881,7 +859,7 @@ class ReactionAPIEventTest(EmojiReactionBase):
         add = self.post_reaction(reaction_info, message_id=pm_id, sender=reaction_sender.short_name)
         self.assert_json_success(add)
 
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.delete_reaction(reaction_info,
                                           message_id=pm_id,

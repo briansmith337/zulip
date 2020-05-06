@@ -2,14 +2,14 @@ from collections import defaultdict
 from typing import Any, Dict
 
 from django.db import migrations
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 
 
 def realm_emoji_name_to_id(apps: StateApps, schema_editor: DatabaseSchemaEditor) -> None:
     Reaction = apps.get_model('zerver', 'Reaction')
     RealmEmoji = apps.get_model('zerver', 'RealmEmoji')
-    realm_emoji_by_realm_id: Dict[int, Dict[str, Any]] = defaultdict(dict)
+    realm_emoji_by_realm_id = defaultdict(dict)   # type: Dict[int, Dict[str, Any]]
     for realm_emoji in RealmEmoji.objects.all():
         realm_emoji_by_realm_id[realm_emoji.realm_id][realm_emoji.name] = {
             'id': str(realm_emoji.id),
@@ -45,6 +45,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(realm_emoji_name_to_id,
-                             reverse_code=reversal,
-                             elidable=True),
+                             reverse_code=reversal),
     ]

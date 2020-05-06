@@ -3,7 +3,7 @@
 import time
 
 from django.db import connection, migrations
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 from django.db.models import Min
 
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
         FOR EACH ROW
         EXECUTE PROCEDURE zerver_usermessage_bigint_id_to_id_trigger_function();
         """),
-        migrations.RunPython(copy_id_to_bigid, elidable=True),
+        migrations.RunPython(copy_id_to_bigid),
         migrations.RunSQL("""
         CREATE UNIQUE INDEX CONCURRENTLY zerver_usermessage_bigint_id_idx ON zerver_usermessage (bigint_id);
         """)

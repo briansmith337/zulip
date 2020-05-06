@@ -2,9 +2,6 @@ const util = zrequire('util');
 set_global('$', global.make_zjquery());
 
 zrequire('narrow_state');
-set_global('resize', {
-    resize_stream_filters_container: () => {},
-});
 zrequire('stream_data');
 zrequire('Filter', 'js/filter');
 zrequire('MessageListData', 'js/message_list_data');

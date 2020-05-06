@@ -192,7 +192,7 @@ def patch_bot_backend(
 
     if default_sending_stream is not None:
         if default_sending_stream == "":
-            stream: Optional[Stream] = None
+            stream = None  # type: Optional[Stream]
         else:
             (stream, recipient, sub) = access_stream_by_name(
                 user_profile, default_sending_stream)
@@ -415,14 +415,14 @@ def get_members_backend(request: HttpRequest, user_profile: UserProfile, user_id
     target_user = None
     if user_id is not None:
         target_user = access_user_by_id(user_profile, user_id, allow_deactivated=True,
-                                        allow_bots=True, read_only=True)
+                                        read_only=True)
 
     members = get_raw_user_data(realm, user_profile, client_gravatar=client_gravatar,
                                 target_user=target_user,
                                 include_custom_profile_fields=include_custom_profile_fields)
 
     if target_user is not None:
-        data: Dict[str, Any] = {"user": members[target_user.id]}
+        data = {"user": members[target_user.id]}  # type: Dict[str, Any]
     else:
         data = {"members": [members[k] for k in members]}
 
@@ -481,7 +481,7 @@ def get_profile_backend(request: HttpRequest, user_profile: UserProfile) -> Http
 
     if not user_profile.is_bot:
         custom_profile_field_values = user_profile.customprofilefieldvalue_set.all()
-        profile_data: Dict[int, Dict[str, Any]] = dict()
+        profile_data = dict()  # type: Dict[int, Dict[str, Any]]
         for profile_field in custom_profile_field_values:
             if profile_field.field.is_renderable():
                 profile_data[profile_field.field_id] = {

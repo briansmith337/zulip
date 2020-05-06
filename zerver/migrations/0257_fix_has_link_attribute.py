@@ -4,7 +4,7 @@ import time
 
 import lxml
 from django.db import migrations
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 
 BATCH_SIZE = 1000
@@ -88,6 +88,5 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(fix_has_link,
-                             reverse_code=migrations.RunPython.noop,
-                             elidable=True),
+                             reverse_code=migrations.RunPython.noop),
     ]

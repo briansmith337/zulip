@@ -1,6 +1,8 @@
 # Get all custom emoji
 
-{generate_api_description(/realm/emoji:get)}
+Get all the custom emoji in the user's organization.
+
+`GET {{ api_url }}/v1/realm/emoji`
 
 ## Usage examples
 

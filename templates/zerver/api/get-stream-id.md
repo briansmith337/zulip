@@ -1,6 +1,8 @@
 # Get stream ID
 
-{generate_api_description(/get_stream_id:get)}
+Get the unique ID of a given stream.
+
+`GET {{ api_url }}/v1/get_stream_id`
 
 ## Usage examples
 

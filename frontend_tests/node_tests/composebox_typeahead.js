@@ -621,9 +621,6 @@ run_test('initialize', () => {
         assert.deepEqual(actual_value, expected_value);
 
         subject_typeahead_called = true;
-
-        // Unset the stream name.
-        $('#stream_message_recipient_stream').val('');
     };
 
     let pm_recipient_typeahead_called = false;
@@ -635,8 +632,8 @@ run_test('initialize', () => {
 
         // This should match the users added at the beginning of this test file.
         let actual_value = options.source('');
-        let expected_value = [alice, cordelia, hal, gael, harry,
-                              hamlet, lear, twin1, twin2, othello,
+        let expected_value = [alice, hamlet, othello, cordelia, lear,
+                              twin1, twin2, gael, hal, harry,
                               hamletcharacters, backend, call_center];
         assert.deepEqual(actual_value, expected_value);
 
@@ -728,7 +725,7 @@ run_test('initialize', () => {
         // A literal match at the beginning of an element puts it at the top.
         query = 'co';  // Matches everything ("x@zulip.COm")
         actual_value = sorter(query, [othello, deactivated_user, cordelia]);
-        expected_value = [cordelia, deactivated_user, othello];
+        expected_value = [cordelia, othello, deactivated_user];
         assert.deepEqual(actual_value, expected_value);
 
         query = 'non-existing-user';
@@ -816,7 +813,6 @@ run_test('initialize', () => {
             caret_called = true;
             return 7;
         };
-        fake_this.$element.closest = () => [];
         fake_this.options = options;
         let actual_value = options.source.call(fake_this, 'test #s');
         assert.deepEqual(
@@ -1526,14 +1522,4 @@ run_test('message people', () => {
 
     results = ct.get_person_suggestions('Ha', opts);
     assert.deepEqual(results, [harry, hamletcharacters]);
-
-    message_store.user_ids = () => [hamlet.user_id, harry.user_id, hal.user_id];
-
-    results = ct.get_person_suggestions('Ha', opts);
-    assert.deepEqual(results, [harry, hamletcharacters]);
-
-    people.deactivate(harry);
-    results = ct.get_person_suggestions('Ha', opts);
-    // harry is excluded since it has been deactivated.
-    assert.deepEqual(results, [hamletcharacters, hal]);
 });

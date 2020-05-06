@@ -251,37 +251,38 @@ exports.initialize = function () {
     });
     $("body").on("click", ".topic_edit_save", function (e) {
         const recipient_row = $(this).closest(".recipient_row");
-        message_edit.save_inline_topic_edit(recipient_row);
+        message_edit.show_topic_edit_spinner(recipient_row);
+        message_edit.save(recipient_row, true);
         e.stopPropagation();
         popovers.hide_all();
     });
     $("body").on("click", ".topic_edit_cancel", function (e) {
         const recipient_row = $(this).closest(".recipient_row");
-        message_edit.end_inline_topic_edit(recipient_row);
+        current_msg_list.hide_edit_topic_on_recipient_row(recipient_row);
         e.stopPropagation();
         popovers.hide_all();
     });
     $("body").on("click", ".message_edit_save", function (e) {
         const row = $(this).closest(".message_row");
-        message_edit.save_message_row_edit(row);
+        message_edit.save(row, false);
         e.stopPropagation();
         popovers.hide_all();
     });
     $("body").on("click", ".message_edit_cancel", function (e) {
         const row = $(this).closest(".message_row");
-        message_edit.end_message_row_edit(row);
+        message_edit.end(row);
         e.stopPropagation();
         popovers.hide_all();
     });
     $("body").on("click", ".message_edit_close", function (e) {
         const row = $(this).closest(".message_row");
-        message_edit.end_message_row_edit(row);
+        message_edit.end(row);
         e.stopPropagation();
         popovers.hide_all();
     });
     $("body").on("click", ".copy_message", function (e) {
         const row = $(this).closest(".message_row");
-        message_edit.end_message_row_edit(row);
+        message_edit.end(row);
         row.find(".alert-msg").text(i18n.t("Copied!"));
         row.find(".alert-msg").css("display", "block");
         row.find(".alert-msg").delay(1000).fadeOut(300);
@@ -421,6 +422,12 @@ exports.initialize = function () {
         e.stopPropagation();
         popovers.hide_all();
         $(".tooltip").remove();
+    });
+
+    $("#subscriptions_table").on("click", ".exit, #subscription_overlay", function (e) {
+        if ($(e.target).is(".exit, .exit-sign, #subscription_overlay, #subscription_overlay > .flex")) {
+            subs.close();
+        }
     });
 
     function do_render_buddy_list_tooltip(elem, title_data) {

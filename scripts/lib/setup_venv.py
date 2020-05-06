@@ -10,6 +10,10 @@ from typing import List, Optional, Tuple, Set
 ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 VENV_CACHE_PATH = "/srv/zulip-venv-cache"
 
+if 'TRAVIS' in os.environ:
+    # In Travis CI, we don't have root access
+    VENV_CACHE_PATH = "/home/travis/zulip-venv-cache"
+
 VENV_DEPENDENCIES = [
     "build-essential",
     "libffi-dev",
@@ -20,8 +24,10 @@ VENV_DEPENDENCIES = [
     "libmemcached-dev",
     "python3-dev",          # Needed to install typed-ast dependency of mypy
     "python3-pip",
+    "python-pip",
     "virtualenv",
     "python3-six",
+    "python-six",
     "libxml2-dev",          # Used for installing talon and python-xmlsec
     "libxslt1-dev",         # Used for installing talon
     "libpq-dev",            # Needed by psycopg2
@@ -211,7 +217,7 @@ def try_to_copy_venv(venv_path: str, new_packages: Set[str]) -> bool:
         except subprocess.CalledProcessError:
             # Virtualenv-clone is either not installed or threw an
             # error.  Just return False: making a new venv is safe.
-            logging.warning("Error cloning virtualenv %s", source_venv_path)
+            logging.warning("Error cloning virtualenv %s" % (source_venv_path,))
             return False
 
         # virtualenv-clone, unfortunately, copies the success stamp,

@@ -2,7 +2,9 @@
 
 {!api-admin-only.md!}
 
-{generate_api_description(/users:post)}
+Create a new user account via the API.
+
+`POST {{ api_url }}/v1/users`
 
 ## Usage examples
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 #
 # Copyright © 2013 Zulip, Inc.
@@ -53,13 +53,15 @@ import netifaces
 
 from typing import Optional
 
-def address_of(device_id: int) -> Optional[str]:
+def address_of(device_id):
+    # type: (int) -> Optional[str]
     try:
         return netifaces.ifaddresses("ens%i" % (device_id,))[netifaces.AF_INET][0]['addr']
     except KeyError:
         return None
 
-def guess_gateway(device_id: int) -> Optional[str]:
+def guess_gateway(device_id):
+    # type: (int) -> Optional[str]
     # This will not work if the default gateway isn't n.n.n.1.
     address = address_of(device_id)
     if address is None:

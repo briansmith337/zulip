@@ -12,8 +12,8 @@ Contents:
 If you'd like to install a Zulip development environment on a computer
 that's running one of:
 
-* Ubuntu 20.04 Focal, 18.04 Bionic
-* Debian 10 Buster
+* Ubuntu 20.04 Focal, 19.04 Disco, 18.10 Cosmic, 18.04 Bionic, 16.04 Xenial
+* Debian 9 Stretch or 10 Buster
 * Centos 7 (beta)
 * Fedora 29 (beta)
 * RHEL 7 (beta)
@@ -242,9 +242,9 @@ else
 fi
 ./scripts/setup/configure-rabbitmq
 ./tools/setup/postgres-init-dev-db
-./tools/rebuild-dev-database
+./tools/do-destroy-rebuild-database
 ./tools/setup/postgres-init-test-db
-./tools/rebuild-test-database
+./tools/do-destroy-rebuild-test-database
 ./manage.py compilemessages
 ```
 

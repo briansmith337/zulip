@@ -2,7 +2,7 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 
 
@@ -27,6 +27,5 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='zerver.Stream'),
         ),
         migrations.RunPython(set_initial_value_for_signup_notifications_stream,
-                             reverse_code=migrations.RunPython.noop,
-                             elidable=True),
+                             reverse_code=migrations.RunPython.noop),
     ]

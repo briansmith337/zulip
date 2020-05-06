@@ -1,9 +1,0 @@
-<<<<<<< HEAD
-Axxess digest for {{ realm_name }}
-=======
-<<<<<<< HEAD
-{% trans %}Zulip digest for {{ realm_name }}{% endtrans %}
-=======
-Axxess digest for {{ realm_name }}
->>>>>>> Mainly email message formatting
->>>>>>> Mainly email message formatting

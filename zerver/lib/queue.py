@@ -28,9 +28,9 @@ class SimpleQueueClient:
                  rabbitmq_heartbeat: Optional[int] = 0,
                  ) -> None:
         self.log = logging.getLogger('zulip.queue')
-        self.queues: Set[str] = set()
-        self.channel: Optional[BlockingChannel] = None
-        self.consumers: Dict[str, Set[Consumer]] = defaultdict(set)
+        self.queues = set()  # type: Set[str]
+        self.channel = None  # type: Optional[BlockingChannel]
+        self.consumers = defaultdict(set)  # type: Dict[str, Set[Consumer]]
         self.rabbitmq_heartbeat = rabbitmq_heartbeat
         self._connect()
 
@@ -195,7 +195,7 @@ class ExceptionFreeTornadoConnection(pika.adapters.tornado_connection.TornadoCon
                 pika.exceptions.ProbableAccessDeniedError,
                 pika.exceptions.IncompatibleProtocolError) as e:
             logging.warning("Caught exception '%r' in ExceptionFreeTornadoConnection when \
-calling _adapter_disconnect, ignoring", e)
+calling _adapter_disconnect, ignoring" % (e,))
 
 
 class TornadoQueueClient(SimpleQueueClient):
@@ -205,7 +205,7 @@ class TornadoQueueClient(SimpleQueueClient):
         super().__init__(
             # TornadoConnection can process heartbeats, so enable them.
             rabbitmq_heartbeat=None)
-        self._on_open_cbs: List[Callable[[], None]] = []
+        self._on_open_cbs = []  # type: List[Callable[[], None]]
         self._connection_failure_count = 0
 
     def _connect(self) -> None:
@@ -308,7 +308,7 @@ class TornadoQueueClient(SimpleQueueClient):
                           lambda: self.channel.basic_consume(queue_name, wrapped_consumer,
                                                              consumer_tag=self._generate_ctag(queue_name)))
 
-queue_client: Optional[SimpleQueueClient] = None
+queue_client = None  # type: Optional[SimpleQueueClient]
 def get_queue_client() -> SimpleQueueClient:
     global queue_client
     if queue_client is None:

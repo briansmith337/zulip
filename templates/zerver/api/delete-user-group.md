@@ -1,6 +1,8 @@
 # Delete a user group
 
-{generate_api_description(/user_groups/{group_id}:delete)}
+Delete a [user group](/help/user-groups).
+
+`DELETE {{ api_url }}/v1/user_groups/{group_id}`
 
 ## Usage examples
 

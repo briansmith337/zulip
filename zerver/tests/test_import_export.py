@@ -122,7 +122,7 @@ class QueryUtilTest(ZulipTestCase):
 
         queries = get_queries()
 
-        all_msg_ids: Set[int] = set()
+        all_msg_ids = set()  # type: Set[int]
         chunker = query_chunker(
             queries=queries,
             id_collector=all_msg_ids,
@@ -211,7 +211,7 @@ class QueryUtilTest(ZulipTestCase):
             id_collector=all_msg_ids,
             chunk_size=10,  # use a different size each time
         )
-        first_chunk = next(chunker)  # type: ignore[call-overload]
+        first_chunk = next(chunker)  # type: ignore
         self.assertEqual(len(first_chunk), 10)
         self.assertEqual(len(all_msg_ids), 10)
         expected_msg = Message.objects.all()[0:10][5]
@@ -689,7 +689,6 @@ class ImportExportTest(ZulipTestCase):
     """
     Tests for import_realm
     """
-
     def test_import_realm(self) -> None:
 
         original_realm = Realm.objects.get(string_id='zulip')
@@ -832,7 +831,7 @@ class ImportExportTest(ZulipTestCase):
                 return {get_email(user_id) for user_id in user_id_list}
 
             def custom_profile_field_values_for(fields: List[CustomProfileField]) -> Set[FrozenSet[str]]:
-                user_emails: Set[FrozenSet[str]] = set()
+                user_emails = set()  # type: Set[FrozenSet[str]]
                 for field in fields:
                     values = CustomProfileFieldValue.objects.filter(field=field)
                     for value in values:

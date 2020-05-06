@@ -254,26 +254,23 @@ run_test('basic_notifications', () => {
     let last_shown_message_id = null;
 
     // Notifications API stub
-    class StubNotification {
-        constructor(title, { icon, body, tag }) {
-            this.icon = icon;
-            this.body = body;
-            this.tag = tag;
+    notifications.set_notification_api({
+        createNotification: function createNotification(icon, title, content, tag) {
+            const notification_object = {icon: icon, body: content, tag: tag};
             // properties for testing.
-            this.tests = {
+            notification_object.tests = {
                 shown: false,
             };
-            last_shown_message_id = this.tag;
-        }
-
-        addEventListener() {}
-
-        close() {
-            last_closed_message_id = this.tag;
-        }
-    }
-
-    notifications.set_notification_api(StubNotification);
+            notification_object.show = function () {
+                last_shown_message_id = this.tag;
+            };
+            notification_object.close = function () {
+                last_closed_message_id = this.tag;
+            };
+            notification_object.cancel = function () { notification_object.close(); };
+            return notification_object;
+        },
+    });
 
     const message_1 = {
         id: 1000,

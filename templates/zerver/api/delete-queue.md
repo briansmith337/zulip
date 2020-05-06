@@ -1,6 +1,8 @@
 # Delete a queue
 
-{generate_api_description(/events:delete)}
+Delete a previously registered queue.
+
+`DELETE {{ api_url }}/v1/events`
 
 ## Usage examples
 

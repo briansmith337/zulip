@@ -6,7 +6,8 @@ including users, rooms, messages, avatars, and custom emoji.
 This tool has been used to import HipChat teams with thousands of
 members, thousands of streams and millions of messages. If you're
 planning on doing an import much larger than that, or run into
-performance issues when importing, [contact us](/help/contact-support).
+performance issues when importing, email us at support@zulipchat.com
+for help.
 
 **Note:** You can only import a HipChat or Stride group as a new Zulip
 organization. In particular, you cannot use this tool to import data

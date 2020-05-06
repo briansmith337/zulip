@@ -508,7 +508,7 @@ class TestSupportEndpoint(ZulipTestCase):
         stream_ids = [self.get_stream_id("Denmark")]
         invitee_emails = [self.nonreg_email("test1")]
         self.client_post("/json/invites", {"invitee_emails": invitee_emails,
-                                           "stream_ids": ujson.dumps(stream_ids), "invite_as": 1})
+                         "stream_ids": ujson.dumps(stream_ids), "invite_as": 1})
         result = self.client_get("/activity/support", {"q": self.nonreg_email("test1")})
         check_preregistration_user_query_result(result, self.nonreg_email("test1"), invite=True)
         check_zulip_realm_query_result(result)
@@ -617,7 +617,7 @@ class TestGetChartDataHelpers(ZulipTestCase):
         self.assertEqual(last_successful_fill('property'), one_hour_before)
 
     def test_sort_by_totals(self) -> None:
-        empty: List[int] = []
+        empty = []  # type: List[int]
         value_arrays = {'c': [0, 1], 'a': [9], 'b': [1, 1, 1], 'd': empty}
         self.assertEqual(sort_by_totals(value_arrays), ['a', 'b', 'c', 'd'])
 

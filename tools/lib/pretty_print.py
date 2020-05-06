@@ -17,24 +17,23 @@ def pretty_print_html(html: str, num_spaces: int = 4) -> str:
     # We will keep a stack of "start" tags so that we know
     # when HTML ranges end.  Note that some start tags won't
     # be blocks from an indentation standpoint.
-    stack: List[Dict[str, Any]] = []
+    stack = []  # type: List[Dict[str, Any]]
 
     # Seed our stack with a pseudo entry to make depth calculations
     # easier.
-    info: Dict[str, Any] = dict(
+    info = dict(
         block=False,
         depth=-1,
         line=-1,
         token_kind='html_start',
         tag='html',
         extra_indent=0,
-        ignore_lines=[],
-    )
+        ignore_lines=[])  # type: Dict[str, Any]
     stack.append(info)
 
     # Our main job is to figure out offsets that we use to nudge lines
     # over by.
-    offsets: Dict[int, int] = {}
+    offsets = {}  # type: Dict[int, int]
 
     # Loop through our start/end tokens, and calculate offsets.  As
     # we proceed, we will push/pop info dictionaries on/off a stack.

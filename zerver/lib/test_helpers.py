@@ -17,12 +17,13 @@ from zerver.lib.actions import do_set_realm_property
 from zerver.lib.upload import S3UploadBackend, LocalUploadBackend
 from zerver.lib.avatar import avatar_url
 from zerver.lib.cache import get_cache_backend
-from zerver.lib.db import Params, ParamsT, Query, TimeTrackingCursor
+from zerver.lib.db import TimeTrackingCursor
 from zerver.lib import cache
 from zerver.tornado import event_queue
 from zerver.tornado.handlers import allocate_handler_id
 from zerver.worker import queue_processors
 from zerver.lib.integrations import WEBHOOK_INTEGRATIONS
+from zerver.views.auth import get_login_data
 
 from zerver.models import (
     get_realm,
@@ -34,8 +35,6 @@ from zerver.models import (
     UserMessage,
     UserProfile,
 )
-
-from zproject.backends import ExternalAuthResult, ExternalAuthDataDict
 
 if TYPE_CHECKING:
     # Avoid an import cycle; we only need these for type annotations.
@@ -77,9 +76,9 @@ def stub_event_queue_user_events(event_queue_return: Any, user_events_return: An
 @contextmanager
 def simulated_queue_client(client: Callable[..., Any]) -> Iterator[None]:
     real_SimpleQueueClient = queue_processors.SimpleQueueClient
-    queue_processors.SimpleQueueClient = client  # type: ignore[assignment, misc] # https://github.com/JukkaL/mypy/issues/1152
+    queue_processors.SimpleQueueClient = client  # type: ignore # https://github.com/JukkaL/mypy/issues/1152
     yield
-    queue_processors.SimpleQueueClient = real_SimpleQueueClient  # type: ignore[misc] # https://github.com/JukkaL/mypy/issues/1152
+    queue_processors.SimpleQueueClient = real_SimpleQueueClient  # type: ignore # https://github.com/JukkaL/mypy/issues/1152
 
 @contextmanager
 def tornado_redirected_to_list(lst: List[Mapping[str, Any]]) -> Iterator[None]:
@@ -118,7 +117,7 @@ def capture_event(event_info: EventInfo) -> Iterator[None]:
 @contextmanager
 def simulated_empty_cache() -> Generator[
         List[Tuple[str, Union[str, List[str]], str]], None, None]:
-    cache_queries: List[Tuple[str, Union[str, List[str]], str]] = []
+    cache_queries = []  # type: List[Tuple[str, Union[str, List[str]], str]]
 
     def my_cache_get(key: str, cache_name: Optional[str]=None) -> Optional[Dict[str, Any]]:
         cache_queries.append(('get', key, cache_name))
@@ -144,12 +143,12 @@ def queries_captured(include_savepoints: Optional[bool]=False) -> Generator[
     the with statement.
     '''
 
-    queries: List[Dict[str, Union[str, bytes]]] = []
+    queries = []  # type: List[Dict[str, Union[str, bytes]]]
 
     def wrapper_execute(self: TimeTrackingCursor,
-                        action: Callable[[str, ParamsT], None],
-                        sql: Query,
-                        params: ParamsT) -> None:
+                        action: Callable[[str, Iterable[Any]], None],
+                        sql: str,
+                        params: Iterable[Any]=()) -> None:
         cache = get_cache_backend(None)
         cache.clear()
         start = time.time()
@@ -158,7 +157,7 @@ def queries_captured(include_savepoints: Optional[bool]=False) -> Generator[
         finally:
             stop = time.time()
             duration = stop - start
-            if include_savepoints or not isinstance(sql, str) or 'SAVEPOINT' not in sql:
+            if include_savepoints or ('SAVEPOINT' not in sql):
                 queries.append({
                     'sql': self.mogrify(sql, params).decode('utf-8'),
                     'time': "%.3f" % (duration,),
@@ -167,20 +166,20 @@ def queries_captured(include_savepoints: Optional[bool]=False) -> Generator[
     old_execute = TimeTrackingCursor.execute
     old_executemany = TimeTrackingCursor.executemany
 
-    def cursor_execute(self: TimeTrackingCursor, sql: Query,
-                       params: Optional[Params]=None) -> None:
-        return wrapper_execute(self, super(TimeTrackingCursor, self).execute, sql, params)
-    TimeTrackingCursor.execute = cursor_execute  # type: ignore[assignment] # https://github.com/JukkaL/mypy/issues/1167
+    def cursor_execute(self: TimeTrackingCursor, sql: str,
+                       params: Iterable[Any]=()) -> None:
+        return wrapper_execute(self, super(TimeTrackingCursor, self).execute, sql, params)  # type: ignore # https://github.com/JukkaL/mypy/issues/1167
+    TimeTrackingCursor.execute = cursor_execute  # type: ignore # https://github.com/JukkaL/mypy/issues/1167
 
-    def cursor_executemany(self: TimeTrackingCursor, sql: Query,
-                           params: Iterable[Params]) -> None:
-        return wrapper_execute(self, super(TimeTrackingCursor, self).executemany, sql, params)  # nocoverage -- doesn't actually get used in tests
-    TimeTrackingCursor.executemany = cursor_executemany  # type: ignore[assignment] # https://github.com/JukkaL/mypy/issues/1167
+    def cursor_executemany(self: TimeTrackingCursor, sql: str,
+                           params: Iterable[Any]=()) -> None:
+        return wrapper_execute(self, super(TimeTrackingCursor, self).executemany, sql, params)  # type: ignore # https://github.com/JukkaL/mypy/issues/1167 # nocoverage -- doesn't actually get used in tests
+    TimeTrackingCursor.executemany = cursor_executemany  # type: ignore # https://github.com/JukkaL/mypy/issues/1167
 
     yield queries
 
-    TimeTrackingCursor.execute = old_execute  # type: ignore[assignment] # https://github.com/JukkaL/mypy/issues/1167
-    TimeTrackingCursor.executemany = old_executemany  # type: ignore[assignment] # https://github.com/JukkaL/mypy/issues/1167
+    TimeTrackingCursor.execute = old_execute  # type: ignore # https://github.com/JukkaL/mypy/issues/1167
+    TimeTrackingCursor.executemany = old_executemany  # type: ignore # https://github.com/JukkaL/mypy/issues/1167
 
 @contextmanager
 def stdout_suppressed() -> Iterator[IO[str]]:
@@ -253,25 +252,25 @@ def get_user_messages(user_profile: UserProfile) -> List[Message]:
 
 class DummyHandler:
     def __init__(self) -> None:
-        allocate_handler_id(self)  # type: ignore[arg-type] # this is a testing mock
+        allocate_handler_id(self)  # type: ignore # this is a testing mock
 
 class POSTRequestMock:
     method = "POST"
 
     def __init__(self, post_data: Dict[str, Any], user_profile: Optional[UserProfile]) -> None:
-        self.GET: Dict[str, Any] = {}
+        self.GET = {}  # type: Dict[str, Any]
 
         # Convert any integer parameters passed into strings, even
         # though of course the HTTP API would do so.  Ideally, we'd
         # get rid of this abstraction entirely and just use the HTTP
         # API directly, but while it exists, we need this code.
-        self.POST: Dict[str, str] = {}
+        self.POST = {}  # type: Dict[str, str]
         for key in post_data:
             self.POST[key] = str(post_data[key])
 
         self.user = user_profile
         self._tornado_handler = DummyHandler()
-        self._log_data: Dict[str, Any] = {}
+        self._log_data = {}  # type: Dict[str, Any]
         self.META = {'PATH_INFO': 'test'}
         self.path = ''
 
@@ -281,8 +280,8 @@ class HostRequestMock:
 
     def __init__(self, user_profile: UserProfile=None, host: str=settings.EXTERNAL_HOST) -> None:
         self.host = host
-        self.GET: Dict[str, Any] = {}
-        self.POST: Dict[str, Any] = {}
+        self.GET = {}  # type: Dict[str, Any]
+        self.POST = {}  # type: Dict[str, Any]
         self.META = {'PATH_INFO': 'test'}
         self.path = ''
         self.user = user_profile
@@ -310,7 +309,7 @@ class MockPythonResponse:
 
 
 INSTRUMENTING = os.environ.get('TEST_INSTRUMENT_URL_COVERAGE', '') == 'TRUE'
-INSTRUMENTED_CALLS: List[Dict[str, Any]] = []
+INSTRUMENTED_CALLS = []  # type: List[Dict[str, Any]]
 
 UrlFuncT = Callable[..., HttpResponse]  # TODO: make more specific
 
@@ -351,7 +350,7 @@ def write_instrumentation_reports(full_suite: bool, include_webhooks: bool) -> N
         from zproject.urls import urlpatterns, v1_api_and_json_patterns
 
         # Find our untested urls.
-        pattern_cnt: Dict[str, int] = collections.defaultdict(int)
+        pattern_cnt = collections.defaultdict(int)  # type: Dict[str, int]
 
         def re_strip(r: Any) -> str:
             return str(r).lstrip('^').rstrip('$')
@@ -446,10 +445,10 @@ def write_instrumentation_reports(full_suite: bool, include_webhooks: bool) -> N
                 print("   %s" % (untested_pattern,))
             sys.exit(1)
 
-def load_subdomain_token(response: HttpResponse) -> ExternalAuthDataDict:
+def load_subdomain_token(response: HttpResponse) -> Dict[str, Any]:
     assert isinstance(response, HttpResponseRedirect)
     token = response.url.rsplit('/', 1)[1]
-    data = ExternalAuthResult(login_token=token, delete_stored_data=False).data_dict
+    data = get_login_data(token, should_delete=False)
     assert data is not None
     return data
 

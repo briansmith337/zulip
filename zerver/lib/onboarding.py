@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db.models import Count
-from django.utils.translation import ugettext as _
 
 from zerver.lib.actions import \
     internal_prep_stream_message_by_name, internal_send_private_message, \
@@ -50,50 +49,6 @@ def create_if_missing_realm_internal_bots() -> None:
 def send_initial_pms(user: UserProfile) -> None:
     organization_setup_text = ""
     if user.is_realm_admin:
-<<<<<<< HEAD
-        help_url = user.realm.uri + "/help/getting-your-organization-started-with-zulip"
-        organization_setup_text = (
-                                   "started with Axxess\n" % (help_url,))
-            _("[Read the guide]({help_url}) for getting your organization started with Zulip") +
-            "\n"
-        ).format(help_url=help_url)
-
-    content = (
-        "Hello, and welcome to Axxess!\n\nYour Privacy and Data are now Protected.\n"
-        "\nGuaranteed\n"
-        "Here are some tips to get you started:\n"
-        "* Download our [Desktop and mobile apps](https://axxess.one/apps) \n"
-        "* Customize your account and notifications on your [Settings page](#settings)\n"
-        "* Type `?` to check out the Axxess keyboard shortcuts\n"
-        "%s"
-        "\n"
-        "\n" +
-        "Sign Up for our support\n") \
-        _("Here are some tips to get you started:") +
-        "\n"
-        "* " +
-        _("Download our [Desktop and mobile apps]({apps_url})") +
-        "\n"
-        "* " +
-        _("Customize your account and notifications on your [Settings page]({settings_url})") +
-        "\n"
-        "* " +
-        _("Type `?` to check out Zulip's keyboard shortcuts") +
-        "\n"
-        "{organization_setup_text}"
-        "\n" +
-        _("The most important shortcut is `r` to reply.") +
-        "\n"
-        "\n" +
-        _("Practice sending a few messages by replying to this conversation.") +
-        " " +
-        _("If you're not into keyboards, that's okay too; "
-          "clicking anywhere on this message will also do the trick!")
-    )
-
-    content = content.format(apps_url="/apps", settings_url="#settings",
-                             organization_setup_text=organization_setup_text)
-=======
         help_url = user.realm.uri + "/help/getting-your-organization-started-with-axxess"
         organization_setup_text = ("* [Read the guide](%s) for getting your organization "
                                    "started with Axxess\n" % (help_url,))
@@ -110,7 +65,6 @@ def send_initial_pms(user: UserProfile) -> None:
         "The most important shortcut is `r` to reply.\n\n"
         "Sign Up for our support\n") \
         % (organization_setup_text,)
->>>>>>> Modified the Welcome Bot Language
 
     internal_send_private_message(user.realm, get_system_bot(settings.WELCOME_BOT),
                                   user, content)
@@ -120,58 +74,23 @@ def send_initial_realm_messages(realm: Realm) -> None:
     # Make sure each stream created in the realm creation process has at least one message below
     # Order corresponds to the ordering of the streams on the left sidebar, to make the initial Home
     # view slightly less overwhelming
-    content_of_private_streams_topic = (
-        _("This is a private stream, as indicated by the lock icon next to the stream name.") +
-        " " +
-        _("Private streams are only visible to stream members.") +
-        "\n"
-        "\n" +
-        _("To manage this stream, go to [Stream settings]({stream_settings_url}) "
-          "and click on `{initial_private_stream_name}`.")
-    ).format(stream_settings_url="#streams/subscribed",
-             initial_private_stream_name=Realm.INITIAL_PRIVATE_STREAM_NAME)
-
-    content1_of_topic_demonstration_topic = (
-        _("This is a message on stream #**{default_notification_stream_name}** with the "
-          "topic `topic demonstration`.")
-    ).format(default_notification_stream_name=Realm.DEFAULT_NOTIFICATION_STREAM_NAME)
-
-    content2_of_topic_demonstration_topic = (
-        _("Topics are a lightweight tool to keep conversations organized.") +
-        " " +
-        _("You can learn more about topics at [Streams and topics]({about_topics_help_url}).")
-    ).format(about_topics_help_url="/help/about-streams-and-topics")
-
-    content_of_swimming_turtles_topic = (
-        _("This is a message on stream #**{default_notification_stream_name}** with the "
-          "topic `swimming turtles`.") +
-        "\n"
-        "\n"
-        "[](/static/images/cute/turtle.png)"
-        "\n"
-        "\n" +
-        _("[Start a new topic]({start_topic_help_url}) any time you're not replying to a \
-        previous message.")
-    ).format(default_notification_stream_name=Realm.DEFAULT_NOTIFICATION_STREAM_NAME,
-             start_topic_help_url="/help/start-a-new-topic")
-
-    welcome_messages: List[Dict[str, str]] = [
+    welcome_messages = [
         {'stream': Realm.INITIAL_PRIVATE_STREAM_NAME,
          'topic': "private streams",
-         'content': content_of_private_streams_topic},
+         'content': "This is a private stream, as indicated by the "
+         "lock icon next to the stream name. Private streams are only visible to stream members. "
+         "\n\nTo manage this stream, go to [Stream settings](#streams/subscribed) and click on "
+         "`%(initial_private_stream_name)s`."},
         {'stream': Realm.DEFAULT_NOTIFICATION_STREAM_NAME,
          'topic': "topic demonstration",
-         'content': content1_of_topic_demonstration_topic},
+         'content': "This is a message on stream #**%(default_notification_stream_name)s** with the "
+         "topic `topic demonstration`."},
         {'stream': Realm.DEFAULT_NOTIFICATION_STREAM_NAME,
          'topic': "topic demonstration",
-         'content': content2_of_topic_demonstration_topic},
+         'content': "Topics are a lightweight tool to keep conversations organized. "
+         "You can learn more about topics at [Streams and topics](/help/about-streams-and-topics). "},
         {'stream': realm.DEFAULT_NOTIFICATION_STREAM_NAME,
          'topic': "swimming turtles",
-<<<<<<< HEAD
-         'content': content_of_swimming_turtles_topic},
-    ]
-
-=======
          'content': "This is a message on stream #**%(default_notification_stream_name)s** with the "
          "topic `swimming turtles`.  Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles. \n\n"
          #'content': "Why turtles?  Why not.  Who cares anyway?  Excercise your right to Free Speech and don't worry about turtles."
@@ -179,9 +98,12 @@ def send_initial_realm_messages(realm: Realm) -> None:
          "\n\n[Start a new topic](/help/start-a-new-topic) any time you're not replying to a "
          "previous message."},
     ]  # type: List[Dict[str, str]]
->>>>>>> trying to fix the hotspots and onboarding.  Error caught in onboarding.  Fixed.  Changed color of whale and converted to png
     messages = [internal_prep_stream_message_by_name(
-        realm, welcome_bot, message['stream'], message['topic'], message['content']
+        realm, welcome_bot, message['stream'], message['topic'],
+        message['content'] % {
+            'initial_private_stream_name': Realm.INITIAL_PRIVATE_STREAM_NAME,
+            'default_notification_stream_name': Realm.DEFAULT_NOTIFICATION_STREAM_NAME,
+        }
     ) for message in welcome_messages]
     message_ids = do_send_messages(messages)
 

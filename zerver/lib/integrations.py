@@ -29,7 +29,7 @@ Over time, we expect this registry to grow additional convenience
 features for writing and configuring integrations efficiently.
 """
 
-CATEGORIES: Dict[str, str] = {
+CATEGORIES = {
     'meta-integration': _('Integration frameworks'),
     'continuous-integration': _('Continuous integration'),
     'customer-support': _('Customer support'),
@@ -44,18 +44,17 @@ CATEGORIES: Dict[str, str] = {
     'productivity': _('Productivity'),
     'version-control': _('Version control'),
     'bots': _('Interactive bots'),
-}
+}  # type: Dict[str, str]
 
 class Integration:
     DEFAULT_LOGO_STATIC_PATH_PNG = 'images/integrations/logos/{name}.png'
     DEFAULT_LOGO_STATIC_PATH_SVG = 'images/integrations/logos/{name}.svg'
-    DEFAULT_BOT_AVATAR_PATH = 'images/integrations/bot_avatars/{name}.png'
 
     def __init__(self, name: str, client_name: str, categories: List[str],
                  logo: Optional[str]=None, secondary_line_text: Optional[str]=None,
                  display_name: Optional[str]=None, doc: Optional[str]=None,
-                 stream_name: Optional[str]=None, legacy: bool=False,
-                 config_options: Optional[List[Tuple[str, str, Validator]]]=None) -> None:
+                 stream_name: Optional[str]=None, legacy: Optional[bool]=False,
+                 config_options: List[Tuple[str, str, Validator]]=[]) -> None:
         self.name = name
         self.client_name = client_name
         self.secondary_line_text = secondary_line_text
@@ -65,8 +64,6 @@ class Integration:
         # Note: Currently only incoming webhook type bots use this list for
         # defining how the bot's BotConfigData should be. Embedded bots follow
         # a different approach.
-        if config_options is None:
-            config_options = []
         self.config_options = config_options
 
         for category in categories:
@@ -93,20 +90,13 @@ class Integration:
     def is_enabled(self) -> bool:
         return True
 
-    def get_logo_path(self) -> Optional[str]:
+    def get_logo_url(self) -> Optional[str]:
         logo_file_path_svg = self.DEFAULT_LOGO_STATIC_PATH_SVG.format(name=self.name)
         logo_file_path_png = self.DEFAULT_LOGO_STATIC_PATH_PNG.format(name=self.name)
         if os.path.isfile(static_path(logo_file_path_svg)):
-            return logo_file_path_svg
+            return staticfiles_storage.url(logo_file_path_svg)
         elif os.path.isfile(static_path(logo_file_path_png)):
-            return logo_file_path_png
-
-        return None
-
-    def get_logo_url(self) -> Optional[str]:
-        logo_path = self.get_logo_path()
-        if logo_path is not None:
-            return staticfiles_storage.url(logo_path)
+            return staticfiles_storage.url(logo_file_path_png)
 
         return None
 
@@ -154,8 +144,8 @@ class WebhookIntegration(Integration):
                  logo: Optional[str]=None, secondary_line_text: Optional[str]=None,
                  function: Optional[str]=None, url: Optional[str]=None,
                  display_name: Optional[str]=None, doc: Optional[str]=None,
-                 stream_name: Optional[str]=None, legacy: bool=False,
-                 config_options: Optional[List[Tuple[str, str, Validator]]]=None) -> None:
+                 stream_name: Optional[str]=None, legacy: Optional[bool]=None,
+                 config_options: List[Tuple[str, str, Validator]]=[]) -> None:
         if client_name is None:
             client_name = self.DEFAULT_CLIENT_NAME.format(name=name.title())
         super().__init__(
@@ -197,22 +187,6 @@ def split_fixture_path(path: str) -> Tuple[str, str]:
     integration_name = os.path.split(os.path.dirname(path))[-1]
     return integration_name, fixture_name
 
-# FIXME: Change to namedtuple if we drop Python3.6: No default values support on namedtuples (or dataclass)
-class ScreenshotConfig:
-    def __init__(self, fixture_name: str, image_name: str='001.png', image_dir: Optional[str]=None):
-        self.fixture_name = fixture_name
-        self.image_name = image_name
-        self.image_dir = image_dir
-
-def get_fixture_and_image_paths(integration: WebhookIntegration,
-                                screenshot_config: ScreenshotConfig) -> Tuple[str, str]:
-    fixture_dir = os.path.join('zerver', 'webhooks', integration.name, 'fixtures')
-    fixture_path = os.path.join(fixture_dir, screenshot_config.fixture_name)
-    image_dir = screenshot_config.image_dir or integration.name
-    image_name = screenshot_config.image_name
-    image_path = os.path.join('static/images/integrations', image_dir, image_name)
-    return fixture_path, image_path
-
 class HubotIntegration(Integration):
     GIT_URL_TEMPLATE = "https://github.com/hubot-scripts/hubot-{}"
 
@@ -248,16 +222,16 @@ class EmbeddedBotIntegration(Integration):
         super().__init__(
             name, client_name, *args, **kwargs)
 
-EMBEDDED_BOTS: List[EmbeddedBotIntegration] = [
+EMBEDDED_BOTS = [
     EmbeddedBotIntegration('converter', []),
     EmbeddedBotIntegration('encrypt', []),
     EmbeddedBotIntegration('helloworld', []),
     EmbeddedBotIntegration('virtual_fs', []),
     EmbeddedBotIntegration('giphy', []),
     EmbeddedBotIntegration('followup', []),
-]
+]  # type: List[EmbeddedBotIntegration]
 
-WEBHOOK_INTEGRATIONS: List[WebhookIntegration] = [
+WEBHOOK_INTEGRATIONS = [
     WebhookIntegration('airbrake', ['monitoring']),
     WebhookIntegration(
         'alertmanager',
@@ -384,9 +358,9 @@ WEBHOOK_INTEGRATIONS: List[WebhookIntegration] = [
     WebhookIntegration('zabbix', ['monitoring'], display_name='Zabbix'),
     WebhookIntegration('gci', ['misc'], display_name='Google Code-in',
                        stream_name='gci'),
-]
+]  # type: List[WebhookIntegration]
 
-INTEGRATIONS: Dict[str, Integration] = {
+INTEGRATIONS = {
     'asana': Integration('asana', 'asana', ['project-management'], doc='zerver/integrations/asana.md'),
     'capistrano': Integration(
         'capistrano',
@@ -478,16 +452,16 @@ INTEGRATIONS: Dict[str, Integration] = {
                            # _ needed to get around adblock plus
                            logo='images/integrations/logos/twitte_r.svg',
                            doc='zerver/integrations/twitter.md'),
-}
+}  # type: Dict[str, Integration]
 
-BOT_INTEGRATIONS: List[BotIntegration] = [
+BOT_INTEGRATIONS = [
     BotIntegration('github_detail', ['version-control', 'bots'],
                    display_name='GitHub Detail'),
     BotIntegration('xkcd', ['bots', 'misc'], display_name='xkcd',
                    logo='images/integrations/logos/xkcd.png'),
-]
+]  # type: List[BotIntegration]
 
-HUBOT_INTEGRATIONS: List[HubotIntegration] = [
+HUBOT_INTEGRATIONS = [
     HubotIntegration('assembla', ['version-control', 'project-management'],
                      display_name='Assembla', logo_alt='Assembla'),
     HubotIntegration('bonusly', ['hr']),
@@ -506,7 +480,7 @@ HUBOT_INTEGRATIONS: List[HubotIntegration] = [
     HubotIntegration('youtube', ['misc'], display_name='YouTube',
                      # _ needed to get around adblock plus
                      logo='images/integrations/logos/youtub_e.svg'),
-]
+]  # type: List[HubotIntegration]
 
 for hubot_integration in HUBOT_INTEGRATIONS:
     INTEGRATIONS[hubot_integration.name] = hubot_integration

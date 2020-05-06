@@ -143,84 +143,57 @@ exports.show_topic_edit_spinner = function (row) {
     $(".topic_edit_cancel").hide();
 };
 
-exports.end_if_focused_on_inline_topic_edit = function () {
-    const focused_elem = $(".topic_edit_form").find(':focus');
-    if (focused_elem.length === 1) {
-        focused_elem.blur();
-        const recipient_row = focused_elem.closest('.recipient_row');
-        exports.end_inline_topic_edit(recipient_row);
-    }
-};
-
-exports.end_if_focused_on_message_row_edit = function () {
+exports.end_if_focused = function () {
     const focused_elem = $(".message_edit").find(':focus');
+
     if (focused_elem.length === 1) {
         focused_elem.blur();
         const row = focused_elem.closest('.message_row');
-        exports.end_message_row_edit(row);
+        exports.end(row);
     }
 };
 
-function handle_message_row_edit_keydown(e) {
-    const code = e.keyCode || e.which;
-    switch (code) {
-    case 13:
-        if ($(e.target).hasClass("message_edit_content")) {
-            // Pressing enter to save edits is coupled with enter to send
-            if (composebox_typeahead.should_enter_send(e)) {
-                const row = $(".message_edit_content").filter(":focus").closest(".message_row");
-                const message_edit_save_button = row.find(".message_edit_save");
-                if (message_edit_save_button.attr('disabled') === "disabled") {
-                    // In cases when the save button is disabled
-                    // we need to disable save on pressing enter
-                    // Prevent default to avoid new-line on pressing
-                    // enter inside the textarea in this case
-                    e.preventDefault();
-                    return;
-                }
-                exports.save_message_row_edit(row);
-                e.stopPropagation();
-                e.preventDefault();
-            } else {
-                composebox_typeahead.handle_enter($(e.target), e);
-                return;
-            }
-        } else if ($(e.target).hasClass("message_edit_topic") ||
-                    $(e.target).hasClass("message_edit_topic_propagate")) {
-            const row = $(e.target).closest(".message_row");
-            exports.save_message_row_edit(row);
-            e.stopPropagation();
-            e.preventDefault();
-        }
-        return;
-    case 27: // Handle escape keys in the message_edit form.
-        exports.end_if_focused_on_message_row_edit();
-        e.stopPropagation();
-        e.preventDefault();
-        return;
-    default:
-        return;
-    }
-}
-
-function handle_inline_topic_edit_keydown(e) {
+function handle_edit_keydown(from_topic_edited_only, e) {
     let row;
     const code = e.keyCode || e.which;
-    switch (code) {
-    case 13: // Handle enter key in the recipient bar/inline topic edit form
-        row = $(e.target).closest(".recipient_row");
-        exports.save_inline_topic_edit(row);
+
+    // Handle escape keys in the message_edit form.
+    if (code === 27) {
+        exports.end_if_focused();
         e.stopPropagation();
         e.preventDefault();
-        return;
-    case 27: // handle escape
-        exports.end_if_focused_on_inline_topic_edit();
-        e.stopPropagation();
-        e.preventDefault();
-        return;
-    default:
         return;
     }
+
+    if ($(e.target).hasClass("message_edit_content") && code === 13) {
+        // Pressing enter to save edits is coupled with enter to send
+        if (composebox_typeahead.should_enter_send(e)) {
+            row = $(".message_edit_content").filter(":focus").closest(".message_row");
+            const message_edit_save_button = row.find(".message_edit_save");
+            if (message_edit_save_button.attr('disabled') === "disabled") {
+                // In cases when the save button is disabled
+                // we need to disable save on pressing enter
+                // Prevent default to avoid new-line on pressing
+                // enter inside the textarea in this case
+                e.preventDefault();
+                return;
+            }
+        } else {
+            composebox_typeahead.handle_enter($(e.target), e);
+            return;
+        }
+    } else if (code === 13 && ($(e.target).hasClass("message_edit_topic") ||
+                               $(e.target).hasClass("message_edit_topic_propagate"))) {
+        row = $(e.target).closest(".message_row");
+    } else if (e.target.id === "inline_topic_edit" && code === 13) {
+        row = $(e.target).closest(".recipient_row");
+        exports.show_topic_edit_spinner(row);
+    } else {
+        return;
+    }
+    e.stopPropagation();
+    e.preventDefault();
+    exports.save(row, from_topic_edited_only);
 }
 
 function timer_text(seconds_left) {
@@ -280,7 +253,7 @@ function edit_message(row, raw_content) {
     currently_editing_messages.set(message.id, edit_obj);
     current_msg_list.show_edit_message(row, edit_obj);
 
-    form.keydown(handle_message_row_edit_keydown);
+    form.keydown(_.partial(handle_edit_keydown, false));
 
     upload.feature_check($('#attach_files_' + rows.id(row)));
 
@@ -457,7 +430,7 @@ exports.start = function (row, edit_box_open_callback) {
 exports.start_topic_edit = function (recipient_row) {
     const form = $(render_topic_edit_form());
     current_msg_list.show_edit_topic_on_recipient_row(recipient_row, form);
-    form.keydown(handle_inline_topic_edit_keydown);
+    form.keydown(_.partial(handle_edit_keydown, true));
     const msg_id = rows.id_for_recipient_row(recipient_row);
     const message = current_msg_list.get(msg_id);
     let topic = message.topic;
@@ -471,11 +444,7 @@ exports.is_editing = function (id) {
     return currently_editing_messages.has(id);
 };
 
-exports.end_inline_topic_edit = function (row) {
-    current_msg_list.hide_edit_topic_on_recipient_row(row);
-};
-
-exports.end_message_row_edit = function (row) {
+exports.end = function (row) {
     const message = current_msg_list.get(rows.id(row));
     if (message !== undefined &&
         currently_editing_messages.has(message.id)) {
@@ -494,6 +463,9 @@ exports.end_message_row_edit = function (row) {
         currently_editing_messages.delete(message.id);
         current_msg_list.hide_edit_message(row);
     }
+    if (row !== undefined) {
+        current_msg_list.hide_edit_topic_on_recipient_row(row);
+    }
     condense.show_message_expander(row);
     row.find(".message_reactions").show();
 
@@ -502,61 +474,15 @@ exports.end_message_row_edit = function (row) {
     row.find(".message_edit").blur();
 };
 
-exports.save_inline_topic_edit = function (row) {
+exports.save = function (row, from_topic_edited_only) {
     const msg_list = current_msg_list;
-    let message_id = rows.id_for_recipient_row(row);
-    const message = current_msg_list.get(message_id);
+    let message_id;
 
-    const old_topic = message.topic;
-    const new_topic = row.find(".inline_topic_edit").val();
-    const topic_changed = new_topic !== old_topic && new_topic.trim() !== "";
-
-    if (!topic_changed) {
-        // this means the inline_topic_edit was opened and submitted without
-        // changing anything, therefore, we should just close the inline topic edit.
-        exports.end_inline_topic_edit(row);
-        return;
+    if (row.hasClass('recipient_row')) {
+        message_id = rows.id_for_recipient_row(row);
+    } else {
+        message_id = rows.id(row);
     }
-
-    exports.show_topic_edit_spinner(row);
-
-    if (message.locally_echoed) {
-        if (topic_changed) {
-            echo.edit_locally(message, {new_topic: new_topic});
-            row = current_msg_list.get_row(message_id);
-        }
-        exports.end_inline_topic_edit(row);
-        return;
-    }
-
-    const request = {
-        message_id: message.id,
-        topic: new_topic,
-        propagate_mode: "change_later",
-    };
-
-    channel.patch({
-        url: '/json/messages/' + message.id,
-        data: request,
-        success: function () {
-            const spinner = row.find(".topic_edit_spinner");
-            loading.destroy_indicator(spinner);
-        },
-        error: function (xhr) {
-            const spinner = row.find(".topic_edit_spinner");
-            loading.destroy_indicator(spinner);
-            if (msg_list === current_msg_list) {
-                message_id = rows.id_for_recipient_row(row);
-                const message = channel.xhr_error_message(i18n.t("Error saving edit"), xhr);
-                row.find(".edit_error").text(message).css('display', 'inline-block');
-            }
-        },
-    });
-};
-
-exports.save_message_row_edit = function (row) {
-    const msg_list = current_msg_list;
-    let message_id = rows.id(row);
     const message = current_msg_list.get(message_id);
     let changed = false;
     let edit_locally_echoed = false;
@@ -567,21 +493,24 @@ exports.save_message_row_edit = function (row) {
     const old_topic = message.topic;
 
     if (message.type === "stream") {
-        new_topic = row.find(".message_edit_topic").val();
+        if (from_topic_edited_only) {
+            new_topic = row.find(".inline_topic_edit").val();
+        } else {
+            new_topic = row.find(".message_edit_topic").val();
+        }
         topic_changed = new_topic !== old_topic && new_topic.trim() !== "";
     }
     // Editing a not-yet-acked message (because the original send attempt failed)
     // just results in the in-memory message being changed
     if (message.locally_echoed) {
         if (new_content !== message.raw_content || topic_changed) {
-            // `edit_locally` handles the case where `new_topic` is undefined
             echo.edit_locally(message, {
                 raw_content: new_content,
                 new_topic: new_topic,
             });
             row = current_msg_list.get_row(message_id);
         }
-        exports.end_message_row_edit(row);
+        exports.end(row);
         return;
     }
 
@@ -593,14 +522,13 @@ exports.save_message_row_edit = function (row) {
         changed = true;
     }
 
-    if (new_content !== message.raw_content) {
+    if (new_content !== message.raw_content && !from_topic_edited_only) {
         request.content = new_content;
         changed = true;
     }
-
     if (!changed) {
         // If they didn't change anything, just cancel it.
-        exports.end_message_row_edit(row);
+        exports.end(row);
         return;
     }
 
@@ -638,13 +566,16 @@ exports.save_message_row_edit = function (row) {
         echo.edit_locally(message, currently_echoing_messages.get(message_id));
 
         row = current_msg_list.get_row(message_id);
-        message_edit.end_message_row_edit(row);
+        message_edit.end(row);
     }
 
     channel.patch({
         url: '/json/messages/' + message.id,
         data: request,
         success: function () {
+            const spinner = row.find(".topic_edit_spinner");
+            loading.destroy_indicator(spinner);
+
             if (edit_locally_echoed) {
                 delete message.local_edit_timestamp;
                 currently_echoing_messages.delete(message_id);
@@ -853,31 +784,5 @@ exports.handle_narrow_deactivated = function () {
         }
     }
 };
-
-exports.move_topic_containing_message_to_stream =
-    function (message_id, new_stream_id, new_topic_name) {
-        const request = {
-            stream_id: new_stream_id,
-            propagate_mode: 'change_all',
-            topic: new_topic_name,
-        };
-        channel.patch({
-            url: '/json/messages/' + message_id,
-            data: request,
-            success: function () {
-                // The main UI will update via receiving the event
-                // from server_events.js.
-                // TODO: This should probably remove a spinner and
-                // close the modal.
-            },
-            error: function (xhr) {
-                ui_report.error(i18n.t("Error moving the topic"), xhr,
-                                $("#home-error"));
-                // The fadeTo method used by ui_report.message doesn't work
-                // on this. Hence we fadeOut it here.
-                setTimeout(() => { $("#home-error").fadeOut('slow'); }, 4000);
-            },
-        });
-    };
 
 window.message_edit = exports;

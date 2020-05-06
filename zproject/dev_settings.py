@@ -12,21 +12,15 @@ from typing import Set
 DEPLOY_ROOT = os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
 LOCAL_UPLOADS_DIR = os.path.join(DEPLOY_ROOT, 'var/uploads')
 
-# We assume dev droplets are the only places where
-# users use zulipdev as the user.
-IS_DEV_DROPLET = pwd.getpwuid(os.getuid()).pw_name == 'zulipdev'
-
 FORWARD_ADDRESS_CONFIG_FILE = "var/forward_address.ini"
 # Check if test_settings.py set EXTERNAL_HOST.
 external_host_env = os.getenv('EXTERNAL_HOST')
 if external_host_env is None:
-    if IS_DEV_DROPLET:
-        # For most of our droplets, we use the hostname (eg github_username.zulipdev.org) by default.
-        hostname = os.uname()[1].lower()
-        # Some of the droplets (eg droplets on 18.04) has the github_username as hostname.
-        if '.zulipdev.org' not in hostname:
-            hostname += '.zulipdev.org'
-        EXTERNAL_HOST = hostname + ":9991"
+    user_id = os.getuid()
+    user_name = pwd.getpwuid(user_id).pw_name
+    if user_name == "zulipdev":
+        # For our droplets, we use the external hostname by default.
+        EXTERNAL_HOST = os.uname()[1].lower() + ":9991"
     else:
         # For local development environments, we use localhost by
         # default, via the "zulipdev.com" hostname.
@@ -172,6 +166,6 @@ TERMS_OF_SERVICE = 'corporate/terms.md'
 USE_X_FORWARDED_PORT = True
 
 # Override the default SAML entity ID
-SOCIAL_AUTH_SAML_SP_ENTITY_ID = "http://localhost:9991"
+SOCIAL_AUTH_SAML_SP_ENTITY_ID = "http://localhost:9991/"
 
 MEMCACHED_USERNAME = None

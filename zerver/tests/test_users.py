@@ -150,7 +150,7 @@ class PermissionTest(ZulipTestCase):
         # Giveth
         req = dict(is_admin=ujson.dumps(True))
 
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.client_patch('/json/users/{}'.format(othello.id), req)
         self.assert_json_success(result)
@@ -299,29 +299,6 @@ class PermissionTest(ZulipTestCase):
         result = self.client_patch('/json/users/{}'.format(self.example_user('hamlet').id), req)
         self.assert_json_error(result, 'Name too short!')
 
-    def test_not_allowed_format(self) -> None:
-        # Name of format "Alice|999" breaks in markdown
-        new_name = 'iago|72'
-        self.login('iago')
-        req = dict(full_name=ujson.dumps(new_name))
-        result = self.client_patch('/json/users/{}'.format(self.example_user('hamlet').id), req)
-        self.assert_json_error(result, 'Invalid format!')
-
-    def test_allowed_format_complex(self) -> None:
-        # Adding characters after r'|d+' doesn't break markdown
-        new_name = 'Hello- 12iago|72k'
-        self.login('iago')
-        req = dict(full_name=ujson.dumps(new_name))
-        result = self.client_patch('/json/users/{}'.format(self.example_user('hamlet').id), req)
-        self.assert_json_success(result)
-
-    def test_not_allowed_format_complex(self) -> None:
-        new_name = 'Hello- 12iago|72'
-        self.login('iago')
-        req = dict(full_name=ujson.dumps(new_name))
-        result = self.client_patch('/json/users/{}'.format(self.example_user('hamlet').id), req)
-        self.assert_json_error(result, 'Invalid format!')
-
     def test_admin_cannot_set_full_name_with_invalid_characters(self) -> None:
         new_name = 'Opheli*'
         self.login('iago')
@@ -374,7 +351,7 @@ class PermissionTest(ZulipTestCase):
         hamlet = self.example_user("hamlet")
 
         req = dict(is_guest=ujson.dumps(True))
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.client_patch('/json/users/{}'.format(hamlet.id), req)
         self.assert_json_success(result)
@@ -393,7 +370,7 @@ class PermissionTest(ZulipTestCase):
         polonius = self.example_user("polonius")
         self.assertTrue(polonius.is_guest)
         req = dict(is_guest=ujson.dumps(False))
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.client_patch('/json/users/{}'.format(polonius.id), req)
         self.assert_json_success(result)
@@ -421,7 +398,7 @@ class PermissionTest(ZulipTestCase):
         hamlet = self.example_user("hamlet")
         self.assertFalse(hamlet.is_guest)
         req = dict(is_admin=ujson.dumps(False), is_guest=ujson.dumps(True))
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.client_patch('/json/users/{}'.format(hamlet.id), req)
         self.assert_json_success(result)
@@ -454,7 +431,7 @@ class PermissionTest(ZulipTestCase):
         polonius = self.example_user("polonius")
         self.assertFalse(polonius.is_realm_admin)
         req = dict(is_admin=ujson.dumps(True), is_guest=ujson.dumps(False))
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.client_patch('/json/users/{}'.format(polonius.id), req)
         self.assert_json_success(result)
@@ -543,7 +520,7 @@ class PermissionTest(ZulipTestCase):
         empty_profile_data = []
         for field_name in fields:
             field = CustomProfileField.objects.get(name=field_name, realm=realm)
-            value: Union[str, None, List[Any]] = ''
+            value = ''  # type: Union[str, None, List[Any]]
             if field.field_type == CustomProfileField.USER:
                 value = []
             empty_profile_data.append({
@@ -768,7 +745,7 @@ class UserProfileTest(ZulipTestCase):
         bot = self.example_user("default_bot")
 
         # Invalid user ID
-        invalid_uid: Any = 1000
+        invalid_uid = 1000  # type: Any
         self.assertEqual(check_valid_user_ids(realm.id, invalid_uid),
                          "User IDs is not a list")
         self.assertEqual(check_valid_user_ids(realm.id, [invalid_uid]),
@@ -1437,11 +1414,6 @@ class GetProfileTest(ZulipTestCase):
         self.assertIn('profile_data', result['user'])
         result = self.client_get('/json/users/{}?'.format(30))
         self.assert_json_error(result, "No such user")
-
-        bot = self.example_user("default_bot")
-        result = ujson.loads(self.client_get('/json/users/{}'.format(bot.id)).content)
-        self.assertEqual(result['user']['email'], bot.email)
-        self.assertTrue(result['user']['is_bot'])
 
     def test_api_get_empty_profile(self) -> None:
         """

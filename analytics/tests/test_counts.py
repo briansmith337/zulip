@@ -43,7 +43,7 @@ class AnalyticsTestCase(TestCase):
         # used to generate unique names in self.create_*
         self.name_counter = 100
         # used as defaults in self.assertCountEquals
-        self.current_property: Optional[str] = None
+        self.current_property = None  # type: Optional[str]
 
     # Lightweight creation of users, streams, and messages
     def create_user(self, **kwargs: Any) -> UserProfile:
@@ -60,7 +60,7 @@ class AnalyticsTestCase(TestCase):
             kwargs[key] = kwargs.get(key, value)
         kwargs['delivery_email'] = kwargs['email']
         with mock.patch("zerver.lib.create_user.timezone_now", return_value=kwargs['date_joined']):
-            pass_kwargs: Dict[str, Any] = {}
+            pass_kwargs = {}  # type: Dict[str, Any]
             if kwargs['is_bot']:
                 pass_kwargs['bot_type'] = UserProfile.DEFAULT_BOT
                 pass_kwargs['bot_owner'] = None
@@ -147,7 +147,7 @@ class AnalyticsTestCase(TestCase):
             'end_time': self.TIME_ZERO,
             'value': 1}
         for values in arg_values:
-            kwargs: Dict[str, Any] = {}
+            kwargs = {}  # type: Dict[str, Any]
             for i in range(len(values)):
                 kwargs[arg_keys[i]] = values[i]
             for key, value in defaults.items():
@@ -1003,12 +1003,12 @@ class TestDoIncrementLoggingStat(AnalyticsTestCase):
         self.current_property = 'test'
         self.assertTableState(RealmCount, ['value', 'subgroup', 'end_time'],
                               [[1, 'subgroup1', self.TIME_ZERO], [1, 'subgroup2', self.TIME_ZERO],
-                               [1, 'subgroup1', self.TIME_LAST_HOUR]])
+                              [1, 'subgroup1', self.TIME_LAST_HOUR]])
         # This should trigger the get part of get_or_create
         do_increment_logging_stat(self.default_realm, stat, 'subgroup1', self.TIME_ZERO)
         self.assertTableState(RealmCount, ['value', 'subgroup', 'end_time'],
                               [[2, 'subgroup1', self.TIME_ZERO], [1, 'subgroup2', self.TIME_ZERO],
-                               [1, 'subgroup1', self.TIME_LAST_HOUR]])
+                              [1, 'subgroup1', self.TIME_LAST_HOUR]])
 
     def test_increment(self) -> None:
         stat = LoggingCountStat('test', RealmCount, CountStat.DAY)

@@ -34,14 +34,6 @@ class zulip::app_frontend_once {
     source => 'puppet:///modules/zulip/cron.d/soft-deactivate-users',
   }
 
-  file { '/etc/cron.d/archive-messages':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    source => 'puppet:///modules/zulip/cron.d/archive-messages',
-  }
-
   file { '/etc/cron.d/calculate-first-visible-message-id':
     ensure => absent,
   }

@@ -230,7 +230,7 @@ def write_log_line(log_data: MutableMapping[str, Any], path: str, method: str, r
             error_data = repr(b''.join(error_content_list))
         if len(error_data) > 200:
             error_data = "[content more than 200 characters]"
-        logger.info('status=%3d, data=%s, uid=%s', status_code, error_data, requestor_for_logs)
+        logger.info('status=%3d, data=%s, uid=%s' % (status_code, error_data, requestor_for_logs))
 
 class LogRequests(MiddlewareMixin):
     # We primarily are doing logging using the process_view hook, but
@@ -332,7 +332,7 @@ class CsrfFailureError(JsonableError):
     data_fields = ['reason']
 
     def __init__(self, reason: str) -> None:
-        self.reason: str = reason
+        self.reason = reason  # type: str
 
     @staticmethod
     def msg_format() -> str:
@@ -425,7 +425,6 @@ class SetRemoteAddrFromForwardedFor(MiddlewareMixin):
     is set in the request, then it has properly been set by NGINX.
     Therefore HTTP_X_FORWARDED_FOR's value is trusted.
     """
-
     def process_request(self, request: HttpRequest) -> None:
         try:
             real_ip = request.META['HTTP_X_FORWARDED_FOR']
@@ -466,7 +465,6 @@ class ZulipCommonMiddleware(CommonMiddleware):
     for non-API endpoints things like /login.  But doing that
     transition will require more careful testing.
     """
-
     def should_redirect_with_slash(self, request: HttpRequest) -> bool:
         if settings.RUNNING_INSIDE_TORNADO:
             return False

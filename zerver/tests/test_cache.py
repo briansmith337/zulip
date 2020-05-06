@@ -199,18 +199,16 @@ class SafeCacheFunctionsTest(ZulipTestCase):
         with patch('zerver.lib.cache.logger.warning') as mock_warn:
             safe_cache_set_many(items)
             mock_warn.assert_called_once()
-            self.assertEqual(
-                mock_warn.call_args[0][1],
-                ['SafeFunctionsTest:\nbadkey1', 'SafeFunctionsTest:\nbadkey2'],
-            )
+            warning_string = mock_warn.call_args[0][0]
+            self.assertIn("badkey1", warning_string)
+            self.assertIn("badkey2", warning_string)
 
         with patch('zerver.lib.cache.logger.warning') as mock_warn:
             result = safe_cache_get_many(list(items.keys()))
             mock_warn.assert_called_once()
-            self.assertEqual(
-                mock_warn.call_args[0][1],
-                ['SafeFunctionsTest:\nbadkey1', 'SafeFunctionsTest:\nbadkey2'],
-            )
+            warning_string = mock_warn.call_args[0][0]
+            self.assertIn("badkey1", warning_string)
+            self.assertIn("badkey2", warning_string)
 
             self.assertEqual(result, {})
 
@@ -222,18 +220,16 @@ class SafeCacheFunctionsTest(ZulipTestCase):
         with patch('zerver.lib.cache.logger.warning') as mock_warn:
             safe_cache_set_many(items)
             mock_warn.assert_called_once()
-            self.assertEqual(
-                mock_warn.call_args[0][1],
-                ['SafeFunctionsTest:\nbadkey1', 'SafeFunctionsTest:\nbadkey2'],
-            )
+            warning_string = mock_warn.call_args[0][0]
+            self.assertIn("badkey1", warning_string)
+            self.assertIn("badkey2", warning_string)
 
         with patch('zerver.lib.cache.logger.warning') as mock_warn:
             result = safe_cache_get_many(list(items.keys()))
             mock_warn.assert_called_once()
-            self.assertEqual(
-                mock_warn.call_args[0][1],
-                ['SafeFunctionsTest:\nbadkey1', 'SafeFunctionsTest:\nbadkey2'],
-            )
+            warning_string = mock_warn.call_args[0][0]
+            self.assertIn("badkey1", warning_string)
+            self.assertIn("badkey2", warning_string)
 
             self.assertEqual(result, good_items)
 
@@ -270,11 +266,11 @@ class GenericBulkCachedFetchTest(ZulipTestCase):
 
         # query_function shouldn't be called, because the only requested object
         # is already cached:
-        result: Dict[str, UserProfile] = generic_bulk_cached_fetch(
+        result = generic_bulk_cached_fetch(
             cache_key_function=user_profile_by_email_cache_key,
             query_function=query_function,
             object_ids=[self.example_email("hamlet")]
-        )
+        )  # type: Dict[str, UserProfile]
         self.assertEqual(result, {hamlet.delivery_email: hamlet})
 
         flush_cache(Mock())
@@ -298,9 +294,9 @@ class GenericBulkCachedFetchTest(ZulipTestCase):
 
         # query_function and cache_key_function shouldn't be called, because
         # objects_ids is empty, so there's nothing to do.
-        result: Dict[str, UserProfile] = generic_bulk_cached_fetch(
+        result = generic_bulk_cached_fetch(
             cache_key_function=cache_key_function,
             query_function=query_function,
             object_ids=[]
-        )
+        )  # type: Dict[str, UserProfile]
         self.assertEqual(result, {})

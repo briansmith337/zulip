@@ -1,5 +1,5 @@
 from django.db import migrations, models
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 from django.db.utils import IntegrityError
 
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(set_string_id_using_domain, elidable=True),
+        migrations.RunPython(set_string_id_using_domain),
 
         migrations.AlterField(
             model_name='realm',

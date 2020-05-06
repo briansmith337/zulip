@@ -72,7 +72,7 @@ def json_change_settings(request: HttpRequest, user_profile: UserProfile,
         return json_error(_("Please fill out all fields."))
 
     if new_password != "":
-        return_data: Dict[str, Any] = {}
+        return_data = {}  # type: Dict[str, Any]
         if email_belongs_to_ldap(user_profile.realm, user_profile.delivery_email):
             return json_error(_("Your Zulip password is managed in LDAP"))
 
@@ -105,7 +105,7 @@ def json_change_settings(request: HttpRequest, user_profile: UserProfile,
         # by Django,
         request.session.save()
 
-    result: Dict[str, Any] = {}
+    result = {}  # type: Dict[str, Any]
     new_email = email.strip()
     if user_profile.delivery_email != new_email and new_email != '':
         if user_profile.realm.email_changes_disabled and not user_profile.is_realm_admin:
@@ -172,7 +172,7 @@ def update_display_settings_backend(
         raise JsonableError(_("Invalid default_language"))
 
     request_settings = {k: v for k, v in list(locals().items()) if k in user_profile.property_types}
-    result: Dict[str, Any] = {}
+    result = {}  # type: Dict[str, Any]
     for k, v in list(request_settings.items()):
         if v is not None and getattr(user_profile, k) != v:
             do_set_user_display_setting(user_profile, k, v)
@@ -200,8 +200,7 @@ def json_change_notify_settings(
         message_content_in_email_notifications: Optional[bool]=REQ(validator=check_bool, default=None),
         pm_content_in_desktop_notifications: Optional[bool]=REQ(validator=check_bool, default=None),
         desktop_icon_count_display: Optional[int]=REQ(validator=check_int, default=None),
-        realm_name_in_notifications: Optional[bool]=REQ(validator=check_bool, default=None),
-        presence_enabled: Optional[bool]=REQ(validator=check_bool, default=None),
+        realm_name_in_notifications: Optional[bool]=REQ(validator=check_bool, default=None)
 ) -> HttpResponse:
     result = {}
 

@@ -1,6 +1,9 @@
 # Remove an emoji reaction
 
-{generate_api_description(/messages/{message_id}/reactions:delete)}
+Remove an [emoji reaction](/help/emoji-reactions) from a message.
+
+`DELETE {{ api_url }}/v1/messages/{message_id}/reactions`
+
 
 ## Usage examples
 

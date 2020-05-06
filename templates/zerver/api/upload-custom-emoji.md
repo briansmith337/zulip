@@ -1,6 +1,10 @@
 # Upload a custom emoji
 
-{generate_api_description(/realm/emoji/{emoji_name}:post)}
+This endpoint is used to upload a custom emoji for use in the user's
+organization.  Access to this endpoint depends on the
+[organization's configuration](https://zulipchat.com/help/only-allow-admins-to-add-emoji).
+
+ `POST {{ api_url }}/v1/realm/emoji/{emoji_name}`
 
 ## Usage examples
 

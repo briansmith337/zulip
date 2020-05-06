@@ -55,7 +55,7 @@ class APIArgumentsTablePreprocessor(Preprocessor):
 
                 if is_openapi_format:
                     endpoint, method = doc_name.rsplit(':', 1)
-                    arguments: List[Dict[str, Any]] = []
+                    arguments = []  # type: List[Dict[str, Any]]
 
                     try:
                         arguments = get_openapi_parameters(endpoint, method)
@@ -98,7 +98,7 @@ class APIArgumentsTablePreprocessor(Preprocessor):
         <span class="api-argument-example-label">Example</span>: <code>{example}</code>
     </div>
     <div class="api-description">{description}</div>
-    <hr>
+    <hr />
 </div>"""
 
         md_engine = markdown.Markdown(extensions=[])

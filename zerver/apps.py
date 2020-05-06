@@ -12,7 +12,7 @@ def flush_cache(sender: AppConfig, **kwargs: Any) -> None:
 
 
 class ZerverConfig(AppConfig):
-    name: str = "zerver"
+    name = "zerver"  # type: str
 
     def ready(self) -> None:
         # We import zerver.signals here for the side effect of

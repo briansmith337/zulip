@@ -100,7 +100,7 @@ def build_email(template_prefix: str, to_user_ids: Optional[List[int]]=None,
             (html_message, message, email_subject) = render_templates()
     else:
         (html_message, message, email_subject) = render_templates()
-        logger.warning("Missing language for email template '%s'", template_prefix)
+        logger.warning("Missing language for email template '{}'".format(template_prefix))
 
     if from_name is None:
         from_name = "Axxess"
@@ -153,10 +153,10 @@ def send_email(template_prefix: str, to_user_ids: Optional[List[int]]=None,
                        from_name=from_name, from_address=from_address,
                        reply_to_email=reply_to_email, language=language, context=context)
     template = template_prefix.split("/")[-1]
-    logger.info("Sending %s email to %s", template, mail.to)
+    logger.info("Sending %s email to %s" % (template, mail.to))
 
     if mail.send() == 0:
-        logger.error("Error sending %s email to %s", template, mail.to)
+        logger.error("Error sending %s email to %s" % (template, mail.to))
         raise EmailNotDeliveredException
 
 def send_email_from_dict(email_dict: Mapping[str, Any]) -> None:
@@ -265,13 +265,12 @@ def send_custom_email(users: List[UserProfile], options: Dict[str, Any]) -> None
         parsed_email_template = Parser(policy=default).parsestr(text)
         email_template_hash = hashlib.sha256(text.encode('utf-8')).hexdigest()[0:32]
 
-    email_filename = "custom/custom_email_%s.source.html" % (email_template_hash,)
-    email_id = "zerver/emails/custom/custom_email_%s" % (email_template_hash,)
+    email_filename = "custom_email_%s.source.html" % (email_template_hash,)
+    email_id = "zerver/emails/custom_email_%s" % (email_template_hash,)
     markdown_email_base_template_path = "templates/zerver/emails/custom_email_base.pre.html"
     html_source_template_path = "templates/%s.source.html" % (email_id,)
     plain_text_template_path = "templates/%s.txt" % (email_id,)
     subject_path = "templates/%s.subject.txt" % (email_id,)
-    os.makedirs(os.path.dirname(html_source_template_path), exist_ok=True)
 
     # First, we render the markdown input file just like our
     # user-facing docs with render_markdown_path.

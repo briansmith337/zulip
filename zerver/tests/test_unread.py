@@ -166,6 +166,14 @@ class PointerTest(ZulipTestCase):
             user_profile=self.example_user('hamlet'))
         self.assertFalse(user_message.flags.read)
 
+        # Now if we call get_messages with use_first_unread_anchor=True,
+        # we should not get the old unread message (because it's before the
+        # pointer), and instead should get the newly sent unread message
+        messages_response = self.get_messages_response(
+            anchor="first_unread", num_before=0, num_after=1)
+        self.assertEqual(messages_response['messages'][0]['id'], new_message_id)
+        self.assertEqual(messages_response['anchor'], new_message_id)
+
     def test_visible_messages_use_first_unread_anchor(self) -> None:
         self.login('hamlet')
         self.assertEqual(self.example_user('hamlet').pointer, -1)
@@ -260,7 +268,7 @@ class UnreadCountTests(ZulipTestCase):
         message_id = self.send_stream_message(self.example_user("hamlet"), "test_stream", "hello")
         unrelated_message_id = self.send_stream_message(self.example_user("hamlet"), "Denmark", "hello")
 
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.client_post("/json/mark_stream_as_read", {
                 "stream_id": stream.id
@@ -316,7 +324,7 @@ class UnreadCountTests(ZulipTestCase):
 
         message_id = self.send_stream_message(self.example_user("hamlet"), "test_stream", "hello", "test_topic")
         unrelated_message_id = self.send_stream_message(self.example_user("hamlet"), "Denmark", "hello", "Denmark2")
-        events: List[Mapping[str, Any]] = []
+        events = []  # type: List[Mapping[str, Any]]
         with tornado_redirected_to_list(events):
             result = self.client_post("/json/mark_topic_as_read", {
                 "stream_id": get_stream("test_stream", user_profile.realm).id,

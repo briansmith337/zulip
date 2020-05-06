@@ -1,6 +1,9 @@
 # Get all users
 
-{generate_api_description(/users:get)}
+Retrieve details on all users in the organization.  Optionally
+includes values of [custom profile field](/help/add-custom-profile-fields).
+
+`GET {{ api_url }}/v1/users`
 
 You can also [fetch details on a single user](/api/get-user).
 
@@ -63,11 +66,10 @@ You may pass the `client_gravatar` query parameter as follows:
       `2` for an `Incoming webhook` bot. `3` for an `Outgoing webhook` bot.
       `4` for an `Embedded` bot.
     * `user_id`: The ID of the user.
-    * `bot_owner_id`: If the user is a bot (i.e. `is_bot` is `True`),
-      `bot_owner` is the user ID of the bot's owner (usually, whoever
-      created the bot).  **Changes**: New in Zulip 2.2 (feature level
-      1).  In previous versions, there was a `bot_owner` field
-      containing the email address of the bot's owner.
+    * `bot_owner_id`: If the user is a bot (i.e. `is_bot` is `True`), `bot_owner`
+      is the user ID of the bot's owner (usually, whoever created the bot).
+      **Changes**: New in Zulip 2.2.  In previous versions, there was a `bot_owner`
+      field containing the email address of the bot's owner.
     * `is_active`: A boolean specifying whether the user is active or not.
     * `is_guest`: A boolean specifying whether the user is a guest user or not.
     * `timezone`: The time zone of the user.

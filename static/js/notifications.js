@@ -15,39 +15,40 @@ let current_favicon;
 let previous_favicon;
 let flashing = false;
 
-let NotificationAPI;
+let notifications_api;
 
 exports.set_notification_api = function (n) {
-    NotificationAPI = n;
+    notifications_api = n;
 };
 
-if (window.electron_bridge && window.electron_bridge.new_notification) {
-    class ElectronBridgeNotification extends EventTarget {
-        constructor(title, options) {
-            super();
-            Object.assign(
-                this,
-                window.electron_bridge.new_notification(title, options, (type, eventInit) =>
-                    this.dispatchEvent(new Event(type, eventInit))
-                )
-            );
-        }
-
-        static get permission() {
-            return Notification.permission;
-        }
-
-        static async requestPermission(callback) {
-            if (callback) {
-                callback(await Promise.resolve(Notification.permission));
-            }
-            return Notification.permission;
-        }
-    }
-
-    NotificationAPI = ElectronBridgeNotification;
+if (window.webkitNotifications) {
+    notifications_api = window.webkitNotifications;
 } else if (window.Notification) {
-    NotificationAPI = window.Notification;
+    // Build a shim to the new notification API
+    notifications_api = {
+        checkPermission: function checkPermission() {
+            if (window.Notification.permission === 'granted') {
+                return 0;
+            }
+            return 2;
+        },
+        requestPermission: window.Notification.requestPermission,
+        createNotification: function createNotification(icon, title, content, tag) {
+            const notification_object = new window.Notification(title, {icon: icon,
+                                                                        body: content,
+                                                                        tag: tag});
+            notification_object.show = function () {};
+            notification_object.cancel = function () { notification_object.close(); };
+            return notification_object;
+        },
+    };
+}
+
+function cancel_notification_object(notification_object) {
+    // We must remove the .onclose so that it does not trigger on .cancel
+    notification_object.onclose = function () {};
+    notification_object.onclick = function () {};
+    notification_object.cancel();
 }
 
 exports.get_notifications = function () {
@@ -67,7 +68,7 @@ exports.initialize = function () {
         window_has_focus = true;
 
         for (const notice_mem_entry of notice_memory.values()) {
-            notice_mem_entry.obj.close();
+            cancel_notification_object(notice_mem_entry.obj);
         }
         notice_memory.clear();
 
@@ -116,12 +117,12 @@ function update_notification_sound_source() {
 }
 
 exports.permission_state = function () {
-    if (NotificationAPI === undefined) {
+    if (window.Notification === undefined) {
         // act like notifications are blocked if they do not have access to
         // the notification API.
         return "denied";
     }
-    return NotificationAPI.permission;
+    return window.Notification.permission;
 };
 
 let new_message_count = 0;
@@ -270,9 +271,7 @@ if (window.electron_bridge !== undefined) {
     // is often referred to as inline reply feature. This is done so desktop app doesn't
     // have to depend on channel.post for setting crsf_token and narrow.by_topic
     // to narrow to the message being sent.
-    if (window.electron_bridge.set_send_notification_reply_message_supported !== undefined) {
-        window.electron_bridge.set_send_notification_reply_message_supported(true);
-    }
+    window.electron_bridge.send_notification_reply_message_supported = true;
     window.electron_bridge.on_event('send_notification_reply_message', function (message_id, reply) {
         const message = message_store.get(message_id);
         const data = {
@@ -330,7 +329,7 @@ function process_notification(notification) {
         content = message.sender_full_name + content.slice(3);
     }
 
-    if (message.type === "private" || message.type === "test-notification") {
+    if (message.type === "private") {
         if (page_params.pm_content_in_desktop_notifications !== undefined
             && !page_params.pm_content_in_desktop_notifications) {
             content = "New private message from " + message.sender_full_name;
@@ -369,7 +368,7 @@ function process_notification(notification) {
         msg_count = notice_memory.get(key).msg_count + 1;
         title = msg_count + " messages from " + title;
         notification_object = notice_memory.get(key).obj;
-        notification_object.close();
+        cancel_notification_object(notification_object);
     }
 
     if (message.type === "private") {
@@ -398,27 +397,42 @@ function process_notification(notification) {
         ];
     }
 
-    if (notification.desktop_notify) {
+    // Firefox on Ubuntu claims to do webkitNotifications but its notifications are terrible
+    if (notification.desktop_notify && /webkit/i.test(navigator.userAgent)) {
         const icon_url = people.small_avatar_url(message);
-        notification_object = new NotificationAPI(title, {
-            icon: icon_url,
-            body: content,
-            tag: message.id,
-        });
+        notification_object =
+            notifications_api.createNotification(icon_url, title, content, message.id);
         notice_memory.set(key, {
             obj: notification_object,
             msg_count: msg_count,
             message_id: message.id,
         });
-        notification_object.addEventListener("click", () => {
-            notification_object.close();
-            if (message.type !== "test-notification") {
-                narrow.by_topic(message.id, {trigger: 'notification'});
-            }
+        notification_object.onclick = function () {
+            notification_object.cancel();
+            narrow.by_topic(message.id, {trigger: 'notification'});
             window.focus();
-        });
-        notification_object.addEventListener("close", () => {
+        };
+        notification_object.onclose = function () {
             notice_memory.delete(key);
+        };
+        notification_object.show();
+    } else if (notification.desktop_notify && typeof Notification !== "undefined" && /mozilla/i.test(navigator.userAgent)) {
+        Notification.requestPermission(function (perm) {
+            if (perm === 'granted') {
+                notification_object = new Notification(title, {
+                    body: content,
+                    iconUrl: people.small_avatar_url(message),
+                    tag: message.id,
+                });
+                notification_object.onclick = function () {
+                    // We don't need to bring the browser window into focus explicitly
+                    // by calling `window.focus()` as well as don't need to clear the
+                    // notification since it is the default behavior in Firefox.
+                    narrow.by_topic(message.id, {trigger: 'notification'});
+                };
+            } else {
+                in_browser_notify(message, title, content, raw_operators, opts);
+            }
         });
     } else {
         in_browser_notify(message, title, content, raw_operators, opts);
@@ -430,7 +444,7 @@ exports.process_notification = process_notification;
 exports.close_notification = function (message) {
     for (const [key, notice_mem_entry] of notice_memory) {
         if (notice_mem_entry.message_id === message.id) {
-            notice_mem_entry.obj.close();
+            cancel_notification_object(notice_mem_entry.obj);
             notice_memory.delete(key);
         }
     }
@@ -475,11 +489,6 @@ exports.message_is_notifiable = function (message) {
 };
 
 exports.should_send_desktop_notification = function (message) {
-    // Always notify for testing notifications.
-    if (message.type === "test-notification") {
-        return true;
-    }
-
     // For streams, send if desktop notifications are enabled for all
     // message on this stream.
     if (message.type === "stream" &&
@@ -531,7 +540,7 @@ exports.should_send_audible_notification = function (message) {
 
     // And then we need to check if the message is a PM, mention,
     // wildcard mention with wildcard_mentions_notify, or alert.
-    if (message.type === "private" || message.type === "test-notification") {
+    if (message.type === "private") {
         return true;
     }
 
@@ -553,14 +562,15 @@ exports.should_send_audible_notification = function (message) {
 };
 
 exports.granted_desktop_notifications_permission = function () {
-    return NotificationAPI &&
-        NotificationAPI.permission === "granted";
+    return notifications_api &&
+            // 0 is PERMISSION_ALLOWED
+            notifications_api.checkPermission() === 0;
 };
 
 
 exports.request_desktop_notifications_permission = function () {
-    if (NotificationAPI) {
-        return NotificationAPI.requestPermission();
+    if (notifications_api) {
+        return notifications_api.requestPermission();
     }
 };
 
@@ -586,18 +596,6 @@ exports.received_messages = function (messages) {
             $("#notifications-area").find("audio")[0].play();
         }
     }
-};
-
-exports.send_test_notification = function (content) {
-    notifications.received_messages([{
-        id: Math.random(),
-        type: "test-notification",
-        sender_email: "notification-bot@zulip.com",
-        sender_full_name: "Notification Bot",
-        display_reply_to: "Notification Bot",
-        content,
-        unread: true,
-    }]);
 };
 
 function get_message_header(message) {

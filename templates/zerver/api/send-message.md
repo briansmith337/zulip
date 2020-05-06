@@ -1,6 +1,8 @@
 # Send a message
 
-{generate_api_description(/messages:post)}
+Send a stream or a private message.
+
+`POST {{ api_url }}/v1/messages`
 
 ## Usage examples
 

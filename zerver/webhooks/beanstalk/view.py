@@ -52,12 +52,12 @@ def beanstalk_decoder(view_func: ViewFuncT) -> ViewFuncT:
             email, api_key = base64.b64decode(encoded_value).decode('utf-8').split(":")
             email = email.replace('%40', '@')
             credentials = "%s:%s" % (email, api_key)
-            encoded_credentials: str = base64.b64encode(credentials.encode('utf-8')).decode('utf8')
+            encoded_credentials = base64.b64encode(credentials.encode('utf-8')).decode('utf8')  # type: str
             request.META['HTTP_AUTHORIZATION'] = "Basic " + encoded_credentials
 
         return view_func(request, *args, **kwargs)
 
-    return _wrapped_view_func  # type: ignore[return-value] # https://github.com/python/mypy/issues/1927
+    return _wrapped_view_func  # type: ignore # https://github.com/python/mypy/issues/1927
 
 @beanstalk_decoder
 @authenticated_rest_api_view(webhook_client_name="Beanstalk")

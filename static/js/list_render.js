@@ -25,55 +25,25 @@ exports.filter = (value, list, opts) => {
     });
 };
 
-exports.alphabetic_sort = (prop) => {
-    return function (a, b) {
-        // The conversion to uppercase helps make the sorting case insensitive.
-        const str1 = a[prop].toUpperCase();
-        const str2 = b[prop].toUpperCase();
-
-        if (str1 === str2) {
-            return 0;
-        } else if (str1 > str2) {
-            return 1;
-        }
-
-        return -1;
-    };
-};
-
-exports.numeric_sort = (prop) => {
-    return function (a, b) {
-        if (parseFloat(a[prop]) > parseFloat(b[prop])) {
-            return 1;
-        } else if (parseFloat(a[prop]) === parseFloat(b[prop])) {
-            return 0;
-        }
-
-        return -1;
-    };
-};
-
-exports.valid_filter_opts = (opts) => {
+exports.validate_filter = (opts) => {
     if (!opts.filter) {
-        return true;
+        return;
     }
     if (opts.filter.predicate) {
         if (typeof opts.filter.predicate !== 'function') {
-            blueslip.error('Filter predicate is not a function.');
-            return false;
+            blueslip.error('Filter predicate function is missing.');
+            return;
         }
         if (opts.filter.filterer) {
             blueslip.error('Filterer and predicate are mutually exclusive.');
-            return false;
+            return;
         }
     } else {
         if (typeof opts.filter.filterer !== 'function') {
-            blueslip.error('Filter filterer is not a function (or missing).');
-            return false;
+            blueslip.error('Filter filterer function is missing.');
+            return;
         }
     }
-
-    return true;
 };
 
 // @params
@@ -81,11 +51,6 @@ exports.valid_filter_opts = (opts) => {
 // list: The list of items to progressively append.
 // opts: An object of random preferences.
 exports.create = function ($container, list, opts) {
-    if (!opts) {
-        blueslip.error('Need opts to create widget.');
-        return;
-    }
-
     if (opts.name && DEFAULTS.instances.get(opts.name)) {
         // Clear event handlers for prior widget.
         const old_widget = DEFAULTS.instances.get(opts.name);
@@ -95,10 +60,7 @@ exports.create = function ($container, list, opts) {
     const meta = {
         sorting_function: null,
         sorting_functions: new Map(),
-        generic_sorting_functions: {
-            alphabetic: exports.alphabetic_sort,
-            numeric: exports.numeric_sort,
-        },
+        generic_sorting_functions: new Map(),
         offset: 0,
         list: list,
         filtered_list: list,
@@ -106,9 +68,10 @@ exports.create = function ($container, list, opts) {
         filter_value: '',
     };
 
-    if (!exports.valid_filter_opts(opts)) {
+    if (!opts) {
         return;
     }
+    exports.validate_filter(opts);
 
     const widget = {};
 
@@ -187,11 +150,17 @@ exports.create = function ($container, list, opts) {
         } else if (typeof sorting_function === "string") {
             if (typeof prop === "string") {
                 /* eslint-disable max-len */
-                meta.sorting_function = meta.generic_sorting_functions[sorting_function](prop);
+                meta.sorting_function = meta.generic_sorting_functions.get(sorting_function)(prop);
             } else {
                 meta.sorting_function = meta.sorting_functions.get(sorting_function);
             }
         }
+    };
+
+    // generic sorting functions are ones that will use a specified prop
+    // and perform a sort on it with the given sorting function.
+    widget.add_generic_sort_function = function (name, sorting_function) {
+        meta.generic_sorting_functions.set(name, sorting_function);
     };
 
     widget.set_up_event_handlers = function () {
@@ -259,6 +228,35 @@ exports.create = function ($container, list, opts) {
         meta.list = list;
         widget.hard_redraw();
     };
+
+    // add built-in generic sort functions.
+    widget.add_generic_sort_function("alphabetic", function (prop) {
+        return function (a, b) {
+            // The conversion to uppercase helps make the sorting case insensitive.
+            const str1 = a[prop].toUpperCase();
+            const str2 = b[prop].toUpperCase();
+
+            if (str1 === str2) {
+                return 0;
+            } else if (str1 > str2) {
+                return 1;
+            }
+
+            return -1;
+        };
+    });
+
+    widget.add_generic_sort_function("numeric", function (prop) {
+        return function (a, b) {
+            if (parseFloat(a[prop]) > parseFloat(b[prop])) {
+                return 1;
+            } else if (parseFloat(a[prop]) === parseFloat(b[prop])) {
+                return 0;
+            }
+
+            return -1;
+        };
+    });
 
     widget.set_up_event_handlers();
 

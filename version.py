@@ -12,7 +12,7 @@ if os.path.exists(zulip_git_version_file):
 LATEST_MAJOR_VERSION = "2.1"
 LATEST_RELEASE_VERSION = "2.1.4"
 LATEST_RELEASE_ANNOUNCEMENT = "https://blog.zulip.org/2019/12/13/zulip-2-1-released/"
-LATEST_DESKTOP_VERSION = "5.1.0"
+LATEST_DESKTOP_VERSION = "5.0.0"
 
 # Versions of the desktop app below DESKTOP_MINIMUM_VERSION will be
 # prevented from connecting to the Zulip server.  Versions above
@@ -20,16 +20,6 @@ LATEST_DESKTOP_VERSION = "5.1.0"
 # a banner at the top of the page asking the user to upgrade.
 DESKTOP_MINIMUM_VERSION = "5.0.0"
 DESKTOP_WARNING_VERSION = "5.0.0"
-
-# Bump the API_FEATURE_LEVEL whenever an API change is made
-# that clients might want to condition on.  If we forget at
-# the time we make the change, then bump it later as soon
-# as we notice; clients using API_FEATURE_LEVEL will just not
-# use the new feature/API until the bump.
-#
-# Changes should be accompanied by documentation explaining what the
-# new level means in templates/zerver/api/changelog.md.
-API_FEATURE_LEVEL = 3
 
 # Bump the minor PROVISION_VERSION to indicate that folks should provision
 # only when going from an old version of the code to a newer version. Bump
@@ -44,4 +34,4 @@ API_FEATURE_LEVEL = 3
 #   historical commits sharing the same major version, in which case a
 #   minor version bump suffices.
 
-PROVISION_VERSION = '82.0'
+PROVISION_VERSION = '79.2'

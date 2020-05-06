@@ -26,7 +26,6 @@ class IncludeCustomPreprocessor(IncludePreprocessor):
     JsonableError exception. The rest of the functionality is identical
     to the original markdown_include extension.
     """
-
     def run(self, lines: List[str]) -> List[str]:
         done = False
         while not done:

@@ -1,6 +1,11 @@
 # Set "typing" status
 
-{generate_api_description(/typing:post)}
+Send an event indicating that the user has started or stopped typing
+on their client.  See
+[the typing notification docs](https://zulip.readthedocs.io/en/latest/subsystems/typing-indicators.html)
+for details on Zulip's typing notifications protocol.
+
+`POST {{ api_url }}/v1/typing`
 
 ## Usage examples
 

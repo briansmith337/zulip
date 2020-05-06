@@ -8,13 +8,13 @@ from zerver.lib.timestamp import floor_to_day
 from zerver.models import Realm, Stream, UserProfile
 
 class FillState(models.Model):
-    property: str = models.CharField(max_length=40, unique=True)
-    end_time: datetime.datetime = models.DateTimeField()
+    property = models.CharField(max_length=40, unique=True)  # type: str
+    end_time = models.DateTimeField()  # type: datetime.datetime
 
     # Valid states are {DONE, STARTED}
     DONE = 1
     STARTED = 2
-    state: int = models.PositiveSmallIntegerField()
+    state = models.PositiveSmallIntegerField()  # type: int
 
     def __str__(self) -> str:
         return "<FillState: %s %s %s>" % (self.property, self.end_time, self.state)
@@ -37,10 +37,10 @@ class BaseCount(models.Model):
     # Note: When inheriting from BaseCount, you may want to rearrange
     # the order of the columns in the migration to make sure they
     # match how you'd like the table to be arranged.
-    property: str = models.CharField(max_length=32)
-    subgroup: Optional[str] = models.CharField(max_length=16, null=True)
-    end_time: datetime.datetime = models.DateTimeField()
-    value: int = models.BigIntegerField()
+    property = models.CharField(max_length=32)  # type: str
+    subgroup = models.CharField(max_length=16, null=True)  # type: Optional[str]
+    end_time = models.DateTimeField()  # type: datetime.datetime
+    value = models.BigIntegerField()  # type: int
 
     class Meta:
         abstract = True

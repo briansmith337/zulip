@@ -2,6 +2,46 @@ const settings_config = require("./settings_config");
 const render_settings_tab = require('../templates/settings_tab.hbs');
 
 $("body").ready(function () {
+    const $sidebar = $(".form-sidebar");
+    const $targets = $sidebar.find("[data-target]");
+    const $title = $sidebar.find(".title h1");
+    let is_open = false;
+
+    const close_sidebar = function () {
+        $sidebar.removeClass("show");
+        $sidebar.find("#edit_bot").empty();
+        is_open = false;
+    };
+
+    exports.trigger_sidebar = function (target) {
+        $targets.hide();
+        const $target = $(".form-sidebar").find("[data-target='" + target + "']");
+
+        $title.text($target.attr("data-title"));
+        $target.show();
+
+        $sidebar.addClass("show");
+        is_open = true;
+    };
+
+    $(".form-sidebar .exit").click(function (e) {
+        close_sidebar();
+        e.stopPropagation();
+    });
+
+    $("body").click(function (e) {
+        if (is_open && !$(e.target).within(".form-sidebar")) {
+            close_sidebar();
+        }
+    });
+
+    $("body").on("click", "[data-sidebar-form]", function (e) {
+        exports.trigger_sidebar($(this).attr("data-sidebar-form"));
+        e.stopPropagation();
+    });
+
+    $("body").on("click", "[data-sidebar-form-close]", close_sidebar);
+
     $("#settings_overlay_container").click(function (e) {
         if (!overlays.is_modal_open()) {
             return;
@@ -30,7 +70,6 @@ function setup_settings_label() {
         enable_login_emails: i18n.t("Send email notifications for new logins to my account"),
         message_content_in_email_notifications: i18n.t("Include message content in missed message emails"),
         realm_name_in_notifications: i18n.t("Include organization name in subject of missed message emails"),
-        presence_enabled: i18n.t("Display my availability to other users when online"),
 
         // display settings
         dense_mode: i18n.t("Dense mode"),

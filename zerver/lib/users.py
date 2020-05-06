@@ -1,6 +1,5 @@
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
-import re
 import unicodedata
 from collections import defaultdict
 
@@ -30,12 +29,6 @@ def check_full_name(full_name_raw: str) -> str:
         if (unicodedata.category(character)[0] == 'C' or
                 character in UserProfile.NAME_INVALID_CHARS):
             raise JsonableError(_("Invalid characters in name!"))
-    # Names ending with e.g. `|15` could be ambiguous for
-    # sloppily-written parsers of our markdown syntax for mentioning
-    # users with ambigious names, and likely have no real use, so we
-    # ban them.
-    if re.search(r"\|\d+$", full_name_raw):
-        raise JsonableError(_("Invalid format!"))
     return full_name
 
 # NOTE: We don't try to absolutely prevent 2 bots from having the same
@@ -176,11 +169,11 @@ def user_ids_to_users(user_ids: List[int], realm: Realm) -> List[UserProfile]:
     def fetch_users_by_id(user_ids: List[int]) -> List[UserProfile]:
         return list(UserProfile.objects.filter(id__in=user_ids).select_related())
 
-    user_profiles_by_id: Dict[int, UserProfile] = generic_bulk_cached_fetch(
+    user_profiles_by_id = generic_bulk_cached_fetch(
         cache_key_function=user_profile_by_id_cache_key,
         query_function=fetch_users_by_id,
         object_ids=user_ids
-    )
+    )  # type: Dict[int, UserProfile]
 
     found_user_ids = user_profiles_by_id.keys()
     missed_user_ids = [user_id for user_id in user_ids if user_id not in found_user_ids]
@@ -387,7 +380,7 @@ def get_cross_realm_dicts() -> List[Dict[str, Any]]:
 
 def get_custom_profile_field_values(custom_profile_field_values:
                                     List[CustomProfileFieldValue]) -> Dict[int, Dict[str, Any]]:
-    profiles_by_user_id: Dict[int, Dict[str, Any]] = defaultdict(dict)
+    profiles_by_user_id = defaultdict(dict)  # type: Dict[int, Dict[str, Any]]
     for profile_field in custom_profile_field_values:
         user_id = profile_field.user_profile_id
         if profile_field.field.is_renderable():

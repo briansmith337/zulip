@@ -85,12 +85,12 @@ def update_active_status_backend(request: HttpRequest, user_profile: UserProfile
     status_val = UserPresence.status_from_string(status)
     if status_val is None:
         raise JsonableError(_("Invalid status: %s") % (status,))
-    elif user_profile.presence_enabled:
+    else:
         update_user_presence(user_profile, request.client, timezone_now(),
                              status_val, new_user_input)
 
     if ping_only:
-        ret: Dict[str, Any] = {}
+        ret = {}  # type: Dict[str, Any]
     else:
         ret = get_presence_response(user_profile, slim_presence)
 

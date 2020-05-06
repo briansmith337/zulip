@@ -27,15 +27,15 @@ def compute_stats(log_level: int) -> None:
                            "bitcoin@mit.edu", "lp@mit.edu", "clocks@mit.edu",
                            "root@mit.edu", "nagios@mit.edu",
                            "www-data|local-realm@mit.edu"])
-    user_counts: Dict[str, Dict[str, int]] = {}
+    user_counts = {}  # type: Dict[str, Dict[str, int]]
     for m in mit_query.select_related("sending_client", "sender"):
         email = m.sender.email
         user_counts.setdefault(email, {})
         user_counts[email].setdefault(m.sending_client.name, 0)
         user_counts[email][m.sending_client.name] += 1
 
-    total_counts: Dict[str, int] = {}
-    total_user_counts: Dict[str, int] = {}
+    total_counts = {}  # type: Dict[str, int]
+    total_user_counts = {}  # type: Dict[str, int]
     for email, counts in user_counts.items():
         total_user_counts.setdefault(email, 0)
         for client_name, count in counts.items():
@@ -43,8 +43,8 @@ def compute_stats(log_level: int) -> None:
             total_counts[client_name] += count
             total_user_counts[email] += count
 
-    logging.debug("%40s | %10s | %s", "User", "Messages", "Percentage Zulip")
-    top_percents: Dict[int, float] = {}
+    logging.debug("%40s | %10s | %s" % ("User", "Messages", "Percentage Zulip"))
+    top_percents = {}  # type: Dict[int, float]
     for size in [10, 25, 50, 100, 200, len(total_user_counts.keys())]:
         top_percents[size] = 0.0
     for i, email in enumerate(sorted(total_user_counts.keys(),
@@ -56,18 +56,18 @@ def compute_stats(log_level: int) -> None:
             if i < size:
                 top_percents[size] += (percent_zulip * 1.0 / size)
 
-        logging.debug("%40s | %10s | %s%%", email, total_user_counts[email],
-                      percent_zulip)
+        logging.debug("%40s | %10s | %s%%" % (email, total_user_counts[email],
+                                              percent_zulip))
 
     logging.info("")
     for size in sorted(top_percents.keys()):
-        logging.info("Top %6s | %s%%", size, round(top_percents[size], 1))
+        logging.info("Top %6s | %s%%" % (size, round(top_percents[size], 1)))
 
     grand_total = sum(total_counts.values())
     print(grand_total)
-    logging.info("%15s | %s", "Client", "Percentage")
+    logging.info("%15s | %s" % ("Client", "Percentage"))
     for client in total_counts.keys():
-        logging.info("%15s | %s%%", client, round(100. * total_counts[client] / grand_total, 1))
+        logging.info("%15s | %s%%" % (client, round(100. * total_counts[client] / grand_total, 1)))
 
 class Command(BaseCommand):
     help = "Compute statistics on MIT Zephyr usage."

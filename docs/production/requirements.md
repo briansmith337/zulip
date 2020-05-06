@@ -209,12 +209,11 @@ installing Zulip with a dedicated database server.
 
   * Zulip 2.0 and later supports running multiple Tornado servers
     sharded by realm/organization, which is how we scale Zulip Cloud.
-    [Contact us][contact-support] for help implementing the sharding policy.
+    Contact us for help implementing the sharding policy.
 
 Scalability is an area of active development, so if you're unsure
 whether Zulip is a fit for your organization or need further advice
-[contact Zulip support][contact-support].
+[contact Zulip support](mailto:support@zulipchat.com).
 
 [s3-uploads]: ../production/upload-backends.html#s3-backend-configuration
 [streaming-replication]: ../production/export-and-import.html#postgres-streaming-replication
-[contact-support]: https://zulip.com/help/contact-support

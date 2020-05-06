@@ -44,12 +44,12 @@ VNU_IGNORE = re.compile(r'|'.join([
 
 
 class BaseDocumentationSpider(scrapy.Spider):
-    name: Optional[str] = None
+    name = None  # type: Optional[str]
     # Exclude domain address.
-    deny_domains: List[str] = []
-    start_urls: List[str] = []
-    deny: List[str] = []
-    file_extensions: List[str] = ['.' + ext for ext in IGNORED_EXTENSIONS]
+    deny_domains = []  # type: List[str]
+    start_urls = []  # type: List[str]
+    deny = []  # type: List[str]
+    file_extensions = ['.' + ext for ext in IGNORED_EXTENSIONS]  # type: List[str]
     tags = ('a', 'area', 'img')
     attrs = ('href', 'src')
 
@@ -107,7 +107,7 @@ class BaseDocumentationSpider(scrapy.Spider):
         return callback
 
     def _make_requests(self, url: str) -> Iterable[Request]:
-        callback: Callable[[Response], Optional[Iterable[Request]]] = self.parse
+        callback = self.parse  # type: Callable[[Response], Optional[Iterable[Request]]]
         dont_filter = False
         method = 'GET'
         if self._is_external_url(url):

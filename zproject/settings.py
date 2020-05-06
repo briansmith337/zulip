@@ -14,7 +14,7 @@ from copy import deepcopy
 import os
 import time
 import sys
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Union
 from urllib.parse import urljoin
 
 from zerver.lib.db import TimeTrackingConnection
@@ -71,8 +71,6 @@ CASPER_TESTS = False
 RUNNING_OPENAPI_CURL_TEST = False
 # This is overridden in test_settings.py for the test suites
 GENERATE_STRIPE_FIXTURES = False
-# This is overridden by dev_settings.py for droplets.
-IS_DEV_DROPLET = False
 
 # Google Compute Engine has an /etc/boto.cfg that is "nicely
 # configured" to work with GCE's storage service.  However, their
@@ -218,7 +216,7 @@ CORPORATE_ENABLED = 'corporate' in INSTALLED_APPS
 # We set it to None when running backend tests or populate_db.
 # We override the port number when running frontend tests.
 TORNADO_PROCESSES = int(get_config('application_server', 'tornado_processes', '1'))
-TORNADO_SERVER: Optional[str] = 'http://127.0.0.1:9993'
+TORNADO_SERVER = 'http://127.0.0.1:9993'  # type: Optional[str]
 RUNNING_INSIDE_TORNADO = False
 AUTORELOAD = DEBUG
 
@@ -263,7 +261,7 @@ SILENCED_SYSTEM_CHECKS = [
 # We implement these options with a default DATABASES configuration
 # supporting peer authentication, with logic to override it as
 # appropriate if DEVELOPMENT or REMOTE_POSTGRES_HOST is set.
-DATABASES: Dict[str, Dict[str, Any]] = {"default": {
+DATABASES = {"default": {
     'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'zulip',
     'USER': 'zulip',
@@ -276,7 +274,7 @@ DATABASES: Dict[str, Dict[str, Any]] = {"default": {
     'OPTIONS': {
         'connection_factory': TimeTrackingConnection
     },
-}}
+}}  # type: Dict[str, Dict[str, Any]]
 
 if DEVELOPMENT:
     LOCAL_DATABASE_PASSWORD = get_secret("local_database_password")
@@ -469,7 +467,7 @@ INTERNAL_BOTS = [{'var_name': 'NOTIFICATION_BOT',
                   'name': 'Welcome Bot'}]
 
 # Bots that are created for each realm like the reminder-bot goes here.
-REALM_INTERNAL_BOTS: List[Dict[str, str]] = []
+REALM_INTERNAL_BOTS = []  # type: List[Dict[str, str]]
 # These are realm-internal bots that may exist in some organizations,
 # so configure power the setting, but should not be auto-created at this time.
 DISABLED_REALM_INTERNAL_BOTS = [
@@ -519,7 +517,7 @@ if CAMO_URI != '':
 # STATIC CONTENT AND MINIFICATION SETTINGS
 ########################################################################
 
-if PRODUCTION or IS_DEV_DROPLET or os.getenv('EXTERNAL_HOST') is not None:
+if PRODUCTION or os.getenv('EXTERNAL_HOST') is not None:
     STATIC_URL = urljoin(ROOT_DOMAIN_URI, '/static/')
 else:
     STATIC_URL = 'http://localhost:9991/static/'
@@ -565,15 +563,15 @@ WEBPACK_LOADER = {
 ########################################################################
 
 # List of callables that know how to import templates from various sources.
-LOADERS: List[Union[str, Tuple[object, ...]]] = [
+LOADERS = [
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-]
+]  # type: List[Union[str, Tuple[object, ...]]]
 if PRODUCTION:
     # Template caching is a significant performance win in production.
     LOADERS = [('django.template.loaders.cached.Loader', LOADERS)]
 
-base_template_engine_settings: Dict[str, Any] = {
+base_template_engine_settings = {
     'BACKEND': 'django.template.backends.jinja2.Jinja2',
     'OPTIONS': {
         'environment': 'zproject.jinja2.environment',
@@ -587,7 +585,7 @@ base_template_engine_settings: Dict[str, Any] = {
             'django.template.context_processors.i18n',
         ],
     },
-}
+}  # type: Dict[str, Any]
 
 default_template_engine_settings = deepcopy(base_template_engine_settings)
 default_template_engine_settings.update({
@@ -678,7 +676,7 @@ RETENTION_LOG_PATH = zulip_path("/var/log/zulip/message_retention.log")
 # We plan to replace it with RealmAuditLog, stored in the database,
 # everywhere that code mentioning it appears.
 if EVENT_LOGS_ENABLED:
-    EVENT_LOG_DIR: Optional[str] = zulip_path("/home/zulip/logs/event_log")
+    EVENT_LOG_DIR = zulip_path("/home/zulip/logs/event_log")  # type: Optional[str]
 else:
     EVENT_LOG_DIR = None
 
@@ -698,7 +696,7 @@ DEFAULT_ZULIP_HANDLERS = (
     ['console', 'file', 'errors_file']
 )
 
-LOGGING: Dict[str, Any] = {
+LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
@@ -908,7 +906,7 @@ LOGGING: Dict[str, Any] = {
             'propagate': False,
         },
     }
-}
+}  # type: Dict[str, Any]
 
 if DEVELOPMENT:
     CONTRIBUTOR_DATA_FILE_PATH = os.path.join(DEPLOY_ROOT, 'var/github-contributors.json')

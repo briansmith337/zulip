@@ -337,7 +337,7 @@ def get_signed_upload_url(path: str) -> str:
 
 def get_realm_for_filename(path: str) -> Optional[int]:
     conn = S3Connection(settings.S3_KEY, settings.S3_SECRET_KEY)
-    key: Optional[Key] = get_bucket(conn, settings.S3_AUTH_UPLOADS_BUCKET).get_key(path)
+    key = get_bucket(conn, settings.S3_AUTH_UPLOADS_BUCKET).get_key(path)  # type: Optional[Key]
     if key is None:
         # This happens if the key does not exist.
         return None
@@ -351,13 +351,13 @@ class S3UploadBackend(ZulipUploadBackend):
         bucket = get_bucket(self.connection, bucket_name)
 
         # check if file exists
-        key: Optional[Key] = bucket.get_key(path_id)
+        key = bucket.get_key(path_id)  # type: Optional[Key]
         if key is not None:
             bucket.delete_key(key)
             return True
 
         file_name = path_id.split("/")[-1]
-        logging.warning("%s does not exist. Its entry in the database will be removed.", file_name)
+        logging.warning("%s does not exist. Its entry in the database will be removed." % (file_name,))
         return False
 
     def upload_message_file(self, uploaded_file_name: str, uploaded_file_size: int,
@@ -655,7 +655,7 @@ def delete_local_file(type: str, path: str) -> bool:
         os.remove(file_path)
         return True
     file_name = path.split("/")[-1]
-    logging.warning("%s does not exist. Its entry in the database will be removed.", file_name)
+    logging.warning("%s does not exist. Its entry in the database will be removed." % (file_name,))
     return False
 
 def get_local_file_path(path_id: str) -> Optional[str]:
@@ -860,7 +860,7 @@ class LocalUploadBackend(ZulipUploadBackend):
 
 # Common and wrappers
 if settings.LOCAL_UPLOADS_DIR is not None:
-    upload_backend: ZulipUploadBackend = LocalUploadBackend()
+    upload_backend = LocalUploadBackend()  # type: ZulipUploadBackend
 else:
     upload_backend = S3UploadBackend()  # nocoverage
 

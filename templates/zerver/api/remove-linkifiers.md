@@ -1,6 +1,10 @@
 # Remove linkifiers
 
-{generate_api_description(/realm/filters/{filter_id}:delete)}
+Remove [linkifiers](/help/add-a-custom-linkification-filter), regular
+expression patterns that are automatically linkified when they appear
+in messages and topics.
+
+`DELETE {{ api_url }}/v1/realm/filters/{filter_id}`
 
 ## Usage examples
 

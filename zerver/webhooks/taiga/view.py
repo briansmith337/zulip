@@ -196,12 +196,12 @@ def parse_create_or_delete(message: Mapping[str, Any]) -> Dict[str, Any]:
 
 def parse_change_event(change_type: str, message: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
     """ Parses change event. """
-    evt: Dict[str, Any] = {}
-    values: Dict[str, Any] = {
+    evt = {}  # type: Dict[str, Any]
+    values = {
         'user': get_owner_name(message),
         'user_link': get_owner_link(message),
         'subject': get_subject(message)
-    }
+    }  # type: Dict[str, Any]
 
     if change_type in ["description_diff", "points"]:
         event_type = change_type

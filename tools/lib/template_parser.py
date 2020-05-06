@@ -1,8 +1,5 @@
 from typing import Callable, List, Optional, Text
 
-class FormattedException(Exception):
-    pass
-
 class TemplateParserException(Exception):
     def __init__(self, message: str) -> None:
         self.message = message
@@ -103,11 +100,7 @@ def tokenize(text: str) -> List[Token]:
                 kind = 'handlebars_singleton'
             elif looking_at_html_start():
                 s = get_html_tag(text, state.i)
-                if s.endswith('/>'):
-                    end_offset = -2
-                else:
-                    end_offset = -1
-                tag_parts = s[1:end_offset].split()
+                tag_parts = s[1:-1].split()
 
                 if not tag_parts:
                     raise TemplateParserException("Tag name missing")
@@ -155,14 +148,9 @@ def tokenize(text: str) -> List[Token]:
                 advance(1)
                 continue
         except TokenizationException as e:
-            raise FormattedException(
-                '''%s at Line %d Col %d:"%s"''' % (
-                    e.message,
-                    state.line,
-                    state.col,
-                    e.line_content
-                )
-            )
+            raise TemplateParserException('''%s at Line %d Col %d:"%s"''' %
+                                          (e.message, state.line, state.col,
+                                           e.line_content))
 
         line_span = len(s.split('\n'))
         token = Token(
@@ -209,12 +197,7 @@ def validate(fn: Optional[str] = None, text: Optional[str] = None, check_indent:
         with open(fn) as f:
             text = f.read()
 
-    try:
-        tokens = tokenize(text)
-    except FormattedException as e:
-        raise TemplateParserException('''
-            fn: %s
-            %s''' % (fn, e))
+    tokens = tokenize(text)
 
     class State:
         def __init__(self, func: Callable[[Token], None]) -> None:
@@ -301,19 +284,7 @@ def validate(fn: Optional[str] = None, text: Optional[str] = None, check_indent:
 def is_special_html_tag(s: str, tag: str) -> bool:
     return tag in ['link', 'meta', '!DOCTYPE']
 
-OPTIONAL_CLOSING_TAGS = [
-    'circle',
-    'img',
-    'input',
-    'path',
-    'polygon',
-]
-
 def is_self_closing_html_tag(s: Text, tag: Text) -> bool:
-    if s.endswith('/>'):
-        if tag in OPTIONAL_CLOSING_TAGS:
-            return True
-        raise TokenizationException('Singleton tag not allowed', tag)
     self_closing_tag = tag in [
         'area',
         'base',
@@ -328,9 +299,8 @@ def is_self_closing_html_tag(s: Text, tag: Text) -> bool:
         'track',
         'wbr',
     ]
-    if self_closing_tag:
-        return True
-    return False
+    singleton_tag = s.endswith('/>')
+    return self_closing_tag or singleton_tag
 
 def is_django_block_tag(tag: str) -> bool:
     return tag in [

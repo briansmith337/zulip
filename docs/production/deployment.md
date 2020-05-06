@@ -209,17 +209,10 @@ instead of HTTPS.
 
 ### nginx configuration
 
-For `nginx` configuration, there's two things you need to setup:
-* The root `nginx.conf` file.  We recommend using
-  `/etc/nginx/nginx.conf` from your Zulip server for our recommended
-  settings.  E.g. if you don't set `client_max_body_size`, it won't be
-  possible to upload large files to your Zulip server.
-* The `nginx` site-specific configuration (in
-  `/etc/nginx/sites-available`) for the Zulip app.  You can look at
-  our [nginx reverse proxy configuration][nginx-loadbalancer] to see
-  an example of how to do this properly (the various include files are
-  available via the `zulip::nginx` puppet module).  Or modify this
-  example:
+You can look at our
+[nginx reverse proxy configuration][nginx-loadbalancer] to see an
+example of how to do this properly (the various include files are
+available via the `zulip::nginx` puppet module).  Or modify this example:
 
 ```
 map $http_upgrade $connection_upgrade {
@@ -248,8 +241,7 @@ server {
 ```
 
 Don't forget to update `server_name`, `ssl_certificate`,
-`ssl_certificate_key` and `proxy_pass` with the appropriate values for
-your installation.
+`ssl_certificate_key` and `proxy_pass` with proper values.
 
 [nginx-proxy-config]: https://github.com/zulip/zulip/blob/master/puppet/zulip/files/nginx/zulip-include-common/proxy
 [nginx-proxy-longpolling-config]: https://github.com/zulip/zulip/blob/master/puppet/zulip/files/nginx/zulip-include-common/proxy_longpolling

@@ -30,8 +30,8 @@ class TestEmbeddedBotMessaging(ZulipTestCase):
         # The next two lines error on mypy because the display_recipient is of type Union[str, List[Dict[str, Any]]].
         # In this case, we know that display_recipient will be of type List[Dict[str, Any]].
         # Otherwise this test will error, which is wanted behavior anyway.
-        self.assert_length(display_recipient, 1)  # type: ignore[arg-type]
-        self.assertEqual(display_recipient[0]['email'], self.user_profile.email)   # type: ignore[index]
+        self.assert_length(display_recipient, 1)  # type: ignore
+        self.assertEqual(display_recipient[0]['email'], self.user_profile.email)   # type: ignore
 
     def test_stream_message_to_embedded_bot(self) -> None:
         assert self.bot_profile is not None
@@ -86,6 +86,4 @@ class TestEmbeddedBotFailures(ZulipTestCase):
                                      content="@**{}** foo".format(bot_profile.full_name),
                                      topic_name="bar")
             logging_error_mock.assert_called_once_with(
-                "Error: User %s has bot with invalid embedded bot service %s",
-                bot_profile.id, "invalid",
-            )
+                "Error: User {} has bot with invalid embedded bot service invalid".format(bot_profile.id))

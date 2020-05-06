@@ -1,7 +1,7 @@
 import time
 
 from django.db import connection, migrations
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 from django.db.models import Min
 
@@ -64,7 +64,7 @@ class Migration(migrations.Migration):
         FOR EACH ROW
         EXECUTE PROCEDURE zerver_message_date_sent_to_pub_date_trigger_function();
         """),
-        migrations.RunPython(copy_pub_date_to_date_sent, elidable=True),
+        migrations.RunPython(copy_pub_date_to_date_sent),
         # The name for the index was chosen to match the name of the index Django would create
         # in a normal migration with AlterField of date_sent to have db_index=True:
         migrations.RunSQL("""

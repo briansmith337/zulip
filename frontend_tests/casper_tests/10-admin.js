@@ -18,10 +18,11 @@ function submit_notifications_stream_settings() {
 // Test changing notifications stream
 casper.then(function () {
     casper.test.info('Changing notifications stream to Verona by filtering with "verona"');
-    casper.click("#realm_notifications_stream_id_widget button.dropdown-toggle");
-    casper.waitUntilVisible('#realm_notifications_stream_id_widget ul.dropdown-menu', function () {
-        casper.sendKeys('#realm_notifications_stream_id_widget  .dropdown-search > input[type=text]', 'verona');
-        casper.click("#realm_notifications_stream_id_widget .dropdown-list-body > li:nth-of-type(1)");
+    casper.click("#id_realm_notifications_stream > button.dropdown-toggle");
+
+    casper.waitUntilVisible('#id_realm_notifications_stream ul.dropdown-menu', function () {
+        casper.sendKeys('#id_realm_notifications_stream .dropdown-search > input[type=text]', 'verona');
+        casper.click("#id_realm_notifications_stream .dropdown-list-body li.stream_name");
     });
 });
 
@@ -35,7 +36,7 @@ casper.then(function () {
 });
 
 casper.then(function () {
-    casper.click("#realm_notifications_stream_id_widget  .dropdown_list_reset_button");
+    casper.click("#notifications_stream_disable");
 });
 
 submit_notifications_stream_settings();
@@ -50,10 +51,11 @@ casper.then(function () {
 // Test changing signup notifications stream
 casper.then(function () {
     casper.test.info('Changing signup notifications stream to Verona by filtering with "verona"');
-    casper.click("#id_realm_signup_notifications_stream_id > button.dropdown-toggle");
-    casper.waitUntilVisible('#realm_signup_notifications_stream_id_widget  ul.dropdown-menu', function () {
-        casper.sendKeys('#realm_signup_notifications_stream_id_widget  .dropdown-search > input[type=text]', 'verona');
-        casper.click("#realm_signup_notifications_stream_id_widget  .dropdown-list-body li.list_item");
+    casper.click("#id_realm_signup_notifications_stream > button.dropdown-toggle");
+
+    casper.waitUntilVisible('#id_realm_signup_notifications_stream ul.dropdown-menu', function () {
+        casper.sendKeys('#id_realm_signup_notifications_stream .dropdown-search > input[type=text]', 'verona');
+        casper.click("#id_realm_signup_notifications_stream .dropdown-list-body li.stream_name");
     });
 });
 
@@ -67,7 +69,7 @@ casper.then(function () {
 });
 
 casper.then(function () {
-    casper.click("#realm_signup_notifications_stream_id_widget  .dropdown_list_reset_button");
+    casper.click("#signup_notifications_stream_disable");
 });
 
 submit_notifications_stream_settings();

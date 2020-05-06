@@ -4,7 +4,7 @@ import shutil
 from boto.s3.connection import S3Connection
 from django.conf import settings
 from django.db import migrations, models
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 
 
@@ -106,6 +106,5 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             migrate_realm_emoji_image_files,
-            reverse_code=reversal,
-            elidable=True),
+            reverse_code=reversal),
     ]

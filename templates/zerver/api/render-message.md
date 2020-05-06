@@ -1,6 +1,8 @@
 # Render message
 
-{generate_api_description(/messages/render:post)}
+Render a message to HTML.
+
+`POST {{ api_url }}/v1/messages/render`
 
 ## Usage examples
 

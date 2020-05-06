@@ -29,17 +29,14 @@ from typing import Any, Dict, Optional
 import requests
 import ujson
 
-from scripts.lib.zulip_tools import BOLDRED, ENDC
-from tools.lib.test_script import prepare_puppeteer_run
 from zerver.models import UserProfile, Message, get_user_by_delivery_email, get_realm
-from zerver.lib.actions import (
-    do_create_user, notify_created_bot, bulk_add_subscriptions, do_change_avatar_fields)
-from zerver.lib.streams import create_stream_if_needed
+from zerver.lib.actions import do_create_user, notify_created_bot
 from zerver.lib.upload import upload_avatar_image
-from zerver.lib.integrations import (
-    WebhookIntegration, INTEGRATIONS, split_fixture_path, ScreenshotConfig, get_fixture_and_image_paths)
+from zerver.lib.actions import do_change_avatar_fields
+from zerver.lib.integrations import WebhookIntegration, INTEGRATIONS, split_fixture_path
 from zerver.lib.webhooks.common import get_fixture_http_headers
-from zerver.lib.storage import static_path
+from setup.generate_zulip_bots_static_files import create_png_from_svg
+from tools.lib.test_script import prepare_puppeteer_run
 
 def create_integration_bot(integration: WebhookIntegration) -> UserProfile:
     realm = get_realm('zulip')
@@ -60,18 +57,18 @@ def create_integration_bot(integration: WebhookIntegration) -> UserProfile:
         )
         notify_created_bot(bot)
 
-        bot_avatar_path = static_path(integration.DEFAULT_BOT_AVATAR_PATH.format(name=integration.name))
-        if os.path.isfile(bot_avatar_path):
-            with open(bot_avatar_path, "rb") as f:
-                upload_avatar_image(f, owner, bot)
-                do_change_avatar_fields(bot, UserProfile.AVATAR_FROM_USER)
+        if integration.logo_url is None:
+            return bot
+        logo_relative_path = integration.logo_url[len(realm.uri) + 1:]
+        logo_path = os.path.join(ROOT_DIR, logo_relative_path)
+        if logo_path.endswith(".svg"):
+            logo_path = create_png_from_svg(logo_path)
+
+        with open(logo_path, "rb") as f:
+            upload_avatar_image(f, owner, bot)
+            do_change_avatar_fields(bot, UserProfile.AVATAR_FROM_USER)
 
     return bot
-
-def create_integration_stream(integration: WebhookIntegration, bot: UserProfile) -> None:
-    assert isinstance(bot.bot_owner, UserProfile)
-    stream, created = create_stream_if_needed(bot.bot_owner.realm, integration.stream_name)
-    bulk_add_subscriptions([stream], [bot, bot.bot_owner], from_stream_creation=created)
 
 def get_integration(integration_name: str) -> WebhookIntegration:
     integration = INTEGRATIONS[integration_name]
@@ -87,6 +84,12 @@ def get_requests_headers(integration_name: str, fixture_name: str) -> Dict[str, 
 
     return {fix_name(k): v for k, v in headers.items()}
 
+def webhook_json_fixture(path: str) -> str:
+    path = os.path.abspath(path)
+    if not (os.path.exists(path) and path.endswith('.json') and 'webhooks' in path):
+        raise argparse.ArgumentTypeError('Not a valid webhook JSON fixture')
+    return path
+
 def custom_headers(headers_json: str) -> Dict[str, str]:
     if not headers_json:
         return {}
@@ -98,14 +101,13 @@ def custom_headers(headers_json: str) -> Dict[str, str]:
             'Note: all strings must be enclosed within "" instead of \'\''.format(ve))
 
 def send_bot_payload_message(bot: UserProfile, integration: WebhookIntegration, fixture_path: str,
-                             extra_headers: Optional[Dict[str, str]]) -> bool:
+                             extra_headers: Optional[Dict[str, str]]) -> None:
     # Delete all messages, so new message is the only one it's message group
     Message.objects.filter(sender=bot).delete()
 
     assert isinstance(bot.bot_owner, UserProfile)
-    stream = integration.stream_name or 'devel'
-    url = "{}/{}?api_key={}&stream={}".format(
-        bot.bot_owner.realm.uri, integration.url, bot.api_key, stream
+    url = "{}/{}?api_key={}&stream=devel".format(
+        bot.bot_owner.realm.uri, integration.url, bot.api_key
     )
     with open(fixture_path) as f:
         data = ujson.load(f)
@@ -122,40 +124,29 @@ def send_bot_payload_message(bot: UserProfile, integration: WebhookIntegration, 
     if response.status_code != 200:
         print(response.json())
         print('Failed to trigger webhook')
-        return False
-    else:
-        print('Triggered {} webhook'.format(integration.name))
-        return True
+        sys.exit(1)
+    print('Triggered {} webhook'.format(integration.name))
 
-def capture_last_message_screenshot(bot: UserProfile, image_path: str) -> None:
+def capture_last_message_screenshot(bot: UserProfile, integration: WebhookIntegration,
+                                    fixture_name: str) -> None:
     message = Message.objects.filter(sender=bot).last()
     if message is None:
-        print('No message found for {}'.format(bot.full_name))
+        print('No message found for {} integration for {}'.format(integration.name, fixture_name))
         return
     message_id = str(message.id)
     screenshot_script = os.path.join(TOOLS_DIR, 'message-screenshot.js')
-    subprocess.check_call(['node', screenshot_script, message_id, image_path])
-
-def generate_screenshot_from_config(integration_name: str, screenshot_config: ScreenshotConfig) -> None:
-    integration = get_integration(integration_name)
-    fixture_path, image_path = get_fixture_and_image_paths(integration, screenshot_config)
-    bot = create_integration_bot(integration)
-    create_integration_stream(integration, bot)
-    message_sent = send_bot_payload_message(bot, integration, fixture_path, options.custom_headers)
-    if message_sent:
-        capture_last_message_screenshot(bot, image_path)
-        print(f'Screenshot captured to: {BOLDRED}{image_path}{ENDC}')
+    subprocess.check_call(['node', screenshot_script, integration.name, message_id])
 
 parser = argparse.ArgumentParser()
-parser.add_argument('integration', type=str, help='Name of the integration')
-parser.add_argument('fixture', type=str, help='Name of the fixture file to use')
-parser.add_argument('--image-name', type=str, default='001.png', help='Name for the screenshot image')
-parser.add_argument('--image-dir', type=str, help='Directory name where to save the screenshot image')
+parser.add_argument('fixture', type=webhook_json_fixture, help='Path to the fixture to use')
 parser.add_argument('-H', '--custom-headers',
                     type=custom_headers,
                     help='Any additional headers to be sent with the request.')
-
 options = parser.parse_args()
+
 prepare_puppeteer_run()
-screenshot_config = ScreenshotConfig(options.fixture, options.image_name, options.image_dir)
-generate_screenshot_from_config(options.integration, screenshot_config)
+integration_name, fixture_name = split_fixture_path(options.fixture)
+integration = get_integration(integration_name)
+bot = create_integration_bot(integration)
+send_bot_payload_message(bot, integration, options.fixture, options.custom_headers)
+capture_last_message_screenshot(bot, integration, fixture_name)

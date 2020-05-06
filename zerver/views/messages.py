@@ -75,7 +75,7 @@ class BadNarrowOperator(JsonableError):
     data_fields = ['desc']
 
     def __init__(self, desc: str) -> None:
-        self.desc: str = desc
+        self.desc = desc  # type: str
 
     @staticmethod
     def msg_format() -> str:
@@ -590,7 +590,7 @@ def ok_to_include_history(narrow: OptionalNarrowListT, user_profile: UserProfile
     if narrow is not None:
         for term in narrow:
             if term['operator'] == "stream" and not term.get('negated', False):
-                operand: Union[str, int] = term['operand']
+                operand = term['operand']  # type: Union[str, int]
                 if isinstance(operand, str):
                     include_history = can_access_stream_history_by_name(user_profile, operand)
                 else:
@@ -739,6 +739,20 @@ def find_first_unread_anchor(sa_conn: Any,
     muting_conditions = exclude_muting_conditions(user_profile, narrow)
     if muting_conditions:
         condition = and_(condition, *muting_conditions)
+
+    # The mobile app uses narrow=[] and use_first_unread_anchor=True to
+    # determine what messages to show when you first load the app.
+    # Unfortunately, this means that if you have a years-old unread
+    # message, the mobile app could get stuck in the past.
+    #
+    # To fix this, we enforce that the "first unread anchor" must be on or
+    # after the user's current pointer location. Since the pointer
+    # location refers to the latest the user has read in the home view,
+    # we'll only apply this logic in the home view (ie, when narrow is
+    # empty).
+    if not narrow:
+        pointer_condition = inner_msg_id_col >= user_profile.pointer
+        condition = and_(condition, pointer_condition)
 
     first_unread_query = query.where(condition)
     first_unread_query = first_unread_query.order_by(inner_msg_id_col.asc()).limit(1)
@@ -912,8 +926,8 @@ def get_messages_backend(request: HttpRequest, user_profile: UserProfile,
     # rendered message dict before returning it.  We attempt to
     # bulk-fetch rendered message dicts from remote cache using the
     # 'messages' list.
-    message_ids: List[int] = []
-    user_message_flags: Dict[int, List[str]] = {}
+    message_ids = []  # type: List[int]
+    user_message_flags = {}  # type: Dict[int, List[str]]
     if include_history:
         message_ids = [row[0] for row in rows]
 
@@ -932,7 +946,7 @@ def get_messages_backend(request: HttpRequest, user_profile: UserProfile,
             user_message_flags[message_id] = UserMessage.flags_list_for_flags(flags)
             message_ids.append(message_id)
 
-    search_fields: Dict[int, Dict[str, str]] = dict()
+    search_fields = dict()  # type: Dict[int, Dict[str, str]]
     if is_search:
         for row in rows:
             message_id = row[0]
@@ -1075,8 +1089,8 @@ def post_process_limited_query(rows: List[Any],
     if anchored_to_right:
         num_after = 0
         before_rows = visible_rows[:]
-        anchor_rows: List[Any] = []
-        after_rows: List[Any] = []
+        anchor_rows = []  # type: List[Any]
+        after_rows = []  # type: List[Any]
     else:
         before_rows = [r for r in visible_rows if r[0] < anchor]
         anchor_rows = [r for r in visible_rows if r[0] == anchor]
@@ -1286,7 +1300,7 @@ def handle_deferred_message(sender: UserProfile, client: Client,
     if deliver_at_usertz.tzinfo is None:
         user_tz = get_timezone(local_tz)
         # Since mypy is not able to recognize localize and normalize as attributes of tzinfo we use ignore.
-        deliver_at_usertz = user_tz.normalize(user_tz.localize(deliver_at))  # type: ignore[attr-defined] # Reason in comment on previous line.
+        deliver_at_usertz = user_tz.normalize(user_tz.localize(deliver_at))  # type: ignore # Reason in comment on previous line.
     deliver_at = convert_to_UTC(deliver_at_usertz)
 
     if deliver_at <= timezone_now():
@@ -1325,7 +1339,7 @@ def send_message_backend(request: HttpRequest, user_profile: UserProfile,
 
     # If req_to is None, then we default to an
     # empty list of recipients.
-    message_to: Union[Sequence[int], Sequence[str]] = []
+    message_to = []  # type: Union[Sequence[int], Sequence[str]]
 
     if req_to is not None:
         if message_type_name == 'stream':
@@ -1551,10 +1565,10 @@ def update_message_backend(request: HttpRequest, user_profile: UserMessage,
         if topic_name == "":
             raise JsonableError(_("Topic can't be empty"))
     rendered_content = None
-    links_for_embed: Set[str] = set()
-    prior_mention_user_ids: Set[int] = set()
-    mention_user_ids: Set[int] = set()
-    mention_data: Optional[bugdown.MentionData] = None
+    links_for_embed = set()  # type: Set[str]
+    prior_mention_user_ids = set()  # type: Set[int]
+    mention_user_ids = set()  # type: Set[int]
+    mention_data = None  # type: Optional[bugdown.MentionData]
     if content is not None:
         content = content.strip()
         if content == "":
@@ -1608,7 +1622,7 @@ def update_message_backend(request: HttpRequest, user_profile: UserMessage,
 
     # Include the number of messages changed in the logs
     request._log_data['extra'] = "[%s]" % (number_changed,)
-    if links_for_embed:
+    if links_for_embed and bugdown.url_embed_preview_enabled(message):
         event_data = {
             'message_id': message.id,
             'message_content': message.content,

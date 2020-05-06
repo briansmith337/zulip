@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import migrations
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 
 # Imported to avoid needing to duplicate redis-related code.
@@ -91,7 +91,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(move_missed_message_addresses_to_database,
-                             reverse_code=migrations.RunPython.noop,
-                             elidable=True),
+        migrations.RunPython(move_missed_message_addresses_to_database, reverse_code=migrations.RunPython.noop),
     ]

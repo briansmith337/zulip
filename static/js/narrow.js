@@ -311,11 +311,7 @@ exports.activate = function (raw_operators, opts) {
     }
 
     // Put the narrow operators in the search bar.
-    // we append a space to make searching more convenient in some cases.
-    if (filter && !filter.is_search()) {
-        $('#search_query').val(Filter.unparse(operators) + " ");
-    }
-
+    $('#search_query').val(Filter.unparse(operators));
     search.update_button_visibility();
 
     compose_actions.on_narrow(opts);
@@ -329,7 +325,6 @@ exports.activate = function (raw_operators, opts) {
 
     msg_list.initial_core_time = new Date();
     setTimeout(function () {
-        resize.resize_stream_filters_container();
         msg_list.initial_free_time = new Date();
         maybe_report_narrow_time(msg_list);
     }, 0);
@@ -823,7 +818,6 @@ exports.deactivate = function () {
 
     unnarrow_times.initial_core_time = new Date();
     setTimeout(function () {
-        resize.resize_stream_filters_container();
         unnarrow_times.initial_free_time = new Date();
         report_unnarrow_time();
     });

@@ -59,7 +59,7 @@ from zerver.models import (
     get_default_stream_groups, CustomProfileField, Stream
 )
 from zproject.backends import email_auth_enabled, password_auth_enabled
-from version import ZULIP_VERSION, API_FEATURE_LEVEL
+from version import ZULIP_VERSION
 from zerver.lib.external_accounts import DEFAULT_EXTERNAL_ACCOUNTS
 
 def add_realm_logo_fields(state: Dict[str, Any], realm: Realm) -> None:
@@ -88,18 +88,14 @@ def fetch_initial_state_data(user_profile: UserProfile,
                              queue_id: str, client_gravatar: bool,
                              slim_presence: bool = False,
                              include_subscribers: bool = True) -> Dict[str, Any]:
-    state: Dict[str, Any] = {'queue_id': queue_id}
+    state = {'queue_id': queue_id}  # type: Dict[str, Any]
     realm = user_profile.realm
 
     if event_types is None:
         # return True always
-        want: Callable[[str], bool] = always_want
+        want = always_want  # type: Callable[[str], bool]
     else:
         want = set(event_types).__contains__
-
-    # Show the version info unconditionally.
-    state['zulip_version'] = ZULIP_VERSION
-    state['zulip_feature_level'] = API_FEATURE_LEVEL
 
     if want('alert_words'):
         state['alert_words'] = user_alert_words(user_profile)
@@ -313,6 +309,9 @@ def fetch_initial_state_data(user_profile: UserProfile,
 
     if want('user_status'):
         state['user_status'] = get_user_info_dict(realm_id=realm.id)
+
+    if want('zulip_version'):
+        state['zulip_version'] = ZULIP_VERSION
 
     return state
 
@@ -529,22 +528,14 @@ def apply_event(state: Dict[str, Any],
                 state['plan_includes_wide_organization_logo'] = event['value'] != Realm.LIMITED
                 state['realm_upload_quota'] = event['extra_data']['upload_quota']
 
-            policy_permission_dict = {'create_stream_policy': 'can_create_streams',
-                                      'invite_to_stream_policy': 'can_subscribe_other_users'}
+            # Tricky interaction: Whether we can create streams can get changed here.
+            if (field in ['realm_create_stream_policy',
+                          'realm_waiting_period_threshold']) and 'can_create_streams' in state:
+                state['can_create_streams'] = user_profile.can_create_streams()
 
-            # Tricky interaction: Whether we can create streams and can subscribe other users
-            # can get changed here.
-
-            if field == 'realm_waiting_period_threshold':
-                for policy, permission in policy_permission_dict.items():
-                    if permission in state:
-                        state[permission] = user_profile.has_permission(policy)
-
-            if event['property'] in policy_permission_dict.keys():
-                if policy_permission_dict[event['property']] in state:
-                    state[policy_permission_dict[event['property']]] = user_profile.has_permission(
-                        event['property'])
-
+            if (field in ['realm_invite_to_stream_policy',
+                          'realm_waiting_period_threshold']) and 'can_subscribe_other_users' in state:
+                state['can_subscribe_other_users'] = user_profile.can_subscribe_other_users()
         elif event['op'] == "update_dict":
             for key, value in event['data'].items():
                 state['realm_' + key] = value
@@ -811,7 +802,7 @@ def do_events_register(user_profile: UserProfile, user_client: Client,
         raise JsonableError(_("Could not allocate event queue"))
 
     if fetch_event_types is not None:
-        event_types_set: Optional[Set[str]] = set(fetch_event_types)
+        event_types_set = set(fetch_event_types)  # type: Optional[Set[str]]
     elif event_types is not None:
         event_types_set = set(event_types)
     else:

@@ -28,7 +28,7 @@ class CreateCustomProfileFieldTest(CustomProfileFieldTestCase):
     def test_create(self) -> None:
         self.login('iago')
         realm = get_realm('zulip')
-        data: Dict[str, Any] = {"name": "Phone", "field_type": "text id"}
+        data = {"name": "Phone", "field_type": "text id"}  # type: Dict[str, Any]
         result = self.client_post("/json/realm/profile_fields", info=data)
         self.assert_json_error(result, 'Argument "field_type" is not valid JSON.')
 
@@ -68,7 +68,7 @@ class CreateCustomProfileFieldTest(CustomProfileFieldTestCase):
 
     def test_create_choice_field(self) -> None:
         self.login('iago')
-        data: Dict[str, Union[str, int]] = {}
+        data = {}  # type: Dict[str, Union[str, int]]
         data["name"] = "Favorite programming language"
         data["field_type"] = CustomProfileField.CHOICE
 
@@ -126,12 +126,12 @@ class CreateCustomProfileFieldTest(CustomProfileFieldTestCase):
     def test_create_default_external_account_field(self) -> None:
         self.login('iago')
         realm = get_realm("zulip")
-        field_type: int = CustomProfileField.EXTERNAL_ACCOUNT
-        field_data: str = ujson.dumps({
+        field_type = CustomProfileField.EXTERNAL_ACCOUNT  # type: int
+        field_data = ujson.dumps({
             'subtype': 'twitter'
-        })
-        invalid_field_name: str = "Not required field name"
-        invalid_field_hint: str = "Not required field hint"
+        })  # type: str
+        invalid_field_name = "Not required field name"  # type: str
+        invalid_field_hint = "Not required field hint"  # type: str
 
         result = self.client_post("/json/realm/profile_fields",
                                   info=dict(
@@ -173,7 +173,7 @@ class CreateCustomProfileFieldTest(CustomProfileFieldTestCase):
     def test_create_external_account_field(self) -> None:
         self.login('iago')
         realm = get_realm('zulip')
-        data: Dict[str, Union[str, int, Dict[str, str]]] = {}
+        data = {}  # type: Dict[str, Union[str, int, Dict[str, str]]]
         data["name"] = "Twitter"
         data["field_type"] = CustomProfileField.EXTERNAL_ACCOUNT
 
@@ -309,9 +309,8 @@ class DeleteCustomProfileFieldTest(CustomProfileFieldTestCase):
                                'Field id %d not found.' % (invalid_field_id,))
 
         field = CustomProfileField.objects.get(name="Mentor", realm=realm)
-        data: List[Dict[str, Union[int, str, List[int]]]] = [
-            {'id': field.id, 'value': [self.example_user("aaron").id]},
-        ]
+        data = [{'id': field.id,
+                 'value': [self.example_user("aaron").id]}]  # type: List[Dict[str, Union[int, str, List[int]]]]
         do_update_user_custom_profile_data_if_changed(iago, data)
 
         iago_value = CustomProfileFieldValue.objects.get(user_profile=iago, field=field)
@@ -333,9 +332,7 @@ class DeleteCustomProfileFieldTest(CustomProfileFieldTestCase):
         user_profile = self.example_user('iago')
         realm = user_profile.realm
         field = CustomProfileField.objects.get(name="Phone number", realm=realm)
-        data: List[Dict[str, Union[int, str, List[int]]]] = [
-            {'id': field.id, 'value': '123456'},
-        ]
+        data = [{'id': field.id, 'value': '123456'}]  # type: List[Dict[str, Union[int, str, List[int]]]]
         do_update_user_custom_profile_data_if_changed(user_profile, data)
 
         self.assertTrue(self.custom_field_exists_in_realm(field.id))
@@ -524,7 +521,7 @@ class UpdateCustomProfileFieldTest(CustomProfileFieldTestCase):
 
         iago = self.example_user('iago')
         expected_value = {f['id']: f['value'] for f in data}
-        expected_rendered_value: Dict[Union[int, float, str, None], Union[str, None]] = {}
+        expected_rendered_value = {}  # type: Dict[Union[int, float, str, None], Union[str, None]]
         for f in data:
             if f['field'].is_renderable():
                 expected_rendered_value[f['id']] = bugdown_convert(f['value'])
@@ -607,9 +604,8 @@ class UpdateCustomProfileFieldTest(CustomProfileFieldTestCase):
 
         # Set field value:
         field = CustomProfileField.objects.get(name="Mentor", realm=realm)
-        data: List[Dict[str, Union[int, str, List[int]]]] = [
-            {'id': field.id, 'value': [self.example_user("aaron").id]}
-        ]
+        data = [{'id': field.id,
+                 'value': [self.example_user("aaron").id]}]  # type: List[Dict[str, Union[int, str, List[int]]]]
         do_update_user_custom_profile_data_if_changed(iago, data)
 
         with mock.patch("zerver.lib.actions.notify_user_update_custom_profile_data") as mock_notify:

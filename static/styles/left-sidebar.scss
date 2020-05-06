@@ -16,11 +16,6 @@ div#add-stream-link a {
     display: none;
 }
 
-#left-sidebar #user-list,
-#left-sidebar #group-pm-list {
-    padding-left: 10px;
-}
-
 .hashtag {
     &:empty {
         &::after {
@@ -60,6 +55,11 @@ li.show-more-topics {
     }
 }
 
+#left-sidebar #user-list,
+#left-sidebar #group-pm-list {
+    padding-left: 10px;
+}
+
 #streams_inline_cog,
 #streams_filter_icon {
     float: right;
@@ -67,11 +67,16 @@ li.show-more-topics {
     font-size: 13px;
     margin-top: 3px;
     margin-left: 10px;
+}
 
-    &:hover {
-        opacity: 1;
-        cursor: pointer;
-    }
+#streams_inline_cog:hover,
+#streams_filter_icon:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+#streams_header {
+    margin-top: 3px;
 }
 
 #streams_inline_cog {
@@ -301,42 +306,36 @@ li.top_left_starred_messages {
     line-height: 1.1;
 }
 
+.all-messages-arrow i,
+.stream-sidebar-arrow i,
+.starred-messages-sidebar-arrow i,
+.topic-sidebar-arrow i {
+    padding-right: 0.25em;
+    display: inline-block;
+    width: 13px;
+}
+
 /*
     All of our left sidebar handlers use absolute
     positioning.  We should fix that.
 */
-.all-messages-sidebar-menu-icon,
-.stream-sidebar-menu-icon,
-.starred-messages-sidebar-menu-icon,
-.topic-sidebar-menu-icon {
+.all-messages-arrow,
+.stream-sidebar-arrow,
+.starred-messages-sidebar-arrow,
+.topic-sidebar-arrow {
     position: absolute;
     display: none;
-    right: 10px;
-
-    i {
-        padding-right: 0.25em;
-        display: inline-block;
-        width: 13px;
-    }
-
-    /*
-        If you hover directly over the chevron itself,
-        show it in black.
-    */
-
-    &:hover {
-        color: hsl(0, 0%, 0%) !important;
-    }
 }
 
 /*
     The All Messages and Stream chevrons are
     pretty similar.
 */
-.all-messages-sidebar-menu-icon,
-.starred-messages-sidebar-menu-icon,
-.stream-sidebar-menu-icon {
+.all-messages-arrow,
+.starred-messages-sidebar-arrow,
+.stream-sidebar-arrow {
     top: 3px;
+    right: 10px;
     font-size: 0.8em;
 }
 
@@ -345,8 +344,9 @@ li.top_left_starred_messages {
     font to show they're "lower" in the hierarchy,
     which also affects it positioning.
 */
-.topic-sidebar-menu-icon {
+.topic-sidebar-arrow {
     top: 1px;
+    right: 10px;
     font-size: 0.7em;
 }
 
@@ -354,13 +354,24 @@ li.top_left_starred_messages {
     When you hover over list items, we hover
     the relevant chevrons in light gray.
 */
-li.top_left_all_messages:hover .all-messages-sidebar-menu-icon,
-li.top_left_starred_messages:hover .starred-messages-sidebar-menu-icon,
-#stream_filters li:hover .stream-sidebar-menu-icon,
-li.topic-list-item:hover .topic-sidebar-menu-icon {
+li.top_left_all_messages:hover .all-messages-arrow,
+li.top_left_starred_messages:hover .starred-messages-sidebar-arrow,
+#stream_filters li:hover .stream-sidebar-arrow,
+li.topic-list-item:hover .topic-sidebar-arrow {
     display: inline;
     cursor: pointer;
     color: hsl(0, 0%, 53%);
+}
+
+/*
+    If you hover directly over the chevron itself,
+    show it in black.
+*/
+.starred-messages-sidebar-arrow:hover,
+.all-messages-arrow:hover,
+.stream-sidebar-arrow:hover,
+.topic-sidebar-arrow:hover {
+    color: hsl(0, 0%, 0%) !important;
 }
 
 ul.filters li.muted_topic,
@@ -434,20 +445,14 @@ li.expanded_private_message {
     position: relative;
     padding-top: 1px;
     padding-bottom: 1px;
-
-    a {
-        margin: 1px 0px;
-    }
 }
 
-.show-all-streams {
-    a {
-        color: hsl(0, 0%, 20%);
-    }
+li.expanded_private_message a {
+    margin: 1px 0px;
+}
 
-    .fa-chevron-left {
-        text-decoration: none;
-    }
+.show-all-streams a {
+    color: hsl(0, 0%, 20%);
 }
 
 .pm-box,
@@ -461,16 +466,16 @@ li.expanded_private_message {
 .pm-box {
     margin-right: 20px;
     align-items: center;
+}
 
-    .user_circle {
-        min-width: 8px;
-        height: 8px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        margin-left: 2px;
-        position: relative;
-        top: 0px;
-    }
+.pm-box .user_circle {
+    min-width: 8px;
+    height: 8px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 2px;
+    position: relative;
+    top: 0px;
 }
 
 .zero-pm-unreads .pm-box,
@@ -512,7 +517,6 @@ li.expanded_private_message {
     margin-right: 0px;
     padding-left: $far_left_gutter_size;
     cursor: pointer;
-    margin-top: 3px;
 }
 
 #stream_filters .inactive_stream {
@@ -535,6 +539,10 @@ li.expanded_private_message {
     .zoom-in-hide {
         display: none;
     }
+}
+
+.show-all-streams .fa-chevron-left {
+    text-decoration: none;
 }
 
 li.top_left_all_messages a,

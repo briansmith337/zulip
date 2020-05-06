@@ -1,6 +1,8 @@
 # Mark all messages as read
 
-{generate_api_description(/mark_all_as_read:post)}
+Marks all of the current user's unread messages as read.
+
+`POST {{ api_url }}/v1/mark_all_as_read`
 
 ## Usage examples
 

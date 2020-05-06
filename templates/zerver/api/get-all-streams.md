@@ -1,6 +1,8 @@
 # Get all streams
 
-{generate_api_description(/streams:get)}
+Get all streams that the user has access to.
+
+`GET {{ api_url }}/v1/streams`
 
 ## Usage examples
 

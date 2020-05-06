@@ -414,12 +414,11 @@ exports.slash_commands = [
     },
 ];
 
-exports.filter_and_sort_mentions = function (is_silent, query, opts) {
-    opts = {
+exports.filter_and_sort_mentions = function (is_silent, query) {
+    const opts = {
         want_broadcast: !is_silent,
         want_groups: !is_silent,
         filter_pills: false,
-        ...opts,
     };
     return exports.get_person_suggestions(query, opts);
 };
@@ -494,7 +493,7 @@ exports.get_person_suggestions = function (query, opts) {
     const cutoff_length = exports.max_num_items;
 
     const filtered_message_persons = filter_persons(
-        people.get_active_message_people()
+        people.get_message_people()
     );
 
     let filtered_persons;
@@ -510,28 +509,11 @@ exports.get_person_suggestions = function (query, opts) {
     return typeahead_helper.sort_recipients(
         filtered_persons,
         query,
-        opts.stream,
-        opts.topic,
+        compose_state.stream_name(),
+        compose_state.topic(),
         filtered_groups,
         exports.max_num_items
     );
-};
-
-exports.get_stream_topic_data = (hacky_this) => {
-    const opts = {};
-    const message_row = hacky_this.$element.closest(".message_row");
-    if (message_row.length === 1) {
-        // we are editting a message so we try to use it's keys.
-        const msg = message_store.get(rows.id(message_row));
-        if (msg.type === 'stream') {
-            opts.stream = msg.stream;
-            opts.topic = msg.topic;
-        }
-    } else {
-        opts.stream = compose_state.stream_name();
-        opts.topic = compose_state.topic();
-    }
-    return opts;
 };
 
 exports.get_sorted_filtered_items = function (query) {
@@ -571,11 +553,9 @@ exports.get_sorted_filtered_items = function (query) {
     const completing = hacky_this.completing;
     const token = hacky_this.token;
 
-    const opts = exports.get_stream_topic_data(hacky_this);
-
     if (completing === 'mention' || completing === 'silent_mention') {
         return exports.filter_and_sort_mentions(
-            big_results.is_silent, token, opts);
+            big_results.is_silent, token);
     }
 
     return exports.filter_and_sort_candidates(completing, big_results, token);
@@ -916,9 +896,6 @@ function get_header_text() {
     switch (this.completing) {
     case 'stream':
         tip_text = i18n.t('Press > for list of topics');
-        break;
-    case 'silent_mention':
-        tip_text = i18n.t('User will not be notified');
         break;
     default:
         return false;

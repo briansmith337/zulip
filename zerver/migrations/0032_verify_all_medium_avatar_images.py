@@ -3,7 +3,7 @@ from typing import Text
 
 from django.conf import settings
 from django.db import migrations
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 from mock import patch
 
@@ -37,5 +37,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(verify_medium_avatar_image, elidable=True)
+        migrations.RunPython(verify_medium_avatar_image)
     ]

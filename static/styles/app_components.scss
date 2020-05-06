@@ -257,10 +257,6 @@
             }
         }
     }
-
-    .stream_sorter_toggle {
-        margin-left: auto;
-    }
 }
 
 /* -- unified overlay design component -- */
@@ -268,8 +264,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 

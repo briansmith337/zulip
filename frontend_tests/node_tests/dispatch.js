@@ -190,7 +190,6 @@ const event_fixtures = {
         op: 'add',
         message_id: 128,
         emoji_name: 'anguished_pig',
-        user_id: "1",
         user: {
             id: "1",
         },
@@ -201,7 +200,6 @@ const event_fixtures = {
         op: 'remove',
         message_id: 256,
         emoji_name: 'angery',
-        user_id: "1",
         user: {
             id: "1",
         },
@@ -284,13 +282,6 @@ const event_fixtures = {
         op: 'update',
         property: 'signup_notifications_stream_id',
         value: 41,
-    },
-
-    realm__update_default_code_block_language: {
-        type: 'realm',
-        op: 'update',
-        property: 'default_code_block_language',
-        value: 'javascript',
     },
 
     realm__update_dict__default: {
@@ -982,30 +973,21 @@ with_overrides(function (override) {
     event = event_fixtures.realm__update__disallow_disposable_email_addresses;
     test_realm_boolean(event, 'realm_disallow_disposable_email_addresses');
 
-    event = event_fixtures.realm__update_default_twenty_four_hour_time;
-    test_realm_boolean(event, 'realm_default_twenty_four_hour_time');
-
     event = event_fixtures.realm__update__email_addresses_visibility;
     override('stream_ui_updates.update_subscribers_list', noop);
     dispatch(event);
     assert_same(page_params.realm_email_address_visibility, 3);
 
     event = event_fixtures.realm__update_notifications_stream_id;
-    override('settings_org.notifications_stream_widget', { render: noop });
+    override('settings_org.render_notifications_stream_ui', noop);
     dispatch(event);
     assert_same(page_params.realm_notifications_stream_id, 42);
     page_params.realm_notifications_stream_id = -1;  // make sure to reset for future tests
 
     event = event_fixtures.realm__update_signup_notifications_stream_id;
-    override('settings_org.signup_notifications_stream_widget', { render: noop });
     dispatch(event);
     assert_same(page_params.realm_signup_notifications_stream_id, 41);
     page_params.realm_signup_notifications_stream_id = -1; // make sure to reset for future tests
-
-    event = event_fixtures.realm__update_default_code_block_language;
-    override('settings_org.default_code_language_widget', { render: noop });
-    dispatch(event);
-    assert_same(page_params.realm_default_code_block_language, 'javascript');
 
     event = event_fixtures.realm__update_dict__default;
     page_params.realm_allow_message_editing = false;

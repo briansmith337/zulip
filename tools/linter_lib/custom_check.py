@@ -51,7 +51,7 @@ FILES_WITH_LEGACY_SUBJECT = {
     'zerver/tests/test_narrow.py',
 }
 
-shebang_rules: List["Rule"] = [
+shebang_rules = [
     {'pattern': '^#!',
      'description': "zerver library code shouldn't have a shebang line.",
      'include_only': {'zerver/'}},
@@ -63,14 +63,14 @@ shebang_rules: List["Rule"] = [
      " for interpreters other than sh."},
     {'pattern': '^#!/usr/bin/env python$',
      'description': "Use `#!/usr/bin/env python3` instead of `#!/usr/bin/env python`."}
-]
+]  # type: List[Rule]
 
-trailing_whitespace_rule: "Rule" = {
+trailing_whitespace_rule = {
     'pattern': r'\s+$',
     'strip': '\n',
     'description': 'Fix trailing whitespace'
-}
-whitespace_rules: List["Rule"] = [
+}  # type: Rule
+whitespace_rules = [
     # This linter should be first since bash_rules depends on it.
     trailing_whitespace_rule,
     {'pattern': 'http://zulip.readthedocs.io',
@@ -80,14 +80,14 @@ whitespace_rules: List["Rule"] = [
      'strip': '\n',
      'exclude': {'tools/ci/success-http-headers.txt'},
      'description': 'Fix tab-based whitespace'},
-]
-comma_whitespace_rule: List["Rule"] = [
+]  # type: List[Rule]
+comma_whitespace_rule = [
     {'pattern': ', {2,}[^#/ ]',
      'exclude': {'zerver/tests', 'frontend_tests/node_tests', 'corporate/tests'},
      'description': "Remove multiple whitespaces after ','",
      'good_lines': ['foo(1, 2, 3)', 'foo = bar  # some inline comment'],
      'bad_lines': ['foo(1,  2, 3)', 'foo(1,    2, 3)']},
-]
+]  # type: List[Rule]
 markdown_whitespace_rules = list([rule for rule in whitespace_rules if rule['pattern'] != r'\s+$']) + [
     # Two spaces trailing a line with other content is okay--it's a markdown line break.
     # This rule finds one space trailing a non-space, three or more trailing spaces, and
@@ -274,15 +274,13 @@ python_rules = RuleList(
          'description': 'Missing whitespace after ":" in type annotation',
          'good_lines': ['# type: (Any, Any)', 'colon:separated:string:containing:type:as:keyword'],
          'bad_lines': ['# type:(Any, Any)']},
-        {'pattern': r"type: ignore(?!\[[^][]+\] +# +\S)",
+        {'pattern': "type: ignore$",
          'exclude': {'tools/tests',
                      'zerver/lib/test_runner.py',
                      'zerver/tests'},
-         'description': '"type: ignore" should always end with "# type: ignore[code] # explanation for why"',
-         'good_lines': ['foo = bar  # type: ignore[code] # explanation'],
-         'bad_lines': ['foo = bar  # type: ignore',
-                       'foo = bar  # type: ignore[code]',
-                       'foo = bar  # type: ignore # explanation']},
+         'description': '"type: ignore" should always end with "# type: ignore # explanation for why"',
+         'good_lines': ['foo = bar  # type: ignore # explanation'],
+         'bad_lines': ['foo = bar  # type: ignore']},
         {'pattern': "# type [(]",
          'description': 'Missing : after type in type annotation',
          'good_lines': ['foo = 42  # type: int', '# type: (str, int) -> None'],
@@ -390,6 +388,23 @@ python_rules = RuleList(
          },
          'description': 'Please use access_stream_by_*() to fetch Stream objects',
          },
+        {'pattern': 'Stream.objects.filter',
+         'include_only': {"zerver/views/"},
+         'description': 'Please use access_stream_by_*() to fetch Stream objects',
+         },
+        {'pattern': '^from (zerver|analytics|confirmation)',
+         'include_only': {"/migrations/"},
+         'exclude': {
+             'zerver/migrations/0032_verify_all_medium_avatar_images.py',
+             'zerver/migrations/0060_move_avatars_to_be_uid_based.py',
+             'zerver/migrations/0104_fix_unreads.py',
+             'zerver/migrations/0206_stream_rendered_description.py',
+             'zerver/migrations/0209_user_profile_no_empty_password.py',
+             'zerver/migrations/0260_missed_message_addresses_from_redis_to_db.py',
+             'pgroonga/migrations/0002_html_escape_subject.py',
+         },
+         'description': "Don't import models or other code in migrations; see docs/subsystems/schema-migrations.md",
+         },
         {'pattern': 'datetime[.](now|utcnow)',
          'include_only': {"zerver/", "analytics/"},
          'description': "Don't use datetime in backend code.\n"
@@ -412,6 +427,18 @@ python_rules = RuleList(
          'bad_lines': ['if my_django_model.pk == 42']},
         {'pattern': r'^[ ]*# type: \(',
          'exclude': {
+             # These directories, especially scripts/ and puppet/,
+             # have tools that need to run before a Zulip environment
+             # is provisioned; in some of those, the `typing` module
+             # might not be available yet, so care is required.
+             'scripts/',
+             'tools/',
+             'puppet/',
+             # Zerver files that we should just clean.
+             'zerver/tests',
+             'zerver/openapi/python_examples.py',
+             'zerver/lib/request.py',
+             'zerver/views/streams.py',
              # thumbor is (currently) python2 only
              'zthumbor/',
          },
@@ -427,7 +454,7 @@ python_rules = RuleList(
          'bad_lines': ['desc = models.CharField(null=True)  # type: Text',
                        'stream = models.ForeignKey(Stream, null=True, on_delete=CASCADE)  # type: Stream'],
          },
-        {'pattern': r' = models[.].*  # type: Optional',  # Optional tag
+        {'pattern': r' = models[.](?!NullBoolean).*\)  # type: Optional',  # Optional tag, except NullBoolean(Field)
          'exclude_pattern': 'null=True',
          'include_only': {"zerver/models.py"},
          'description': 'Model variable annotated with Optional but variable does not have null=true.',
@@ -542,7 +569,7 @@ css_rules = RuleList(
     ],
 )
 
-prose_style_rules: List["Rule"] = [
+prose_style_rules = [
     {'pattern': r'[^\/\#\-"]([jJ]avascript)',  # exclude usage in hrefs/divs
      'exclude': {"docs/documentation/api.md"},
      'description': "javascript should be spelled JavaScript"},
@@ -558,8 +585,8 @@ prose_style_rules: List["Rule"] = [
     {'pattern': '[^-_p]botserver(?!rc)|bot server',
      'description': "Use Botserver instead of botserver or bot server."},
     *comma_whitespace_rule,
-]
-html_rules: List["Rule"] = whitespace_rules + prose_style_rules + [
+]  # type: List[Rule]
+html_rules = whitespace_rules + prose_style_rules + [
     {'pattern': 'subject|SUBJECT',
      'exclude': {'templates/zerver/email.html'},
      'exclude_pattern': 'email subject',
@@ -685,7 +712,7 @@ html_rules: List["Rule"] = whitespace_rules + prose_style_rules + [
      },
      'good_lines': ['#my-style {color: blue;}', 'style="display: none"', "style='display: none"],
      'bad_lines': ['<p style="color: blue;">Foo</p>', 'style = "color: blue;"']},
-]
+]  # type: List[Rule]
 
 handlebars_rules = RuleList(
     langs=['hbs'],

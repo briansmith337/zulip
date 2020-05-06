@@ -4,7 +4,7 @@ import sys
 
 import bitfield.models
 from django.db import migrations
-from django.db.backends.postgresql.schema import DatabaseSchemaEditor
+from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 from django.db.models import F
 
@@ -72,6 +72,5 @@ class Migration(migrations.Migration):
             reverse_sql='DROP INDEX zerver_usermessage_is_private_message_id;'
         ),
         migrations.RunPython(reset_is_private_flag,
-                             reverse_code=migrations.RunPython.noop,
-                             elidable=True),
+                             reverse_code=migrations.RunPython.noop),
     ]

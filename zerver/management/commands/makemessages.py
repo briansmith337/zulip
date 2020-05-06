@@ -48,8 +48,6 @@ strip_whitespace_left = re.compile("\\s+(%s-\\s*(endtrans|pluralize).*?-?%s)" % 
 regexes = [r'{{#tr .*?}}([\s\S]*?){{/tr}}',  # '.' doesn't match '\n' by default
            r'{{\s*t "(.*?)"\W*}}',
            r"{{\s*t '(.*?)'\W*}}",
-           r'=\(t "(.*?)"\)(?=[^{]*}})',
-           r"=\(t '(.*?)'\)(?=[^{]*}})",
            r"i18n\.t\('([^']*?)'\)",
            r"i18n\.t\('(.*?)',\s*.*?[^,]\)",
            r'i18n\.t\("([^"]*?)"\)',
@@ -142,7 +140,7 @@ class Command(makemessages.Command):
             template.constant_re = old_constant_re
 
     def extract_strings(self, data: str) -> List[str]:
-        translation_strings: List[str] = []
+        translation_strings = []  # type: List[str]
         for regex in frontend_compiled_regexes:
             for match in regex.findall(data):
                 match = match.strip()
@@ -160,7 +158,7 @@ class Command(makemessages.Command):
         return data
 
     def get_translation_strings(self) -> List[str]:
-        translation_strings: List[str] = []
+        translation_strings = []  # type: List[str]
         dirname = self.get_template_dir()
 
         for dirpath, dirnames, filenames in os.walk(dirname):

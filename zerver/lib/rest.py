@@ -57,7 +57,7 @@ def rest_dispatch(request: HttpRequest, **kwargs: Any) -> HttpResponse:
     Never make a urls.py pattern put user input into a variable called GET, POST,
     etc, as that is where we route HTTP verbs to target functions.
     """
-    supported_methods: Dict[str, Any] = {}
+    supported_methods = {}  # type: Dict[str, Any]
 
     if hasattr(request, "saved_response"):
         # For completing long-polled Tornado requests, we skip the
@@ -137,7 +137,7 @@ def rest_dispatch(request: HttpRequest, **kwargs: Any) -> HttpResponse:
             view_kwargs = {}
             if 'allow_incoming_webhooks' in view_flags:
                 view_kwargs['is_webhook'] = True
-            target_function = authenticated_rest_api_view(**view_kwargs)(target_function)  # type: ignore[arg-type] # likely mypy bug
+            target_function = authenticated_rest_api_view(**view_kwargs)(target_function)  # type: ignore # likely mypy bug
         # Pick a way to tell user they're not authed based on how the request was made
         else:
             # If this looks like a request from a top-level page in a

@@ -50,7 +50,6 @@ function populate_invites(invites_data) {
         name: 'admin_invites_list',
         modifier: function (item) {
             item.invited_absolute_time = timerender.absolute_time(item.invited * 1000);
-            item.is_admin = page_params.is_admin;
             return render_admin_invites_list({ invite: item });
         },
         filter: {

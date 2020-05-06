@@ -1,6 +1,12 @@
 # Add subscriptions
 
-{generate_api_description(/users/me/subscriptions:post)}
+Subscribe one or more users to one or more streams.
+
+`POST {{ api_url }}/v1/users/me/subscriptions`
+
+If any of the specified streams do not exist, they are automatically
+created, and configured using the `invite_only` setting specified in
+the arguments (see below).
 
 ## Usage examples
 

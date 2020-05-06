@@ -1,6 +1,10 @@
 # Create linkifiers
 
-{generate_api_description(/realm/filters:post)}
+Configure [linkifiers](/help/add-a-custom-linkification-filter),
+regular expression patterns that are automatically linkified when they
+appear in messages and topics.
+
+`POST {{ api_url }}/v1/realm/filters`
 
 ## Usage examples
 

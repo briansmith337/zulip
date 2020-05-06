@@ -96,11 +96,11 @@ class UploadSerializeMixin(SerializeMixin):
 
 class ZulipTestCase(TestCase):
     # Ensure that the test system just shows us diffs
-    maxDiff: Optional[int] = None
+    maxDiff = None  # type: Optional[int]
 
     def setUp(self) -> None:
         super().setUp()
-        self.API_KEYS: Dict[str, str] = {}
+        self.API_KEYS = {}  # type: Dict[str, str]
 
     def tearDown(self) -> None:
         super().tearDown()
@@ -868,7 +868,7 @@ class ZulipTestCase(TestCase):
         if binary:
             with open(attr_value, "rb") as f:
                 # attr_value should be a path to the file with the binary data
-                data: Union[str, bytes] = f.read()
+                data = f.read()  # type: Union[str, bytes]
         else:
             data = attr_value
 
@@ -893,10 +893,10 @@ class WebhookTestCase(ZulipTestCase):
     If you create your url in uncommon way you can override build_webhook_url method
     In case that you need modify body or create it without using fixture you can also override get_body method
     """
-    STREAM_NAME: Optional[str] = None
+    STREAM_NAME = None  # type: Optional[str]
     TEST_USER_EMAIL = 'webhook-bot@zulip.com'
-    URL_TEMPLATE: Optional[str] = None
-    FIXTURE_DIR_NAME: Optional[str] = None
+    URL_TEMPLATE = None  # type: Optional[str]
+    FIXTURE_DIR_NAME = None  # type: Optional[str]
 
     @property
     def test_user(self) -> UserProfile:
@@ -989,14 +989,14 @@ class MigrationsTestCase(ZulipTestCase):  # nocoverage
     def app(self) -> str:
         return apps.get_containing_app_config(type(self).__module__).name
 
-    migrate_from: Optional[str] = None
-    migrate_to: Optional[str] = None
+    migrate_from = None  # type: Optional[str]
+    migrate_to = None  # type: Optional[str]
 
     def setUp(self) -> None:
         assert self.migrate_from and self.migrate_to, \
             "TestCase '{}' must define migrate_from and migrate_to properties".format(type(self).__name__)
-        migrate_from: List[Tuple[str, str]] = [(self.app, self.migrate_from)]
-        migrate_to: List[Tuple[str, str]] = [(self.app, self.migrate_to)]
+        migrate_from = [(self.app, self.migrate_from)]  # type: List[Tuple[str, str]]
+        migrate_to = [(self.app, self.migrate_to)]  # type: List[Tuple[str, str]]
         executor = MigrationExecutor(connection)
         old_apps = executor.loader.project_state(migrate_from).apps
 

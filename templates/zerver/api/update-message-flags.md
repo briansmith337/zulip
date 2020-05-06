@@ -1,6 +1,12 @@
 # Update a message's flags
 
-{generate_api_description(/messages/flags:post)}
+Add or remove flags in a list of messages.
+
+`POST {{ api_url }}/v1/messages/flags`
+
+For updating the `read` flag on common collections of messages, see also
+the
+[special endpoints for marking message as read in bulk](/api/mark-as-read-bulk).
 
 ## Usage examples
 

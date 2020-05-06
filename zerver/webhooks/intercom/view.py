@@ -69,7 +69,7 @@ class MLStripper(HTMLParser):
         self.reset()
         self.strict = False
         self.convert_charrefs = True
-        self.fed: List[str] = []
+        self.fed = []  # type: List[str]
 
     def handle_data(self, d: str) -> None:
         self.fed.append(d)
@@ -277,7 +277,7 @@ EVENT_TO_FUNCTION_MAPPER = {
 }
 
 def get_event_handler(event_type: str) -> Callable[..., Tuple[str, str]]:
-    handler: Any = EVENT_TO_FUNCTION_MAPPER.get(event_type)
+    handler = EVENT_TO_FUNCTION_MAPPER.get(event_type)  # type: Any
     if handler is None:
         raise UnexpectedWebhookEventType("Intercom", event_type)
     return handler

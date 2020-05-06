@@ -114,7 +114,8 @@ def api_harbor_webhook(request: HttpRequest, user_profile: UserProfile,
     if content_func is None:
         raise UnexpectedWebhookEventType('Harbor', event)
 
-    content: str = content_func(payload, user_profile, operator_username)
+    content = content_func(payload, user_profile,
+                           operator_username)  # type: str
 
     check_send_webhook_message(request, user_profile,
                                topic, content,

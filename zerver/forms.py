@@ -244,7 +244,7 @@ class ZulipPasswordResetForm(PasswordResetForm):
         realm = get_realm(get_subdomain(request))
 
         if not email_auth_enabled(realm):
-            logging.info("Password reset attempted for %s even though password auth is disabled.", email)
+            logging.info("Password reset attempted for %s even though password auth is disabled." % (email,))
             return
         if email_belongs_to_ldap(realm, email):
             # TODO: Ideally, we'd provide a user-facing error here
@@ -261,10 +261,10 @@ class ZulipPasswordResetForm(PasswordResetForm):
                 rate_limit_password_reset_form_by_email(email)
             except RateLimited:
                 # TODO: Show an informative, user-facing error message.
-                logging.info("Too many password reset attempts for email %s", email)
+                logging.info("Too many password reset attempts for email %s" % (email,))
                 return
 
-        user: Optional[UserProfile] = None
+        user = None  # type: Optional[UserProfile]
         try:
             user = get_user_by_delivery_email(email, realm)
         except UserProfile.DoesNotExist:
@@ -329,11 +329,11 @@ class OurAuthenticationForm(AuthenticationForm):
             try:
                 realm = get_realm(subdomain)
             except Realm.DoesNotExist:
-                logging.warning("User %s attempted to password login to nonexistent subdomain %s",
-                                username, subdomain)
+                logging.warning("User %s attempted to password login to nonexistent subdomain %s" %
+                                (username, subdomain))
                 raise ValidationError("Realm does not exist")
 
-            return_data: Dict[str, Any] = {}
+            return_data = {}  # type: Dict[str, Any]
             try:
                 self.user_cache = authenticate(request=self.request, username=username, password=password,
                                                realm=realm, return_data=return_data)
@@ -351,8 +351,8 @@ class OurAuthenticationForm(AuthenticationForm):
                 raise ValidationError(mark_safe(DEACTIVATED_ACCOUNT_ERROR))
 
             if return_data.get("invalid_subdomain"):
-                logging.warning("User %s attempted to password login to wrong subdomain %s",
-                                username, subdomain)
+                logging.warning("User %s attempted to password login to wrong subdomain %s" %
+                                (username, subdomain))
                 raise ValidationError(mark_safe(WRONG_SUBDOMAIN_ERROR))
 
             if self.user_cache is None:

@@ -6,7 +6,7 @@ from django.conf.urls import include, url
 import corporate.views
 from zerver.lib.rest import rest_dispatch
 
-i18n_urlpatterns: Any = [
+i18n_urlpatterns = [
     # Zephyr/MIT
     url(r'^zephyr/$', TemplateView.as_view(template_name='corporate/zephyr.html')),
     url(r'^zephyr-mirror/$', TemplateView.as_view(template_name='corporate/zephyr-mirror.html')),
@@ -16,13 +16,13 @@ i18n_urlpatterns: Any = [
     # Billing
     url(r'^billing/$', corporate.views.billing_home, name='corporate.views.billing_home'),
     url(r'^upgrade/$', corporate.views.initial_upgrade, name='corporate.views.initial_upgrade'),
-]
+]  # type: Any
 
 v1_api_and_json_patterns = [
     url(r'^billing/upgrade$', rest_dispatch,
         {'POST': 'corporate.views.upgrade'}),
     url(r'^billing/plan/change$', rest_dispatch,
-        {'POST': 'corporate.views.change_plan_status'}),
+        {'POST': 'corporate.views.change_plan_at_end_of_cycle'}),
     url(r'^billing/sources/change', rest_dispatch,
         {'POST': 'corporate.views.replace_payment_source'}),
 ]

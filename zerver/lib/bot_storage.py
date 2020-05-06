@@ -30,9 +30,9 @@ def set_bot_storage(bot_profile: UserProfile, entries: List[Tuple[str, str]]) ->
     storage_size_limit = settings.USER_STATE_SIZE_LIMIT
     storage_size_difference = 0
     for key, value in entries:
-        if not isinstance(key, str):
+        if type(key) is not str:
             raise StateError("Key type is {}, but should be str.".format(type(key)))
-        if not isinstance(value, str):
+        if type(value) is not str:
             raise StateError("Value type is {}, but should be str.".format(type(value)))
         storage_size_difference += (len(key) + len(value)) - get_bot_storage_size(bot_profile, key)
     new_storage_size = get_bot_storage_size(bot_profile) + storage_size_difference

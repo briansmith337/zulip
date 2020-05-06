@@ -153,10 +153,8 @@ def catch_stripe_errors(func: CallableT) -> CallableT:
         # https://stripe.com/docs/error-codes gives a more detailed set of error codes
         except stripe.error.StripeError as e:
             err = e.json_body.get('error', {})
-            billing_logger.error(
-                "Stripe error: %s %s %s %s",
-                e.http_status, err.get('type'), err.get('code'), err.get('param'),
-            )
+            billing_logger.error("Stripe error: %s %s %s %s" % (
+                e.http_status, err.get('type'), err.get('code'), err.get('param')))
             if isinstance(e, stripe.error.CardError):
                 # TODO: Look into i18n for this
                 raise StripeCardError('card error', err.get('message'))
@@ -166,7 +164,7 @@ def catch_stripe_errors(func: CallableT) -> CallableT:
                     'stripe connection error',
                     _("Something went wrong. Please wait a few seconds and try again."))
             raise BillingError('other stripe error', BillingError.CONTACT_SUPPORT)
-    return wrapped  # type: ignore[return-value] # https://github.com/python/mypy/issues/1927
+    return wrapped  # type: ignore # https://github.com/python/mypy/issues/1927
 
 @catch_stripe_errors
 def stripe_get_customer(stripe_customer_id: str) -> stripe.Customer:
@@ -287,8 +285,7 @@ def process_initial_upgrade(user: UserProfile, licenses: int, automanage_license
         # at exactly the same time. Doesn't fully resolve the race condition, but having
         # a check here reduces the likelihood.
         billing_logger.warning(
-            "Customer %s trying to upgrade, but has an active subscription", customer,
-        )
+            "Customer {} trying to upgrade, but has an active subscription".format(customer))
         raise BillingError('subscribing with existing subscription', BillingError.TRY_RELOADING)
 
     billing_cycle_anchor, next_invoice_date, period_end, price_per_license = compute_plan_parameters(
@@ -401,7 +398,7 @@ def invoice_plan(plan: CustomerPlan, event_time: datetime) -> None:
     invoice_item_created = False
     for ledger_entry in LicenseLedger.objects.filter(plan=plan, id__gt=plan.invoiced_through.id,
                                                      event_time__lte=event_time).order_by('id'):
-        price_args: Dict[str, int] = {}
+        price_args = {}  # type: Dict[str, int]
         if ledger_entry.is_renewal:
             if plan.fixed_price is not None:
                 price_args = {'amount': plan.fixed_price}
@@ -426,7 +423,7 @@ def invoice_plan(plan: CustomerPlan, event_time: datetime) -> None:
             plan.invoiced_through = ledger_entry
             plan.invoicing_status = CustomerPlan.STARTED
             plan.save(update_fields=['invoicing_status', 'invoiced_through'])
-            idempotency_key: Optional[str] = 'ledger_entry:{}'.format(ledger_entry.id)
+            idempotency_key = 'ledger_entry:{}'.format(ledger_entry.id)  # type: Optional[str]
             if settings.TEST_SUITE:
                 idempotency_key = None
             stripe.InvoiceItem.create(
@@ -479,10 +476,8 @@ def get_discount_for_realm(realm: Realm) -> Optional[Decimal]:
 def do_change_plan_status(plan: CustomerPlan, status: int) -> None:
     plan.status = status
     plan.save(update_fields=['status'])
-    billing_logger.info(
-        'Change plan status: Customer.id: %s, CustomerPlan.id: %s, status: %s',
-        plan.customer.id, plan.id, status,
-    )
+    billing_logger.info('Change plan status: Customer.id: %s, CustomerPlan.id: %s, status: %s' % (
+        plan.customer.id, plan.id, status))
 
 def process_downgrade(plan: CustomerPlan) -> None:
     from zerver.lib.actions import do_change_plan_type
@@ -505,7 +500,7 @@ def estimate_annual_recurring_revenue_by_realm() -> Dict[str, int]:  # nocoverag
 
 # During realm deactivation we instantly downgrade the plan to Limited.
 # Extra users added in the final month are not charged.
-def downgrade_now(realm: Realm) -> None:
+def downgrade_for_realm_deactivation(realm: Realm) -> None:
     plan = get_current_plan_by_realm(realm)
     if plan is None:
         return

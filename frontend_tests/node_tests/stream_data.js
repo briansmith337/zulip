@@ -775,21 +775,21 @@ run_test('notifications', () => {
     assert.deepEqual(unmatched_streams, expected_streams);
 });
 
-const tony = {
-    stream_id: 999,
-    name: 'tony',
-    subscribed: true,
-    is_muted: false,
-};
-
-const jazy = {
-    stream_id: 500,
-    name: 'jazy',
-    subscribed: false,
-    is_muted: true,
-};
-
 run_test('is_muted', () => {
+    const tony = {
+        stream_id: 999,
+        name: 'tony',
+        subscribed: true,
+        is_muted: false,
+    };
+
+    const jazy = {
+        stream_id: 500,
+        name: 'jazy',
+        subscribed: false,
+        is_muted: true,
+    };
+
     stream_data.add_sub(tony);
     stream_data.add_sub(jazy);
     assert(!stream_data.is_stream_muted_by_name('tony'));
@@ -798,21 +798,11 @@ run_test('is_muted', () => {
 });
 
 run_test('is_notifications_stream_muted', () => {
-    stream_data.add_sub(tony);
-    stream_data.add_sub(jazy);
-
-    page_params.realm_notifications_stream_id = tony.stream_id;
+    page_params.notifications_stream = 'tony';
     assert(!stream_data.is_notifications_stream_muted());
 
-    page_params.realm_notifications_stream_id = jazy.stream_id;
+    page_params.notifications_stream = 'jazy';
     assert(stream_data.is_notifications_stream_muted());
-});
-
-run_test('realm_has_notifications_stream', () => {
-    page_params.realm_notifications_stream_id = 10;
-    assert(stream_data.realm_has_notifications_stream());
-    page_params.realm_notifications_stream_id = -1;
-    assert(!stream_data.realm_has_notifications_stream());
 });
 
 run_test('remove_default_stream', () => {
@@ -914,12 +904,12 @@ run_test('initialize', () => {
     assert(stream_names.includes('subscriptions'));
     assert(stream_names.includes('unsubscribed'));
     assert(stream_names.includes('never_subscribed'));
-    assert.equal(stream_data.get_notifications_stream(), "");
+    assert.equal(page_params.notifications_stream, "");
 
     // Simulate a private stream the user isn't subscribed to
     page_params.realm_notifications_stream_id = 89;
     initialize();
-    assert.equal(stream_data.get_notifications_stream(), "");
+    assert.equal(page_params.notifications_stream, "");
 
     // Now actually subscribe the user to the stream
     initialize();
@@ -930,7 +920,7 @@ run_test('initialize', () => {
 
     stream_data.add_sub(foo);
     initialize();
-    assert.equal(stream_data.get_notifications_stream(), "foo");
+    assert.equal(page_params.notifications_stream, "foo");
 });
 
 run_test('filter inactives', () => {

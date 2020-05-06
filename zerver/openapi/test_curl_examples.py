@@ -6,7 +6,7 @@ import markdown
 import html
 
 from zulip import Client
-from zerver.openapi import markdown_extension
+from zerver.lib.bugdown import api_code_examples
 from zerver.models import get_realm
 from zerver.openapi.curl_param_value_generators import REGISTERED_GENERATOR_FUNCTIONS, CALLED_GENERATOR_FUNCTIONS
 
@@ -14,14 +14,10 @@ def test_generated_curl_examples_for_success(client: Client) -> None:
     authentication_line = "{}:{}".format(client.email, client.api_key)
     # A limited markdown engine that just processes the code example syntax.
     realm = get_realm("zulip")
-    md_engine = markdown.Markdown(extensions=[markdown_extension.makeExtension(
+    md_engine = markdown.Markdown(extensions=[api_code_examples.makeExtension(
         api_url=realm.uri + "/api")])
 
-    # We run our curl tests in alphabetical order, since we depend
-    # on "add" tests coming before "remove" tests in some cases.  We
-    # should try to either avoid ordering dependencies or make them
-    # very explicit.
-    for file_name in sorted(glob.glob("templates/zerver/api/*.md")):
+    for file_name in glob.glob("templates/zerver/api/*.md"):
         documentation_lines = open(file_name).readlines()
         for line in documentation_lines:
             # A typical example from the markdown source looks like this:

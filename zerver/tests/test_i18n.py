@@ -155,9 +155,6 @@ class FrontendRegexTestCase(TestCase):
             ("{{t 'english text' }}, 'extra'}}",
              'english text'),
 
-            ("{{> template var=(t 'english text') }}, 'extra'}}",
-             'english text'),
-
             ('i18n.t("english text"), "extra",)',
              'english text'),
 

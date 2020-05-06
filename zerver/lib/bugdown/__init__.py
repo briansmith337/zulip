@@ -129,7 +129,7 @@ STREAM_TOPIC_LINK_REGEX = r"""
 def get_compiled_stream_topic_link_regex() -> Pattern:
     return verbose_compile(STREAM_TOPIC_LINK_REGEX)
 
-LINK_REGEX: Pattern = None
+LINK_REGEX = None  # type: Pattern
 
 def get_web_link_regex() -> str:
     # We create this one time, but not at startup.  So the
@@ -502,7 +502,6 @@ class InlineHttpsProcessor(markdown.treeprocessors.Treeprocessor):
 
 class BacktickPattern(markdown.inlinepatterns.Pattern):
     """ Return a `<code>` element containing the matching text. """
-
     def __init__(self, pattern: str) -> None:
         markdown.inlinepatterns.Pattern.__init__(self, pattern)
         self.ESCAPED_BSLASH = '%s%s%s' % (markdown.util.STX, ord('\\'), markdown.util.ETX)
@@ -814,7 +813,7 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
         Finally we add any remaining text to the last node.
         """
 
-        to_process: List[Dict[str, Any]] = []
+        to_process = []  # type: List[Dict[str, Any]]
         # Build dicts for URLs
         for url_data in urls:
             short_url = url_data["url"]
@@ -907,7 +906,7 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
             res = fetch_tweet_data(tweet_id)
             if res is None:
                 return None
-            user: Dict[str, Any] = res['user']
+            user = res['user']  # type: Dict[str, Any]
             tweet = markdown.util.etree.Element("div")
             tweet.set("class", "twitter-tweet")
             img_a = markdown.util.etree.SubElement(tweet, 'a')
@@ -925,7 +924,7 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
             text = html.unescape(res['full_text'])
             urls = res.get('urls', [])
             user_mentions = res.get('user_mentions', [])
-            media: List[Dict[str, Any]] = res.get('media', [])
+            media = res.get('media', [])  # type: List[Dict[str, Any]]
             p = self.twitter_text(text, urls, user_mentions, media)
             tweet.append(p)
 
@@ -1083,7 +1082,7 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
         if len(unique_previewable_urls) > self.INLINE_PREVIEW_LIMIT_PER_MESSAGE:
             return
 
-        processed_urls: Set[str] = set()
+        processed_urls = set()  # type: Set[str]
         rendered_tweet_count = 0
 
         for found_url in found_urls:
@@ -1277,7 +1276,6 @@ def unicode_emoji_to_codepoint(unicode_emoji: str) -> str:
 
 class EmoticonTranslation(markdown.inlinepatterns.Pattern):
     """ Translates emoticons like `:)` into emoji like `:smile:`. """
-
     def handleMatch(self, match: Match[str]) -> Optional[Element]:
         db_data = self.markdown.zulip_db_data
         if db_data is None or not db_data['translate_emoticons']:
@@ -1303,7 +1301,7 @@ class Emoji(markdown.inlinepatterns.Pattern):
         orig_syntax = match.group("syntax")
         name = orig_syntax[1:-1]
 
-        active_realm_emoji: Dict[str, Dict[str, str]] = {}
+        active_realm_emoji = {}  # type: Dict[str, Dict[str, str]]
         db_data = self.markdown.zulip_db_data
         if db_data is not None:
             active_realm_emoji = db_data['active_realm_emoji']
@@ -1506,7 +1504,7 @@ class BugdownListPreprocessor(markdown.preprocessors.Preprocessor):
         directly after a line of text, and inserts a newline between
         to satisfy Markdown"""
 
-    LI_RE = re.compile(r'^[ ]*([*+-]|\d\.)[ ]+(.*)', re.MULTILINE)
+    LI_RE = re.compile(r'^[ ]{0,3}([*+-]|\d\.)[ ]+(.*)', re.MULTILINE)
 
     def run(self, lines: List[str]) -> List[str]:
         """ Insert a newline between a paragraph and ulist if missing """
@@ -1516,8 +1514,8 @@ class BugdownListPreprocessor(markdown.preprocessors.Preprocessor):
         ])
 
         inserts = 0
-        in_code_fence: bool = False
-        open_fences: List[Fence] = []
+        in_code_fence = False  # type: bool
+        open_fences = []  # type: List[Fence]
         copy = lines[:]
         for i in range(len(lines) - 1):
             # Ignore anything that is inside a fenced code block but not quoted.
@@ -1713,7 +1711,7 @@ def possible_linked_stream_names(content: str) -> Set[str]:
         matches.append(match.group('stream_name'))
     return set(matches)
 
-class AlertWordNotificationProcessor(markdown.preprocessors.Preprocessor):
+class AlertWordsNotificationProcessor(markdown.preprocessors.Preprocessor):
 
     allowed_before_punctuation = {' ', '\n', '(', '"', '.', ',', '\'', ';', '[', '*', '`', '>'}
     allowed_after_punctuation = {' ', '\n', ')', '",', '?', ':', '.', ',', '\'', ';', ']', '!',
@@ -1835,7 +1833,7 @@ class Bugdown(markdown.Markdown):
         preprocessors.register(BugdownListPreprocessor(self), 'hanging_lists', 35)
         preprocessors.register(markdown.preprocessors.NormalizeWhitespace(self), 'normalize_whitespace', 30)
         preprocessors.register(fenced_code.FencedBlockPreprocessor(self), 'fenced_code_block', 25)
-        preprocessors.register(AlertWordNotificationProcessor(self), 'custom_text_notifications', 20)
+        preprocessors.register(AlertWordsNotificationProcessor(self), 'custom_text_notifications', 20)
         return preprocessors
 
     def build_block_parser(self) -> markdown.util.Registry:
@@ -1968,8 +1966,8 @@ class Bugdown(markdown.Markdown):
             self.preprocessors = get_sub_registry(self.preprocessors, ['custom_text_notifications'])
             self.parser.blockprocessors = get_sub_registry(self.parser.blockprocessors, ['paragraph'])
 
-md_engines: Dict[Tuple[int, bool], markdown.Markdown] = {}
-realm_filter_data: Dict[int, List[Tuple[str, str, int]]] = {}
+md_engines = {}  # type: Dict[Tuple[int, bool], markdown.Markdown]
+realm_filter_data = {}  # type: Dict[int, List[Tuple[str, str, int]]]
 
 def make_md_engine(realm_filters_key: int, email_gateway: bool) -> None:
     md_engine_key = (realm_filters_key, email_gateway)
@@ -2009,7 +2007,7 @@ basic_link_splitter = re.compile(r'[ !;\?\),\'\"]')
 # rendered by clients (just as links rendered into message bodies
 # are validated and escaped inside `url_to_a`).
 def topic_links(realm_filters_key: int, topic_name: str) -> List[str]:
-    matches: List[str] = []
+    matches = []  # type: List[str]
 
     realm_filters = realm_filters_for_realm(realm_filters_key)
 
@@ -2154,7 +2152,7 @@ class MentionData:
                              content: str) -> None:
         user_group_names = possible_user_group_mentions(content)
         self.user_group_name_info = get_user_group_name_info(realm_id, user_group_names)
-        self.user_group_members: Dict[int, List[int]] = defaultdict(list)
+        self.user_group_members = defaultdict(list)  # type: Dict[int, List[int]]
         group_ids = [group.id for group in self.user_group_name_info.values()]
 
         if not group_ids:

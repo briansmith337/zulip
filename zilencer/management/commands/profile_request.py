@@ -29,7 +29,7 @@ class MockRequest(HttpRequest):
             "num_before": 1200,
             "num_after": 200
         }
-        self.GET: Dict[Any, Any] = {}
+        self.GET = {}  # type: Dict[Any, Any]
         self.session = MockSession()
 
     def get_full_path(self) -> str:
@@ -45,7 +45,7 @@ def profile_request(request: HttpRequest) -> HttpResponse:
     with tempfile.NamedTemporaryFile(prefix='profile.data.', delete=False) as stats_file:
         prof.dump_stats(stats_file.name)
         request_logger.process_response(request, ret)
-        logging.info("Profiling data written to %s", stats_file.name)
+        logging.info("Profiling data written to {}".format(stats_file.name))
     return ret
 
 class Command(ZulipBaseCommand):

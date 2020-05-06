@@ -114,7 +114,7 @@ class DocPageTest(ZulipTestCase):
         self._test('/api/send-message', 'steal away your hearts')
         self._test('/api/render-message', '**foo**')
         self._test('/api/get-all-streams', 'include_public')
-        self._test('/api/get-stream-id', 'The name of the stream to access.')
+        self._test('/api/get-stream-id', 'The name of the stream.')
         self._test('/api/get-subscribed-streams', 'Get all streams that the user is subscribed to.')
         self._test('/api/get-all-users', 'client_gravatar')
         self._test('/api/register-queue', 'apply_markdown')
@@ -275,7 +275,7 @@ class IntegrationTest(TestCase):
             self.assertTrue(os.path.isfile(settings.DEPLOY_ROOT + path), integration.name)
 
     def test_api_url_view_subdomains_base(self) -> None:
-        context: Dict[str, Any] = dict()
+        context = dict()  # type: Dict[str, Any]
         add_api_uri_context(context, HostRequestMock())
         self.assertEqual(context["api_url_scheme_relative"], "testserver/api")
         self.assertEqual(context["api_url"], "http://testserver/api")
@@ -283,14 +283,14 @@ class IntegrationTest(TestCase):
 
     @override_settings(ROOT_DOMAIN_LANDING_PAGE=True)
     def test_api_url_view_subdomains_homepage_base(self) -> None:
-        context: Dict[str, Any] = dict()
+        context = dict()  # type: Dict[str, Any]
         add_api_uri_context(context, HostRequestMock())
         self.assertEqual(context["api_url_scheme_relative"], "yourZulipDomain.testserver/api")
         self.assertEqual(context["api_url"], "http://yourZulipDomain.testserver/api")
         self.assertFalse(context["html_settings_links"])
 
     def test_api_url_view_subdomains_full(self) -> None:
-        context: Dict[str, Any] = dict()
+        context = dict()  # type: Dict[str, Any]
         request = HostRequestMock(host="mysubdomain.testserver")
         add_api_uri_context(context, request)
         self.assertEqual(context["api_url_scheme_relative"], "mysubdomain.testserver/api")
@@ -298,7 +298,7 @@ class IntegrationTest(TestCase):
         self.assertTrue(context["html_settings_links"])
 
     def test_html_settings_links(self) -> None:
-        context: Dict[str, Any] = dict()
+        context = dict()  # type: Dict[str, Any]
         with self.settings(ROOT_DOMAIN_LANDING_PAGE=True):
             add_api_uri_context(context, HostRequestMock())
         self.assertEqual(
