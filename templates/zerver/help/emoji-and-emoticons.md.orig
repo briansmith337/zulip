@@ -56,9 +56,14 @@ The list of supported emoticons is available
 Copying and pasting emoji from other sites generally works. Email us at
 support@axxess.one if you find a site where it doesn't!
 =======
+<<<<<<< HEAD
 Copying and pasting emoji from other sites generally works.
 [Contact us](/help/contact-support) if you find a site where it doesn't!
->>>>>>> docs: Recommend contact page over email wherever possible.
+=======
+Copying and pasting emoji from other sites generally works. Email us at
+support@axxess.one if you find a site where it doesn't!
+>>>>>>> Big Changes - changed documentation and other help.  Initial check in with modified documents
+>>>>>>> merged with first rebase
 
 ## Change your emoji set
 

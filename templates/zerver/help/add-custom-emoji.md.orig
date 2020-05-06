@@ -31,10 +31,15 @@ are treated the same as spaces.
 ### Bulk add emoji
 
 We expose a [REST API endpoint](/api/upload-custom-emoji) for bulk uploading
+<<<<<<< HEAD
 emoji. Using REST API endpoints requires some technical expertise;
 [contact us](/help/contact-support) if you get stuck.
+=======
+emoji. Using REST API endpoints requires some technical expertise; email
+support@axxess.one if you get stuck.
+>>>>>>> Big Changes - changed documentation and other help.  Initial check in with modified documents
 
->>>>>>> docs: Recommend contact page over email wherever possible.
+>>>>>>> merged with first rebase
 ## Replace a default emoji
 
 You can replace a default emoji by adding a custom emoji of the same

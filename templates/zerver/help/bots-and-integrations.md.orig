@@ -67,9 +67,14 @@ A few more details:
 * **API super bot**: You cannot create this from the web interface. Contact
   `support@axxess.one` if you'd like information on how to set this up.
 =======
+<<<<<<< HEAD
 * **API super bot**: You cannot create this from the web interface.
   [Contact us](/help/contact-support) if you'd like information on how to set this up.
->>>>>>> docs: Recommend contact page over email wherever possible.
+=======
+* **API super bot**: You cannot create this from the web interface. Contact
+  `support@axxess.one` if you'd like information on how to set this up.
+>>>>>>> Big Changes - changed documentation and other help.  Initial check in with modified documents
+>>>>>>> merged with first rebase
 
 ## Adding bots
 

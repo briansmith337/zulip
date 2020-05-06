@@ -10,9 +10,14 @@ and millions of messages. If you're planning on doing an import much
 larger than that, or run into performance issues when importing, email
 us at support@axxess.one for help.
 =======
+<<<<<<< HEAD
 larger than that, or run into performance issues when importing,
 [contact us](/help/contact-support) for help.
->>>>>>> docs: Recommend contact page over email wherever possible.
+=======
+larger than that, or run into performance issues when importing, email
+us at support@axxess.one for help.
+>>>>>>> Big Changes - changed documentation and other help.  Initial check in with modified documents
+>>>>>>> merged with first rebase
 
 **Note:** You can only import a Slack workspace as a new Axxess
 organization. In particular, you cannot use this tool to import from Slack

@@ -1,6 +1,11 @@
 ## Guides
+<<<<<<< HEAD
 * [Getting started with Axxess](/help/getting-started-with-axxess)
 * [Setting up your organization](/help/getting-your-organization-started-with-axxess)
+=======
+* [Getting started with Axxess](/help/getting-started-with-zulip)
+* [Setting up your organization](/help/getting-your-organization-started-with-zulip)
+>>>>>>> merged with first rebase
 * [Streams and topics](/help/about-streams-and-topics)
 * [Moderating open organizations](/help/moderating-open-organizations)
 
@@ -90,8 +95,19 @@
 * [Change your timezone](/help/change-your-timezone)
 * [Display the buddy list on narrow screens](/help/move-the-users-list-to-the-left-sidebar)
 * [View organization statistics](/help/analytics)
+<<<<<<< HEAD
+=======
+* [Linking to Axxess](/help/linking-to-zulip)
+>>>>>>> merged with first rebase
 * [Connect through a proxy](/help/connect-through-a-proxy)
 
+<<<<<<< HEAD
+=======
+## Apps
+* [Desktop installation guides](/help/desktop-app-install-guide)
+* [Axxess in a Terminal](/help/zulip-in-a-terminal)
+
+>>>>>>> merged with first rebase
 # Axxess administration
 
 ## Organization basics
@@ -118,12 +134,6 @@
 * [Configure notification bot](/help/configure-notification-bot)
 * [Require topics in stream messages](/help/require-topics)
 * [Add custom emoji](/help/add-custom-emoji)
-<<<<<<< HEAD
-=======
-* [Configure authentication methods](/help/configure-authentication-methods)
-* [Add a custom linkification filter](/help/add-a-custom-linkification-filter)
-* [Message retention policy](/help/message-retention-policy)
->>>>>>> docs: Document message retention policies.
 
 ## Users & bots
 * [Invite new users](/help/invite-new-users)
@@ -149,3 +159,6 @@
 * [Change the privacy of a stream](/help/change-the-privacy-of-a-stream)
 * [Add or remove users from a stream](/help/add-or-remove-users-from-a-stream)
 * [Stream posting policy](/help/stream-sending-policy)
+
+## Support
+* [Contact support](/help/contact-support)
